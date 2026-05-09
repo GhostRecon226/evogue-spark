@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Download, Video, CheckCircle2, Loader2, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
+import { CertificateModal } from "@/components/dashboard/CertificateModal";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
@@ -24,7 +25,7 @@ type Course = { id: string; slug: string; title: string };
 
 function ClassroomPage() {
   const { slug } = Route.useParams();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [loading, setLoading] = useState(true);
   const [enrolled, setEnrolled] = useState(false);
   const [course, setCourse] = useState<Course | null>(null);
@@ -32,6 +33,9 @@ function ClassroomPage() {
   const [done, setDone] = useState<Record<string, boolean>>({});
   const [activeId, setActiveId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [showCert, setShowCert] = useState(false);
+  const [certIssuedAt, setCertIssuedAt] = useState<string | null>(null);
+  const [hadCert, setHadCert] = useState(false);
 
   const load = useCallback(async () => {
     if (!user) return;
@@ -42,11 +46,12 @@ function ClassroomPage() {
     if (!courseRow) { setCourse(null); setLoading(false); throw notFound(); }
     setCourse(courseRow);
 
-    const [{ data: enr }, { data: lessonRows }, { data: progressRows }] = await Promise.all([
+    const [{ data: enr }, { data: lessonRows }, { data: progressRows }, { data: existingCert }] = await Promise.all([
       supabase.from("enrollments").select("id").eq("student_id", user.id).eq("course_id", courseRow.id).maybeSingle(),
       supabase.from("lessons").select("id, title, lesson_number, zoom_link, pdf_url")
         .eq("course_id", courseRow.id).eq("is_published", true).order("lesson_number"),
       supabase.from("lesson_progress").select("lesson_id, completed").eq("student_id", user.id).eq("course_id", courseRow.id),
+      supabase.from("certificates").select("id, issued_at").eq("student_id", user.id).eq("course_id", courseRow.id).maybeSingle(),
     ]);
 
     setEnrolled(Boolean(enr));
@@ -55,10 +60,35 @@ function ClassroomPage() {
     for (const p of progressRows ?? []) map[p.lesson_id] = p.completed;
     setDone(map);
     setActiveId((lessonRows && lessonRows[0]?.id) ?? null);
+    setHadCert(Boolean(existingCert));
+    setCertIssuedAt(existingCert?.issued_at ?? null);
     setLoading(false);
   }, [slug, user]);
 
   useEffect(() => { void load(); }, [load]);
+
+  const issueCertificateIfComplete = async (newDone: Record<string, boolean>) => {
+    if (!user || !course || lessons.length === 0 || hadCert) return;
+    const completedCount = lessons.filter((l) => newDone[l.id]).length;
+    if (completedCount < lessons.length) return;
+
+    const { data, error } = await supabase
+      .from("certificates")
+      .insert({ student_id: user.id, course_id: course.id })
+      .select("issued_at")
+      .maybeSingle();
+
+    if (error) {
+      // 23505 = unique violation: cert already exists, just open the modal
+      if (!/duplicate|unique/i.test(error.message)) {
+        toast.error(error.message);
+        return;
+      }
+    }
+    setHadCert(true);
+    setCertIssuedAt(data?.issued_at ?? new Date().toISOString());
+    setShowCert(true);
+  };
 
   const toggleComplete = async (lessonId: string) => {
     if (!user || !course || !enrolled) return;
