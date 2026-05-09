@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Download, Video, CheckCircle2, Loader2, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
+import { CertificateModal } from "@/components/dashboard/CertificateModal";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
@@ -24,7 +25,7 @@ type Course = { id: string; slug: string; title: string };
 
 function ClassroomPage() {
   const { slug } = Route.useParams();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [loading, setLoading] = useState(true);
   const [enrolled, setEnrolled] = useState(false);
   const [course, setCourse] = useState<Course | null>(null);
@@ -32,6 +33,9 @@ function ClassroomPage() {
   const [done, setDone] = useState<Record<string, boolean>>({});
   const [activeId, setActiveId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [showCert, setShowCert] = useState(false);
+  const [certIssuedAt, setCertIssuedAt] = useState<string | null>(null);
+  const [hadCert, setHadCert] = useState(false);
 
   const load = useCallback(async () => {
     if (!user) return;
@@ -42,11 +46,12 @@ function ClassroomPage() {
     if (!courseRow) { setCourse(null); setLoading(false); throw notFound(); }
     setCourse(courseRow);
 
-    const [{ data: enr }, { data: lessonRows }, { data: progressRows }] = await Promise.all([
+    const [{ data: enr }, { data: lessonRows }, { data: progressRows }, { data: existingCert }] = await Promise.all([
       supabase.from("enrollments").select("id").eq("student_id", user.id).eq("course_id", courseRow.id).maybeSingle(),
       supabase.from("lessons").select("id, title, lesson_number, zoom_link, pdf_url")
         .eq("course_id", courseRow.id).eq("is_published", true).order("lesson_number"),
       supabase.from("lesson_progress").select("lesson_id, completed").eq("student_id", user.id).eq("course_id", courseRow.id),
+      supabase.from("certificates").select("id, issued_at").eq("student_id", user.id).eq("course_id", courseRow.id).maybeSingle(),
     ]);
 
     setEnrolled(Boolean(enr));
@@ -55,10 +60,35 @@ function ClassroomPage() {
     for (const p of progressRows ?? []) map[p.lesson_id] = p.completed;
     setDone(map);
     setActiveId((lessonRows && lessonRows[0]?.id) ?? null);
+    setHadCert(Boolean(existingCert));
+    setCertIssuedAt(existingCert?.issued_at ?? null);
     setLoading(false);
   }, [slug, user]);
 
   useEffect(() => { void load(); }, [load]);
+
+  const issueCertificateIfComplete = async (newDone: Record<string, boolean>) => {
+    if (!user || !course || lessons.length === 0 || hadCert) return;
+    const completedCount = lessons.filter((l) => newDone[l.id]).length;
+    if (completedCount < lessons.length) return;
+
+    const { data, error } = await supabase
+      .from("certificates")
+      .insert({ student_id: user.id, course_id: course.id })
+      .select("issued_at")
+      .maybeSingle();
+
+    if (error) {
+      // 23505 = unique violation: cert already exists, just open the modal
+      if (!/duplicate|unique/i.test(error.message)) {
+        toast.error(error.message);
+        return;
+      }
+    }
+    setHadCert(true);
+    setCertIssuedAt(data?.issued_at ?? new Date().toISOString());
+    setShowCert(true);
+  };
 
   const toggleComplete = async (lessonId: string) => {
     if (!user || !course || !enrolled) return;
@@ -82,6 +112,11 @@ function ClassroomPage() {
     if (error) {
       setDone((d) => ({ ...d, [lessonId]: !next })); // rollback
       toast.error(error.message);
+      return;
+    }
+    if (next) {
+      const updated = { ...done, [lessonId]: true };
+      void issueCertificateIfComplete(updated);
     }
   };
 
@@ -122,24 +157,32 @@ function ClassroomPage() {
           <div className="mt-2"><Progress value={progress} /><p className="mt-1 text-xs text-foreground/60">{progress}% complete</p></div>
           <ul className="mt-4 space-y-1 max-h-[60vh] overflow-y-auto pr-1">
             {lessons.length === 0 && <li className="text-sm text-foreground/55 px-3 py-2">Lessons coming soon.</li>}
-            {lessons.map((l) => (
-              <li key={l.id}>
-                <button
-                  onClick={() => setActiveId(l.id)}
-                  className={`w-full flex items-start gap-2 text-left rounded-lg px-3 py-2 text-sm transition ${
-                    active?.id === l.id ? "bg-mint/30 text-forest" : "hover:bg-mint-tint text-foreground/80"
-                  }`}
-                >
-                  <Checkbox
-                    checked={!!done[l.id]}
-                    onCheckedChange={() => toggleComplete(l.id)}
-                    onClick={(e) => e.stopPropagation()}
-                    className="mt-0.5"
-                  />
-                  <span className="flex-1"><span className="text-foreground/50 mr-1">{l.lesson_number}.</span>{l.title}</span>
-                </button>
-              </li>
-            ))}
+            {lessons.map((l) => {
+              const isActive = active?.id === l.id;
+              const isDone = !!done[l.id];
+              return (
+                <li key={l.id}>
+                  <button
+                    onClick={() => setActiveId(l.id)}
+                    className={`w-full flex items-start gap-2 text-left rounded-lg px-3 py-2 text-sm transition ${
+                      isActive ? "bg-mint text-forest font-semibold" : "hover:bg-mint-tint text-foreground/80"
+                    }`}
+                  >
+                    {isDone ? (
+                      <CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0 text-secondary" />
+                    ) : (
+                      <Checkbox
+                        checked={false}
+                        onCheckedChange={() => toggleComplete(l.id)}
+                        onClick={(e) => e.stopPropagation()}
+                        className="mt-0.5"
+                      />
+                    )}
+                    <span className="flex-1"><span className="text-foreground/50 mr-1">{l.lesson_number}.</span>{l.title}</span>
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         </aside>
 
@@ -179,6 +222,13 @@ function ClassroomPage() {
           </main>
         )}
       </div>
+      <CertificateModal
+        open={showCert}
+        onOpenChange={setShowCert}
+        studentName={profile?.full_name?.trim() || user?.email?.split("@")[0] || "Student"}
+        courseTitle={course.title}
+        issuedAt={certIssuedAt ?? new Date().toISOString()}
+      />
     </DashboardLayout>
   );
 }

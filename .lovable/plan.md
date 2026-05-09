@@ -1,64 +1,54 @@
-Lovable Cloud (Supabase) is already connected — auth, the `profiles` table, Google sign-in, login/register/forgot-password pages, the `_authenticated` route guard, the avatar dropdown logout, and the new-user trigger all exist. This plan closes the remaining gaps in your spec.
+## Goal
 
-## What's already in place
-- Email + password auth, Google OAuth, auto-confirm email
-- `profiles` table with `id`, `full_name`, `email`, `whatsapp`, `avatar_url`, timestamps + `handle_new_user` trigger that copies signup metadata into it
-- RLS: users can read/insert/update only their own profile
-- `/login`, `/register`, `/forgot-password` pages and `_authenticated` guard redirecting to `/login`
-- Logout in the navbar avatar dropdown
+Most classroom plumbing is already wired: lessons sidebar, active-lesson highlight in mint, Zoom + PDF buttons, "Mark as Complete" with optimistic update, and progress bars on My Courses + Dashboard Home all read from `lesson_progress`.
 
-## Gaps to fix
+What's missing is the completion celebration loop: auto-issuing a certificate, the congrats modal, and a downloadable branded certificate. This plan fills those gaps and tightens the existing flow.
 
-### 1. Profiles schema additions
-Migration to align with your spec:
-- Add `role text not null default 'student'`
-- Rename `whatsapp` → `whatsapp_number` (and update the `handle_new_user` trigger + register form + profile page)
+## Changes
 
-Recommendation: keep `role` on `profiles` ONLY for display. For real authorization (admin / instructor checks), use a separate `user_roles` table + `has_role()` security-definer function — storing privileges on `profiles` is a known privilege-escalation risk because users can update their own row. We'll set this up now so future admin features are safe.
+### 1. Auto-issue certificate when course is 100% complete
+In `src/routes/_authenticated/dashboard.courses.$slug.tsx`, after a successful `lesson_progress` upsert in `toggleComplete`:
+- Recompute `completedCount / lessons.length`.
+- If it just hit 100% (and wasn't 100% before), `INSERT` into `certificates` with `student_id` and `course_id`.
+- Use `.select().maybeSingle()` to ignore duplicates if a cert already exists (we'll add a uniqueness guard — see migration below).
+- On success, open a congrats modal.
 
-### 2. Load profile into app state on login
-Extend `useAuth` to also expose `profile` (full row from `profiles`):
-- On `onAuthStateChange` SIGNED_IN / initial session → fetch `profiles` row by `user.id` and store in context
-- Clear on SIGNED_OUT
-- Expose `refreshProfile()` for the profile-edit page
+### 2. Congrats modal with Download Certificate
+New component `src/components/dashboard/CertificateModal.tsx` using shadcn `Dialog`:
+- Confetti-style hero with `Award` icon, "Congratulations, {full_name}!"
+- Course title + completion date
+- Primary button: "Download Certificate" → triggers PDF generation
+- Secondary button: "View all certificates" → links to `/dashboard/certificates`
 
-### 3. Add `/reset-password` page (currently missing)
-- Forgot-password flow currently redirects the email link to `/login`, which auto-signs the user in WITHOUT letting them set a new password
-- Create public route `/reset-password` that detects the recovery session and calls `supabase.auth.updateUser({ password })`
-- Update `forgot-password` to use `redirectTo: ${origin}/reset-password`
+### 3. Client-side certificate PDF generator
+New helper `src/lib/generate-certificate.ts` using `jspdf` (add via `bun add jspdf`):
+- Landscape A4
+- Mint/forest brand palette pulled from existing tokens (hex equivalents)
+- Layout: Evogue Academy logo/wordmark top-center, "Certificate of Completion" headline (display font fallback to Helvetica-Bold), "This is to certify that", student full name (large), "has successfully completed the course", course title, completion date, signature line ("Evogue Academy — Director of Studies"), border frame in forest green
+- Returns/saves `Evogue-Certificate-{course-slug}.pdf` via `doc.save()`
+- Used by both the modal and the Certificates page download button (replaces the current `certificate_url` link when null)
 
-### 4. Smart "Enroll" CTAs
-Create a small `<EnrollButton>` (or `useEnrollHref()` helper) that resolves to:
-- `/dashboard` if a session exists
-- `/register` otherwise
+### 4. Update Certificates page download
+In `dashboard.certificates.tsx`, also fetch `profile.full_name` (already in `useAuth`) and pass `student_name + course_title + issued_at` to `generateCertificate()` on click. The download button is always enabled now.
 
-Replace the current `to="/scholarship"` on:
-- `Navbar.tsx` (desktop + mobile Enroll Now)
-- `Hero.tsx` (Enroll for the Next Cohort)
-- `courses.$slug.tsx` (two Enroll Now buttons)
+### 5. Migration: prevent duplicate certificates
+Add a unique constraint on `certificates(student_id, course_id)` so the auto-issue insert is idempotent if the user re-toggles a lesson.
 
-Recommendation: keep the `/scholarship` page reachable from its own nav link — it serves a different intent (apply for a scholarship) than enrollment.
+### 6. Keep progress fresh
+`Dashboard Home` and `My Courses` already refetch on mount/`user` change. After the modal closes, `router.invalidate()` is called so re-navigating to those pages shows the new certificate count and 100% bar without manual refresh. (No realtime channel needed — kept simple.)
 
-### 5. Dashboard greeting from profile
-Change `dashboard.tsx` to read `profile.full_name` from `useAuth()` instead of `user.user_metadata.full_name`, with a graceful fallback while loading.
+## Technical notes
 
-### 6. Route guard hardening (recommendation)
-Current `_authenticated.beforeLoad` calls `supabase.auth.getSession()` directly — fine, but it can race with session hydration on hard reload. Add a tiny `await supabase.auth.getUser()` fallback, and in the dashboard layout show a brief loader while `useAuth().loading` is true to avoid a content flash.
+- `jspdf` is pure JS, ~150 KB gzipped, edge-safe — fine for client.
+- The certificate is generated on-demand; we don't upload a PDF to Storage. `certificate_url` stays nullable and unused for now.
+- Sidebar checkmark already updates immediately via the existing optimistic `setDone` — no change needed.
+- Active lesson highlight already uses `bg-mint/30 text-forest` — matches the brief.
 
-## Files touched
-- `supabase/migrations/<new>.sql` — add `role`, rename `whatsapp` → `whatsapp_number`, recreate trigger, create `user_roles` table + `app_role` enum + `has_role()` function with RLS
-- `src/hooks/use-auth.tsx` — add `profile` + `refreshProfile`
-- `src/routes/reset-password.tsx` — new page
-- `src/routes/forgot-password.tsx` — point `redirectTo` to `/reset-password`
-- `src/routes/register.tsx`, `src/routes/_authenticated/dashboard.profile.tsx` — `whatsapp` → `whatsapp_number`
-- `src/components/EnrollButton.tsx` — new
-- `src/components/landing/Navbar.tsx`, `Hero.tsx`, `src/routes/courses.$slug.tsx` — use `EnrollButton`
-- `src/routes/_authenticated/dashboard.tsx` — greet from `profile.full_name`
-- `src/routes/_authenticated.tsx` — small race-condition fix
+## Files
 
-## Best-practice recommendations summary
-1. Roles in a dedicated `user_roles` table, never on `profiles` (security)
-2. Always pair `resetPasswordForEmail` with a real `/reset-password` page
-3. Set up `onAuthStateChange` BEFORE `getSession()` (already done — keep it)
-4. Enable Leaked Password Protection (HIBP) in Cloud → Users → Auth Settings — recommend turning this on
-5. Consider scaffolding branded auth emails (password reset, verification) once you have a sender domain — happy to set that up after this lands
+- edit: `src/routes/_authenticated/dashboard.courses.$slug.tsx` (cert insert + modal trigger)
+- new: `src/components/dashboard/CertificateModal.tsx`
+- new: `src/lib/generate-certificate.ts`
+- edit: `src/routes/_authenticated/dashboard.certificates.tsx` (use generator for download)
+- migration: unique `(student_id, course_id)` on `certificates`
+- dep: `bun add jspdf`
