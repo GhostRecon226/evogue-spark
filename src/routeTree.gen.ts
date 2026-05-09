@@ -22,7 +22,11 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedInstructorIndexRouteImport } from './routes/_authenticated/instructor.index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedInstructorUploadRouteImport } from './routes/_authenticated/instructor.upload'
+import { Route as AuthenticatedInstructorStudentsRouteImport } from './routes/_authenticated/instructor.students'
+import { Route as AuthenticatedInstructorCoursesRouteImport } from './routes/_authenticated/instructor.courses'
 import { Route as AuthenticatedInstructorCapstonesRouteImport } from './routes/_authenticated/instructor.capstones'
 import { Route as AuthenticatedDashboardProfileRouteImport } from './routes/_authenticated/dashboard.profile'
 import { Route as AuthenticatedDashboardCoursesRouteImport } from './routes/_authenticated/dashboard.courses'
@@ -99,11 +103,35 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedInstructorIndexRoute =
+  AuthenticatedInstructorIndexRouteImport.update({
+    id: '/instructor/',
+    path: '/instructor/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedInstructorUploadRoute =
+  AuthenticatedInstructorUploadRouteImport.update({
+    id: '/instructor/upload',
+    path: '/instructor/upload',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedInstructorStudentsRoute =
+  AuthenticatedInstructorStudentsRouteImport.update({
+    id: '/instructor/students',
+    path: '/instructor/students',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedInstructorCoursesRoute =
+  AuthenticatedInstructorCoursesRouteImport.update({
+    id: '/instructor/courses',
+    path: '/instructor/courses',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedInstructorCapstonesRoute =
   AuthenticatedInstructorCapstonesRouteImport.update({
     id: '/instructor/capstones',
@@ -194,7 +222,11 @@ export interface FileRoutesByFullPath {
   '/dashboard/courses': typeof AuthenticatedDashboardCoursesRouteWithChildren
   '/dashboard/profile': typeof AuthenticatedDashboardProfileRoute
   '/instructor/capstones': typeof AuthenticatedInstructorCapstonesRoute
+  '/instructor/courses': typeof AuthenticatedInstructorCoursesRoute
+  '/instructor/students': typeof AuthenticatedInstructorStudentsRoute
+  '/instructor/upload': typeof AuthenticatedInstructorUploadRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/instructor/': typeof AuthenticatedInstructorIndexRoute
   '/dashboard/courses/$slug': typeof AuthenticatedDashboardCoursesSlugRoute
 }
 export interface FileRoutesByTo {
@@ -220,7 +252,11 @@ export interface FileRoutesByTo {
   '/dashboard/courses': typeof AuthenticatedDashboardCoursesRouteWithChildren
   '/dashboard/profile': typeof AuthenticatedDashboardProfileRoute
   '/instructor/capstones': typeof AuthenticatedInstructorCapstonesRoute
+  '/instructor/courses': typeof AuthenticatedInstructorCoursesRoute
+  '/instructor/students': typeof AuthenticatedInstructorStudentsRoute
+  '/instructor/upload': typeof AuthenticatedInstructorUploadRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/instructor': typeof AuthenticatedInstructorIndexRoute
   '/dashboard/courses/$slug': typeof AuthenticatedDashboardCoursesSlugRoute
 }
 export interface FileRoutesById {
@@ -248,7 +284,11 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/courses': typeof AuthenticatedDashboardCoursesRouteWithChildren
   '/_authenticated/dashboard/profile': typeof AuthenticatedDashboardProfileRoute
   '/_authenticated/instructor/capstones': typeof AuthenticatedInstructorCapstonesRoute
+  '/_authenticated/instructor/courses': typeof AuthenticatedInstructorCoursesRoute
+  '/_authenticated/instructor/students': typeof AuthenticatedInstructorStudentsRoute
+  '/_authenticated/instructor/upload': typeof AuthenticatedInstructorUploadRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/instructor/': typeof AuthenticatedInstructorIndexRoute
   '/_authenticated/dashboard/courses/$slug': typeof AuthenticatedDashboardCoursesSlugRoute
 }
 export interface FileRouteTypes {
@@ -276,7 +316,11 @@ export interface FileRouteTypes {
     | '/dashboard/courses'
     | '/dashboard/profile'
     | '/instructor/capstones'
+    | '/instructor/courses'
+    | '/instructor/students'
+    | '/instructor/upload'
     | '/admin/'
+    | '/instructor/'
     | '/dashboard/courses/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -302,7 +346,11 @@ export interface FileRouteTypes {
     | '/dashboard/courses'
     | '/dashboard/profile'
     | '/instructor/capstones'
+    | '/instructor/courses'
+    | '/instructor/students'
+    | '/instructor/upload'
     | '/admin'
+    | '/instructor'
     | '/dashboard/courses/$slug'
   id:
     | '__root__'
@@ -329,7 +377,11 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/courses'
     | '/_authenticated/dashboard/profile'
     | '/_authenticated/instructor/capstones'
+    | '/_authenticated/instructor/courses'
+    | '/_authenticated/instructor/students'
+    | '/_authenticated/instructor/upload'
     | '/_authenticated/admin/'
+    | '/_authenticated/instructor/'
     | '/_authenticated/dashboard/courses/$slug'
   fileRoutesById: FileRoutesById
 }
@@ -440,11 +492,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/instructor/': {
+      id: '/_authenticated/instructor/'
+      path: '/instructor'
+      fullPath: '/instructor/'
+      preLoaderRoute: typeof AuthenticatedInstructorIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
       path: '/admin'
       fullPath: '/admin/'
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/instructor/upload': {
+      id: '/_authenticated/instructor/upload'
+      path: '/instructor/upload'
+      fullPath: '/instructor/upload'
+      preLoaderRoute: typeof AuthenticatedInstructorUploadRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/instructor/students': {
+      id: '/_authenticated/instructor/students'
+      path: '/instructor/students'
+      fullPath: '/instructor/students'
+      preLoaderRoute: typeof AuthenticatedInstructorStudentsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/instructor/courses': {
+      id: '/_authenticated/instructor/courses'
+      path: '/instructor/courses'
+      fullPath: '/instructor/courses'
+      preLoaderRoute: typeof AuthenticatedInstructorCoursesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/instructor/capstones': {
@@ -571,7 +651,11 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdminPaymentsRoute: typeof AuthenticatedAdminPaymentsRoute
   AuthenticatedAdminStudentsRoute: typeof AuthenticatedAdminStudentsRoute
   AuthenticatedInstructorCapstonesRoute: typeof AuthenticatedInstructorCapstonesRoute
+  AuthenticatedInstructorCoursesRoute: typeof AuthenticatedInstructorCoursesRoute
+  AuthenticatedInstructorStudentsRoute: typeof AuthenticatedInstructorStudentsRoute
+  AuthenticatedInstructorUploadRoute: typeof AuthenticatedInstructorUploadRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+  AuthenticatedInstructorIndexRoute: typeof AuthenticatedInstructorIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -583,7 +667,11 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminPaymentsRoute: AuthenticatedAdminPaymentsRoute,
   AuthenticatedAdminStudentsRoute: AuthenticatedAdminStudentsRoute,
   AuthenticatedInstructorCapstonesRoute: AuthenticatedInstructorCapstonesRoute,
+  AuthenticatedInstructorCoursesRoute: AuthenticatedInstructorCoursesRoute,
+  AuthenticatedInstructorStudentsRoute: AuthenticatedInstructorStudentsRoute,
+  AuthenticatedInstructorUploadRoute: AuthenticatedInstructorUploadRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+  AuthenticatedInstructorIndexRoute: AuthenticatedInstructorIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
