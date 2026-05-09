@@ -80,7 +80,7 @@ const courses: Course[] = [
 
 export function Courses() {
   return (
-    <section id="courses" className="py-20 sm:py-28">
+    <section id="courses" className="py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl">
           <span className="inline-block text-xs font-bold tracking-[0.2em] uppercase text-secondary">
@@ -94,7 +94,7 @@ export function Courses() {
           </p>
         </div>
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-2">
+        <div className="mt-10 grid gap-6 sm:grid-cols-2">
           {courses.map((c) => (
             <CourseCard key={c.title} course={c} />
           ))}

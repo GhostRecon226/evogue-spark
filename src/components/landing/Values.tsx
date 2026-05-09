@@ -32,7 +32,7 @@ const imageCards = [
 
 export function Values() {
   return (
-    <section className="py-20 sm:py-28 bg-mint-tint">
+    <section className="py-14 sm:py-20 bg-mint-tint">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-3 max-w-5xl mx-auto text-center lg:text-left">
           <p className="text-base sm:text-lg text-foreground/75 leading-relaxed">
@@ -49,7 +49,7 @@ export function Values() {
           </p>
         </div>
 
-        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((f) => (
             <div
               key={f.title}

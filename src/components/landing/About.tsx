@@ -1,8 +1,9 @@
-import aboutImg from "@/assets/about-academy.jpg";
+const aboutImg =
+  "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1600&q=80";
 
 export function About() {
   return (
-    <section id="about" className="py-20 sm:py-28">
+    <section id="about" className="py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto">
           <span className="inline-block text-xs font-bold tracking-[0.2em] uppercase text-secondary">
@@ -12,17 +13,17 @@ export function About() {
             Building Africa's next generation of{" "}
             <span className="text-secondary">tech leaders</span>
           </h2>
-          <p className="mt-6 text-base sm:text-lg text-foreground/70">
+          <p className="mt-5 text-base sm:text-lg text-foreground/70">
             Evogue Academy equips ambitious Africans with the design, engineering
             and product skills they need to compete on the global stage —
             taught by practitioners who've shipped at the world's best companies.
           </p>
         </div>
 
-        <div className="mt-14 overflow-hidden rounded-3xl shadow-[var(--shadow-soft)]">
+        <div className="mt-10 overflow-hidden rounded-3xl shadow-[var(--shadow-soft)]">
           <img
             src={aboutImg}
-            alt="Evogue Academy students collaborating in a classroom"
+            alt="Diverse team of professionals collaborating in a modern workspace"
             width={1600}
             height={900}
             loading="lazy"
