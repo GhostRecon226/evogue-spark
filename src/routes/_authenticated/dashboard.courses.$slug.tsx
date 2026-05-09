@@ -112,6 +112,11 @@ function ClassroomPage() {
     if (error) {
       setDone((d) => ({ ...d, [lessonId]: !next })); // rollback
       toast.error(error.message);
+      return;
+    }
+    if (next) {
+      const updated = { ...done, [lessonId]: true };
+      void issueCertificateIfComplete(updated);
     }
   };
 
@@ -152,24 +157,32 @@ function ClassroomPage() {
           <div className="mt-2"><Progress value={progress} /><p className="mt-1 text-xs text-foreground/60">{progress}% complete</p></div>
           <ul className="mt-4 space-y-1 max-h-[60vh] overflow-y-auto pr-1">
             {lessons.length === 0 && <li className="text-sm text-foreground/55 px-3 py-2">Lessons coming soon.</li>}
-            {lessons.map((l) => (
-              <li key={l.id}>
-                <button
-                  onClick={() => setActiveId(l.id)}
-                  className={`w-full flex items-start gap-2 text-left rounded-lg px-3 py-2 text-sm transition ${
-                    active?.id === l.id ? "bg-mint/30 text-forest" : "hover:bg-mint-tint text-foreground/80"
-                  }`}
-                >
-                  <Checkbox
-                    checked={!!done[l.id]}
-                    onCheckedChange={() => toggleComplete(l.id)}
-                    onClick={(e) => e.stopPropagation()}
-                    className="mt-0.5"
-                  />
-                  <span className="flex-1"><span className="text-foreground/50 mr-1">{l.lesson_number}.</span>{l.title}</span>
-                </button>
-              </li>
-            ))}
+            {lessons.map((l) => {
+              const isActive = active?.id === l.id;
+              const isDone = !!done[l.id];
+              return (
+                <li key={l.id}>
+                  <button
+                    onClick={() => setActiveId(l.id)}
+                    className={`w-full flex items-start gap-2 text-left rounded-lg px-3 py-2 text-sm transition ${
+                      isActive ? "bg-mint text-forest font-semibold" : "hover:bg-mint-tint text-foreground/80"
+                    }`}
+                  >
+                    {isDone ? (
+                      <CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0 text-secondary" />
+                    ) : (
+                      <Checkbox
+                        checked={false}
+                        onCheckedChange={() => toggleComplete(l.id)}
+                        onClick={(e) => e.stopPropagation()}
+                        className="mt-0.5"
+                      />
+                    )}
+                    <span className="flex-1"><span className="text-foreground/50 mr-1">{l.lesson_number}.</span>{l.title}</span>
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         </aside>
 
@@ -209,6 +222,13 @@ function ClassroomPage() {
           </main>
         )}
       </div>
+      <CertificateModal
+        open={showCert}
+        onOpenChange={setShowCert}
+        studentName={profile?.full_name?.trim() || user?.email?.split("@")[0] || "Student"}
+        courseTitle={course.title}
+        issuedAt={certIssuedAt ?? new Date().toISOString()}
+      />
     </DashboardLayout>
   );
 }
