@@ -4,7 +4,7 @@ import { PublicShell } from "@/components/PublicShell";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getCourseBySlug } from "@/lib/courses-data";
+import { getCourseBySlug, type Course } from "@/lib/courses-data";
 
 export const Route = createFileRoute("/courses/$slug")({
   loader: ({ params }) => {
@@ -40,7 +40,7 @@ export const Route = createFileRoute("/courses/$slug")({
 });
 
 function CourseDetailPage() {
-  const { course } = Route.useLoaderData();
+  const { course } = Route.useLoaderData() as { course: Course };
 
   return (
     <PublicShell>

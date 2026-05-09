@@ -5,7 +5,7 @@ import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
-import { getCourseBySlug } from "@/lib/courses-data";
+import { getCourseBySlug, type Course } from "@/lib/courses-data";
 
 export const Route = createFileRoute("/_authenticated/dashboard/courses/$slug")({
   loader: ({ params }) => {
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/_authenticated/dashboard/courses/$slug")(
 });
 
 function ClassroomPage() {
-  const { course } = Route.useLoaderData();
+  const { course } = Route.useLoaderData() as { course: Course };
   const lessons = course.curriculum.flatMap((m, mi) =>
     m.topics.map((t, ti) => ({ id: `${mi}-${ti}`, title: t, module: m.title }))
   );
