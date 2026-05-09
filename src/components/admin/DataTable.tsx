@@ -60,8 +60,8 @@ export function DataTable<T>({
 
   return (
     <div className="rounded-2xl border border-border bg-background overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto -webkit-overflow-scrolling-touch">
+        <table className="w-full text-sm min-w-[640px]">
           <thead className="bg-mint-tint/60 text-forest">
             <tr>
               {columns.map((c) => (
