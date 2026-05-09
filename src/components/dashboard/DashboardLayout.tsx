@@ -118,6 +118,9 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
     </div>
   );
 
+  // Mobile bottom nav: students see student tabs; admin/instructor users keep using the hamburger sheet for their portals.
+  const showStudentBottomNav = !isAdmin && !isInstructor;
+
   return (
     <div className="min-h-screen bg-mint-tint flex">
       <aside className="hidden lg:block w-64 shrink-0 sticky top-0 h-screen">{Sidebar}</aside>
@@ -127,16 +130,16 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
           <div className="flex items-center gap-3 min-w-0">
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild className="lg:hidden">
-                <Button variant="ghost" size="icon" aria-label="Open menu">
+                <Button variant="ghost" size="icon" aria-label="Open menu" className="h-11 w-11">
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="p-0 w-72">
+              <SheetContent side="left" className="p-0 w-[85vw] max-w-xs">
                 <SheetTitle className="sr-only">Dashboard menu</SheetTitle>
                 {Sidebar}
               </SheetContent>
             </Sheet>
-            <div className="lg:hidden">
+            <div className="lg:hidden min-w-0">
               <Link to="/" aria-label="Evogue Academy home"><Logo /></Link>
             </div>
             <h1 className="hidden lg:block font-display text-lg font-bold text-forest truncate">
@@ -150,7 +153,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="rounded-full ring-2 ring-transparent hover:ring-secondary/40 transition" aria-label="Account menu">
+                <button className="rounded-full ring-2 ring-transparent hover:ring-secondary/40 transition h-11 w-11 grid place-items-center" aria-label="Account menu">
                   <Avatar className="h-9 w-9">
                     <AvatarImage src={user?.user_metadata?.avatar_url} alt="" />
                     <AvatarFallback className="bg-forest text-mint font-bold text-sm">{initials}</AvatarFallback>
@@ -179,7 +182,36 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        <main className="flex-1 p-4 sm:p-8">{children}</main>
+        <main className={`flex-1 p-4 sm:p-6 lg:p-8 min-w-0 ${showStudentBottomNav ? "pb-24 lg:pb-8" : ""}`}>
+          {children}
+        </main>
+
+        {showStudentBottomNav && (
+          <nav
+            className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-background/95 backdrop-blur border-t border-border shadow-[0_-8px_24px_-12px_rgba(0,0,0,0.15)]"
+            style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+            aria-label="Primary"
+          >
+            <ul className="grid grid-cols-4">
+              {studentItems.map((it) => {
+                const active = it.to === "/dashboard" ? path === it.to : path.startsWith(it.to);
+                return (
+                  <li key={it.to}>
+                    <Link
+                      to={it.to as "/dashboard"}
+                      className={`flex flex-col items-center justify-center gap-1 py-2.5 text-[11px] font-semibold min-h-[56px] transition ${
+                        active ? "text-secondary" : "text-foreground/60 hover:text-forest"
+                      }`}
+                    >
+                      <it.icon className="h-5 w-5" />
+                      <span className="truncate max-w-full px-1">{it.label}</span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+        )}
       </div>
       <Toaster richColors position="top-center" />
     </div>
