@@ -53,22 +53,16 @@ function ScholarshipPage() {
       return;
     }
     setLoading(true);
-    // Reuse enrollment table; motivation goes alongside as a contact message for now.
-    const [a, b] = await Promise.all([
-      supabase.from("enrollment_inquiries").insert({
-        full_name: parsed.data.full_name,
-        email: parsed.data.email,
-        whatsapp: parsed.data.whatsapp,
-        course: parsed.data.course,
-      }),
-      supabase.from("contact_messages").insert({
-        name: parsed.data.full_name,
-        email: parsed.data.email,
-        message: `[Scholarship — ${parsed.data.course}] ${parsed.data.motivation}`,
-      }),
-    ]);
+    const { error } = await supabase.from("inquiries").insert({
+      full_name: parsed.data.full_name,
+      email: parsed.data.email,
+      whatsapp_number: parsed.data.whatsapp,
+      course_interest: parsed.data.course,
+      message: parsed.data.motivation,
+      source: "scholarship",
+    });
     setLoading(false);
-    if (a.error || b.error) {
+    if (error) {
       toast.error("Something went wrong. Try again.");
       return;
     }
