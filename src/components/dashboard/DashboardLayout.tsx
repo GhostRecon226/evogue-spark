@@ -29,7 +29,11 @@ const adminItems: NavItem[] = [
   { label: "Capstones", to: "/admin/capstones", icon: ClipboardCheck },
 ];
 const instructorItems: NavItem[] = [
-  { label: "Instructor · Capstones", to: "/instructor/capstones", icon: GraduationCap },
+  { label: "Overview", to: "/instructor", icon: GraduationCap },
+  { label: "My Courses", to: "/instructor/courses", icon: BookOpen },
+  { label: "Students", to: "/instructor/students", icon: Users },
+  { label: "Upload Content", to: "/instructor/upload", icon: ClipboardCheck },
+  { label: "Capstones", to: "/instructor/capstones", icon: ClipboardCheck },
 ];
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
@@ -51,7 +55,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
     ...(isInstructor ? instructorItems : []),
   ];
 
-  const exactMatch = (to: string) => to === "/dashboard" || to === "/admin";
+  const exactMatch = (to: string) => to === "/dashboard" || to === "/admin" || to === "/instructor";
   const current = allItems.find((it) =>
     exactMatch(it.to) ? path === it.to : path.startsWith(it.to),
   );
