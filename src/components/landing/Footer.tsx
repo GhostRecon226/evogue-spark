@@ -1,23 +1,24 @@
 import { Instagram, Twitter, Linkedin, Youtube } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { Logo } from "./Logo";
 
 const cols = [
   {
     title: "Quick Links",
     links: [
-      { label: "Home", href: "#home" },
-      { label: "Courses", href: "#courses" },
-      { label: "About", href: "#about" },
-      { label: "Scholarship", href: "#enroll" },
+      { label: "Home", to: "/" as const },
+      { label: "Courses", to: "/courses" as const },
+      { label: "About", to: "/about" as const },
+      { label: "Scholarship", to: "/scholarship" as const },
+      { label: "Blog", to: "/blog" as const },
     ],
   },
   {
     title: "Support",
     links: [
-      { label: "FAQ", href: "#" },
-      { label: "Career Services", href: "#" },
-      { label: "Privacy Policy", href: "#" },
-      { label: "Terms of Service", href: "#" },
+      { label: "Contact", to: "/contact" as const },
+      { label: "Login", to: "/login" as const },
+      { label: "Register", to: "/register" as const },
     ],
   },
 ];
@@ -41,9 +42,9 @@ export function Footer() {
               <ul className="mt-4 space-y-2.5">
                 {c.links.map((l) => (
                   <li key={l.label}>
-                    <a href={l.href} className="text-sm hover:text-mint transition-colors">
+                    <Link to={l.to} className="text-sm hover:text-mint transition-colors">
                       {l.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -54,15 +55,12 @@ export function Footer() {
             <h4 className="font-display font-bold text-mint">Contact</h4>
             <ul className="mt-4 space-y-2.5 text-sm">
               <li>
-                <a href="mailto:hello@evogueacademy.com" className="hover:text-mint">
-                  hello@evogueacademy.com
-                </a>
+                <a href="mailto:hello@evogueacademy.com" className="hover:text-mint">hello@evogueacademy.com</a>
               </li>
               <li>
-                <a href="tel:+2348000000000" className="hover:text-mint">
-                  +234 800 000 0000
-                </a>
+                <a href="tel:+2348000000000" className="hover:text-mint">+234 800 000 0000</a>
               </li>
+              <li className="text-mint/60">Lagos, Nigeria</li>
             </ul>
             <div className="mt-5 flex gap-2">
               {[Instagram, Twitter, Linkedin, Youtube].map((Icon, i) => (
