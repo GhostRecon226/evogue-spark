@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { EnrollButton } from "@/components/EnrollButton";
 import heroImg from "@/assets/hero-designer.jpg";
 
 export function Hero() {

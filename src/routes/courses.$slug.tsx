@@ -55,9 +55,9 @@ function CourseDetailPage() {
               <span className="inline-flex items-center gap-1.5"><Signal className="h-4 w-4" /> {course.level}</span>
               <span className="font-bold text-forest">{course.price}</span>
             </div>
-            <Button asChild className="mt-8 rounded-full bg-forest text-mint hover:bg-forest/90 h-12 px-8">
-              <Link to="/scholarship">Enroll Now <ArrowRight className="ml-1 h-4 w-4" /></Link>
-            </Button>
+            <EnrollButton className="mt-8 rounded-full bg-forest text-mint hover:bg-forest/90 h-12 px-8">
+              Enroll Now <ArrowRight className="ml-1 h-4 w-4" />
+            </EnrollButton>
           </div>
           <div className="rounded-3xl overflow-hidden shadow-soft">
             <img src={course.cover} alt={course.title} className="w-full aspect-[4/3] object-cover" />
@@ -126,9 +126,9 @@ function CourseDetailPage() {
                 <li className="flex gap-2"><CheckCircle2 className="h-4 w-4 text-secondary" /> Live mentorship</li>
                 <li className="flex gap-2"><CheckCircle2 className="h-4 w-4 text-secondary" /> Career support</li>
               </ul>
-              <Button asChild className="mt-6 w-full rounded-full bg-forest text-mint hover:bg-forest/90 h-12">
-                <Link to="/scholarship">Enroll Now</Link>
-              </Button>
+              <EnrollButton className="mt-6 w-full rounded-full bg-forest text-mint hover:bg-forest/90 h-12">
+                Enroll Now
+              </EnrollButton>
               <p className="mt-3 text-xs text-foreground/55 text-center">Scholarships available</p>
             </div>
           </aside>
