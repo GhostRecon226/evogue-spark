@@ -1,20 +1,28 @@
 import { useEffect, useState } from "react";
-import { Menu } from "lucide-react";
+import { Menu, LayoutDashboard, LogOut, User } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAuth } from "@/hooks/use-auth";
 
 const links = [
-  { label: "Home", href: "#home" },
-  { label: "Courses", href: "#courses" },
-  { label: "Scholarship", href: "#enroll" },
-  { label: "About", href: "#about" },
-  { label: "Contact", href: "#contact" },
-];
+  { label: "Home", to: "/" },
+  { label: "Courses", to: "/courses" },
+  { label: "Scholarship", to: "/scholarship" },
+  { label: "About", to: "/about" },
+  { label: "Blog", to: "/blog" },
+  { label: "Contact", to: "/contact" },
+] as const;
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { user, signOut } = useAuth();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -23,34 +31,72 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const initials = (user?.user_metadata?.full_name || user?.email || "U")
+    .split(/\s+/)
+    .map((p: string) => p[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all ${
-        scrolled
-          ? "bg-background/85 backdrop-blur-md border-b border-border"
-          : "bg-transparent"
+        scrolled ? "bg-background/85 backdrop-blur-md border-b border-border" : "bg-transparent"
       }`}
     >
       <div className="mx-auto flex h-20 md:h-24 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <a href="#home" aria-label="Evogue Academy home">
+        <Link to="/" aria-label="Evogue Academy home">
           <Logo />
-        </a>
+        </Link>
 
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden md:flex items-center gap-7">
           {links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className="text-sm font-medium text-foreground/80 transition-colors hover:text-secondary"
+            <Link
+              key={l.to}
+              to={l.to}
+              activeOptions={{ exact: l.to === "/" }}
+              className="text-sm font-medium text-foreground/80 transition-colors hover:text-secondary data-[status=active]:text-secondary"
             >
               {l.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
-        <div className="hidden md:block">
+        <div className="hidden md:flex items-center gap-3">
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="rounded-full ring-2 ring-transparent hover:ring-secondary/40 transition">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={user.user_metadata?.avatar_url} alt="" />
+                    <AvatarFallback className="bg-forest text-mint font-bold">{initials}</AvatarFallback>
+                  </Avatar>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-52">
+                <DropdownMenuItem asChild>
+                  <Link to="/dashboard" className="cursor-pointer">
+                    <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/dashboard/profile" className="cursor-pointer">
+                    <User className="mr-2 h-4 w-4" /> Profile
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer">
+                  <LogOut className="mr-2 h-4 w-4" /> Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button asChild variant="ghost" className="rounded-full">
+              <Link to="/login">Login</Link>
+            </Button>
+          )}
           <Button asChild className="rounded-full bg-forest text-mint hover:bg-forest/90 px-5">
-            <a href="#enroll">Enroll Now</a>
+            <Link to="/scholarship">Enroll Now</Link>
           </Button>
         </div>
 
@@ -66,22 +112,39 @@ export function Navbar() {
               <Logo />
               <nav className="mt-8 flex flex-col gap-1">
                 {links.map((l) => (
-                  <a
-                    key={l.href}
-                    href={l.href}
+                  <Link
+                    key={l.to}
+                    to={l.to}
                     onClick={() => setOpen(false)}
                     className="rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-accent"
                   >
                     {l.label}
-                  </a>
+                  </Link>
                 ))}
+                {user ? (
+                  <>
+                    <Link to="/dashboard" onClick={() => setOpen(false)} className="rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-accent">
+                      Dashboard
+                    </Link>
+                    <button
+                      onClick={async () => { setOpen(false); await signOut(); }}
+                      className="text-left rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-accent"
+                    >
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <Link to="/login" onClick={() => setOpen(false)} className="rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-accent">
+                    Login
+                  </Link>
+                )}
               </nav>
               <Button
                 asChild
                 className="mt-4 w-full rounded-full bg-forest text-mint hover:bg-forest/90"
                 onClick={() => setOpen(false)}
               >
-                <a href="#enroll">Enroll Now</a>
+                <Link to="/scholarship">Enroll Now</Link>
               </Button>
             </div>
           </SheetContent>
