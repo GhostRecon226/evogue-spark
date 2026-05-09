@@ -82,15 +82,36 @@ function AdminCoursesTable() {
     setDraft({ brief: c.capstone_brief ?? "", url: c.capstone_brief_url ?? "" });
   };
 
+  const [briefFile, setBriefFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+
   const saveBrief = async (id: string) => {
-    const { error } = await supabase
-      .from("courses")
-      .update({ capstone_brief: draft.brief || null, capstone_brief_url: draft.url || null })
-      .eq("id", id);
-    if (error) { toast.error(error.message); return; }
-    setRows((r) => r.map((c) => (c.id === id ? { ...c, capstone_brief: draft.brief || null, capstone_brief_url: draft.url || null } : c)));
-    setEditing(null);
-    toast.success("Brief saved");
+    setUploading(true);
+    try {
+      let url = draft.url;
+      if (briefFile) {
+        if (briefFile.size > 25 * 1024 * 1024) { toast.error("File must be 25 MB or smaller."); return; }
+        const ext = briefFile.name.split(".").pop() ?? "pdf";
+        const path = `${id}/brief-${Date.now()}.${ext}`;
+        const { error: upErr } = await supabase.storage.from("course-briefs").upload(path, briefFile, { upsert: true });
+        if (upErr) throw upErr;
+        const { data: pub } = supabase.storage.from("course-briefs").getPublicUrl(path);
+        url = pub.publicUrl;
+      }
+      const { error } = await supabase
+        .from("courses")
+        .update({ capstone_brief: draft.brief || null, capstone_brief_url: url || null })
+        .eq("id", id);
+      if (error) throw error;
+      setRows((r) => r.map((c) => (c.id === id ? { ...c, capstone_brief: draft.brief || null, capstone_brief_url: url || null } : c)));
+      setEditing(null);
+      setBriefFile(null);
+      toast.success("Brief saved");
+    } catch (err) {
+      toast.error((err as Error).message);
+    } finally {
+      setUploading(false);
+    }
   };
 
   if (loading) return <div className="mt-10 grid place-items-center text-foreground/50"><Loader2 className="h-5 w-5 animate-spin" /></div>;
@@ -118,10 +139,28 @@ function AdminCoursesTable() {
               <div>
                 <Label>Brief PDF link (optional)</Label>
                 <Input type="url" placeholder="https://…" value={draft.url} onChange={(e) => setDraft({ ...draft, url: e.target.value })} />
+                {c.capstone_brief_url && !briefFile && (
+                  <p className="mt-1 text-xs text-foreground/55">
+                    Current: <a href={c.capstone_brief_url} target="_blank" rel="noreferrer" className="text-secondary underline">view brief</a>
+                  </p>
+                )}
+              </div>
+              <div>
+                <Label htmlFor={`brief-file-${c.id}`}>Or upload brief PDF (max 25 MB)</Label>
+                <Input
+                  id={`brief-file-${c.id}`}
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  onChange={(e) => setBriefFile(e.target.files?.[0] ?? null)}
+                />
+                {briefFile && <p className="mt-1 text-xs text-foreground/55">Will upload: {briefFile.name}</p>}
               </div>
               <div className="flex gap-2">
-                <Button onClick={() => saveBrief(c.id)} className="rounded-full bg-forest text-mint hover:bg-forest/90">Save brief</Button>
-                <Button variant="ghost" onClick={() => setEditing(null)} className="rounded-full">Cancel</Button>
+                <Button onClick={() => saveBrief(c.id)} disabled={uploading} className="rounded-full bg-forest text-mint hover:bg-forest/90">
+                  {uploading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
+                  Save brief
+                </Button>
+                <Button variant="ghost" onClick={() => { setEditing(null); setBriefFile(null); }} className="rounded-full">Cancel</Button>
               </div>
             </div>
           ) : (

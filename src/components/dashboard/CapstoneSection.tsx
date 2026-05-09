@@ -143,9 +143,16 @@ export function CapstoneSection({ course }: { course: Course }) {
         <div className="mt-6 grid place-items-center py-8 text-foreground/50"><Loader2 className="h-5 w-5 animate-spin" /></div>
       ) : submission ? (
         <div className="mt-6 rounded-2xl border border-border p-5">
-          <p className="text-xs text-foreground/55">
-            Submitted {new Date(submission.submitted_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
-          </p>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-foreground/55">
+            <span>
+              Submitted {new Date(submission.submitted_at).toLocaleString(undefined, { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+            </span>
+            {submission.reviewed_at && (
+              <span>
+                Reviewed {new Date(submission.reviewed_at).toLocaleString(undefined, { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+              </span>
+            )}
+          </div>
           <p className="mt-2 text-sm text-foreground/80 whitespace-pre-wrap">{submission.submission_text}</p>
           {submission.file_url && (
             <Button onClick={downloadFile} variant="outline" className="mt-3 rounded-full">
