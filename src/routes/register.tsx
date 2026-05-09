@@ -44,7 +44,7 @@ function RegisterPage() {
       password: parsed.data.password,
       options: {
         emailRedirectTo: window.location.origin + "/dashboard",
-        data: { full_name: parsed.data.full_name, whatsapp: parsed.data.whatsapp },
+        data: { full_name: parsed.data.full_name, whatsapp_number: parsed.data.whatsapp },
       },
     });
     setLoading(false);

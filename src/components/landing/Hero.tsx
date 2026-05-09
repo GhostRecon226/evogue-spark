@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { EnrollButton } from "@/components/EnrollButton";
 import heroImg from "@/assets/hero-designer.jpg";
 
 export function Hero() {
@@ -32,15 +33,12 @@ export function Hero() {
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start">
-            <Button
-              asChild
+            <EnrollButton
               size="lg"
               className="rounded-full bg-forest text-mint hover:bg-forest/90 px-7 h-12 text-base shadow-soft"
             >
-              <a href="#enroll">
-                Enroll for the Next Cohort <ArrowRight className="ml-1 h-4 w-4" />
-              </a>
-            </Button>
+              Enroll for the Next Cohort <ArrowRight className="ml-1 h-4 w-4" />
+            </EnrollButton>
             <Button
               asChild
               size="lg"

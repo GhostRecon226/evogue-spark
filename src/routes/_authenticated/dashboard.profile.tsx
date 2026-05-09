@@ -15,33 +15,35 @@ export const Route = createFileRoute("/_authenticated/dashboard/profile")({
 });
 
 function ProfilePage() {
-  const { user } = useAuth();
+  const { user, profile, refreshProfile } = useAuth();
   const [loading, setLoading] = useState(false);
   const [pwLoading, setPwLoading] = useState(false);
-  const [form, setForm] = useState({ full_name: "", email: "", whatsapp: "", avatar_url: "" });
+  const [form, setForm] = useState({ full_name: "", email: "", whatsapp_number: "", avatar_url: "" });
   const [newPw, setNewPw] = useState("");
 
   useEffect(() => {
     if (!user) return;
-    supabase.from("profiles").select("*").eq("id", user.id).maybeSingle().then(({ data }) => {
-      setForm({
-        full_name: data?.full_name ?? user.user_metadata?.full_name ?? "",
-        email: data?.email ?? user.email ?? "",
-        whatsapp: data?.whatsapp ?? "",
-        avatar_url: data?.avatar_url ?? "",
-      });
+    setForm({
+      full_name: profile?.full_name ?? user.user_metadata?.full_name ?? "",
+      email: profile?.email ?? user.email ?? "",
+      whatsapp_number: profile?.whatsapp_number ?? "",
+      avatar_url: profile?.avatar_url ?? "",
     });
-  }, [user]);
+  }, [user, profile]);
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
     setLoading(true);
-    const { error } = await supabase.from("profiles").upsert({
-      id: user.id, full_name: form.full_name, email: form.email, whatsapp: form.whatsapp, avatar_url: form.avatar_url,
-    });
+    const { error } = await supabase.from("profiles").update({
+      full_name: form.full_name,
+      email: form.email,
+      whatsapp_number: form.whatsapp_number,
+      avatar_url: form.avatar_url,
+    }).eq("id", user.id);
     setLoading(false);
     if (error) { toast.error(error.message); return; }
+    await refreshProfile();
     toast.success("Profile saved");
   };
 
@@ -82,7 +84,7 @@ function ProfilePage() {
         </div>
         <div className="space-y-1.5"><Label>Full name</Label><Input value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} /></div>
         <div className="space-y-1.5"><Label>Email</Label><Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
-        <div className="space-y-1.5"><Label>WhatsApp</Label><Input value={form.whatsapp} onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} /></div>
+        <div className="space-y-1.5"><Label>WhatsApp number</Label><Input value={form.whatsapp_number} onChange={(e) => setForm({ ...form, whatsapp_number: e.target.value })} /></div>
         <Button type="submit" disabled={loading} className="rounded-full bg-forest text-mint hover:bg-forest/90">
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save Changes"}
         </Button>

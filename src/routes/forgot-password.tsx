@@ -23,7 +23,7 @@ function ForgotPasswordPage() {
     e.preventDefault();
     setLoading(true);
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + "/login",
+      redirectTo: window.location.origin + "/reset-password",
     });
     setLoading(false);
     if (error) { toast.error(error.message); return; }

@@ -3,6 +3,7 @@ import { Menu, LayoutDashboard, LogOut, User } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/button";
+import { EnrollButton } from "@/components/EnrollButton";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
@@ -95,9 +96,9 @@ export function Navbar() {
               <Link to="/login">Login</Link>
             </Button>
           )}
-          <Button asChild className="rounded-full bg-forest text-mint hover:bg-forest/90 px-5">
-            <Link to="/scholarship">Enroll Now</Link>
-          </Button>
+          <EnrollButton className="rounded-full bg-forest text-mint hover:bg-forest/90 px-5">
+            Enroll Now
+          </EnrollButton>
         </div>
 
         <Sheet open={open} onOpenChange={setOpen}>
@@ -139,13 +140,12 @@ export function Navbar() {
                   </Link>
                 )}
               </nav>
-              <Button
-                asChild
+              <EnrollButton
                 className="mt-4 w-full rounded-full bg-forest text-mint hover:bg-forest/90"
-                onClick={() => setOpen(false)}
+                onNavigate={() => setOpen(false)}
               >
-                <Link to="/scholarship">Enroll Now</Link>
-              </Button>
+                Enroll Now
+              </EnrollButton>
             </div>
           </SheetContent>
         </Sheet>
