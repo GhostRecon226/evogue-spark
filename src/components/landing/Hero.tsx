@@ -17,7 +17,7 @@ export function Hero() {
         <div className="lg:col-span-7 text-center lg:text-left">
           <span className="inline-flex items-center gap-2 rounded-full border border-secondary/20 bg-background/60 px-4 py-1.5 text-xs font-semibold tracking-wide text-secondary uppercase">
             <span className="h-1.5 w-1.5 rounded-full bg-mint" />
-            Africa's Design & Tech Academy
+            EXPLORE, LEARN, SUCCEED
           </span>
 
           <h1 className="mt-6 font-display font-extrabold leading-[1.05] tracking-tight text-forest text-[clamp(2.25rem,6vw,4.5rem)]">
