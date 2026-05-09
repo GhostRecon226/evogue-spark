@@ -11,18 +11,20 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Toaster } from "@/components/ui/sonner";
 import { useAuth } from "@/hooks/use-auth";
 
-const studentItems = [
-  { label: "Dashboard", to: "/dashboard" as const, icon: LayoutDashboard },
-  { label: "My Courses", to: "/dashboard/courses" as const, icon: BookOpen },
-  { label: "Certificates", to: "/dashboard/certificates" as const, icon: Award },
-  { label: "Profile", to: "/dashboard/profile" as const, icon: User },
+type NavItem = { label: string; to: string; icon: typeof LayoutDashboard };
+
+const studentItems: NavItem[] = [
+  { label: "Dashboard", to: "/dashboard", icon: LayoutDashboard },
+  { label: "My Courses", to: "/dashboard/courses", icon: BookOpen },
+  { label: "Certificates", to: "/dashboard/certificates", icon: Award },
+  { label: "Profile", to: "/dashboard/profile", icon: User },
 ];
-const adminItems = [
-  { label: "Admin · Courses", to: "/admin/courses" as const, icon: Shield },
-  { label: "Admin · Capstones", to: "/admin/capstones" as const, icon: ClipboardCheck },
+const adminItems: NavItem[] = [
+  { label: "Admin · Courses", to: "/admin/courses", icon: Shield },
+  { label: "Admin · Capstones", to: "/admin/capstones", icon: ClipboardCheck },
 ];
-const instructorItems = [
-  { label: "Instructor · Capstones", to: "/instructor/capstones" as const, icon: GraduationCap },
+const instructorItems: NavItem[] = [
+  { label: "Instructor · Capstones", to: "/instructor/capstones", icon: GraduationCap },
 ];
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
