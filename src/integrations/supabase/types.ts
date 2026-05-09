@@ -270,6 +270,7 @@ export type Database = {
           email: string
           full_name: string
           id: string
+          is_read: boolean
           message: string
           source: string
           whatsapp_number: string | null
@@ -280,6 +281,7 @@ export type Database = {
           email: string
           full_name: string
           id?: string
+          is_read?: boolean
           message: string
           source?: string
           whatsapp_number?: string | null
@@ -290,6 +292,7 @@ export type Database = {
           email?: string
           full_name?: string
           id?: string
+          is_read?: boolean
           message?: string
           source?: string
           whatsapp_number?: string | null
