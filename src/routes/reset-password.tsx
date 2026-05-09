@@ -91,9 +91,29 @@ function ResetPasswordPage() {
     };
   }, []);
 
+  const checks = [
+    { label: "At least 8 characters", ok: pw.password.length >= 8 },
+    { label: "One uppercase letter (A–Z)", ok: /[A-Z]/.test(pw.password) },
+    { label: "One lowercase letter (a–z)", ok: /[a-z]/.test(pw.password) },
+    { label: "One number (0–9)", ok: /[0-9]/.test(pw.password) },
+    { label: "One symbol (!@#$…)", ok: /[^A-Za-z0-9]/.test(pw.password) },
+  ];
+  const passedCount = checks.filter((c) => c.ok).length;
+  const strength = pw.password.length === 0 ? 0 : passedCount;
+  const strengthLabels = ["", "Very weak", "Weak", "Fair", "Strong", "Very strong"];
+  const strengthColors = [
+    "bg-muted",
+    "bg-destructive",
+    "bg-orange-500",
+    "bg-yellow-500",
+    "bg-secondary",
+    "bg-forest",
+  ];
+  const confirmMatches = pw.confirm.length > 0 && pw.password === pw.confirm;
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (pw.password.length < 8) { toast.error("Password must be at least 8 characters"); return; }
+    if (passedCount < 4) { toast.error("Please meet at least 4 password requirements"); return; }
     if (pw.password !== pw.confirm) { toast.error("Passwords don't match"); return; }
     setLoading(true);
     const { error: err } = await supabase.auth.updateUser({ password: pw.password });
