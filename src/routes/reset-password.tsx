@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Eye, EyeOff, Loader2, CheckCircle2, AlertTriangle } from "lucide-react";
+import { Eye, EyeOff, Loader2, CheckCircle2, AlertTriangle, Check, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -91,9 +91,29 @@ function ResetPasswordPage() {
     };
   }, []);
 
+  const checks = [
+    { label: "At least 8 characters", ok: pw.password.length >= 8 },
+    { label: "One uppercase letter (A–Z)", ok: /[A-Z]/.test(pw.password) },
+    { label: "One lowercase letter (a–z)", ok: /[a-z]/.test(pw.password) },
+    { label: "One number (0–9)", ok: /[0-9]/.test(pw.password) },
+    { label: "One symbol (!@#$…)", ok: /[^A-Za-z0-9]/.test(pw.password) },
+  ];
+  const passedCount = checks.filter((c) => c.ok).length;
+  const strength = pw.password.length === 0 ? 0 : passedCount;
+  const strengthLabels = ["", "Very weak", "Weak", "Fair", "Strong", "Very strong"];
+  const strengthColors = [
+    "bg-muted",
+    "bg-destructive",
+    "bg-orange-500",
+    "bg-yellow-500",
+    "bg-secondary",
+    "bg-forest",
+  ];
+  const confirmMatches = pw.confirm.length > 0 && pw.password === pw.confirm;
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (pw.password.length < 8) { toast.error("Password must be at least 8 characters"); return; }
+    if (passedCount < 4) { toast.error("Please meet at least 4 password requirements"); return; }
     if (pw.password !== pw.confirm) { toast.error("Passwords don't match"); return; }
     setLoading(true);
     const { error: err } = await supabase.auth.updateUser({ password: pw.password });
@@ -176,7 +196,40 @@ function ResetPasswordPage() {
                     {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
-                <p className="text-xs text-foreground/55">Minimum 8 characters.</p>
+                {pw.password.length > 0 && (
+                  <div className="mt-2 space-y-2">
+                    <div className="flex gap-1" aria-hidden="true">
+                      {[1, 2, 3, 4, 5].map((i) => (
+                        <div
+                          key={i}
+                          className={`h-1.5 flex-1 rounded-full transition-colors ${
+                            i <= strength ? strengthColors[strength] : "bg-muted"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <p className="text-xs font-medium text-foreground/70">
+                      Strength: <span className="text-forest">{strengthLabels[strength]}</span>
+                    </p>
+                  </div>
+                )}
+                <ul className="mt-2 space-y-1" aria-label="Password requirements">
+                  {checks.map((c) => (
+                    <li
+                      key={c.label}
+                      className={`flex items-center gap-2 text-xs transition-colors ${
+                        c.ok ? "text-secondary" : "text-foreground/55"
+                      }`}
+                    >
+                      {c.ok ? (
+                        <Check className="h-3.5 w-3.5 shrink-0" />
+                      ) : (
+                        <X className="h-3.5 w-3.5 shrink-0" />
+                      )}
+                      <span>{c.label}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
               <div className="space-y-1.5">
                 <Label>Confirm password</Label>
@@ -188,10 +241,20 @@ function ResetPasswordPage() {
                   autoComplete="new-password"
                   required
                 />
+                {pw.confirm.length > 0 && (
+                  <p
+                    className={`flex items-center gap-1.5 text-xs ${
+                      confirmMatches ? "text-secondary" : "text-destructive"
+                    }`}
+                  >
+                    {confirmMatches ? <Check className="h-3.5 w-3.5" /> : <X className="h-3.5 w-3.5" />}
+                    {confirmMatches ? "Passwords match" : "Passwords don't match yet"}
+                  </p>
+                )}
               </div>
               <Button
                 type="submit"
-                disabled={loading}
+                disabled={loading || passedCount < 4 || !confirmMatches}
                 className="w-full h-12 rounded-full bg-forest text-mint hover:bg-forest/90 font-bold"
               >
                 {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Update Password"}
