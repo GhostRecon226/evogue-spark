@@ -5,6 +5,7 @@ import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
+import { generateCertificate } from "@/lib/generate-certificate";
 
 export const Route = createFileRoute("/_authenticated/dashboard/certificates")({
   component: CertificatesPage,
@@ -18,7 +19,8 @@ type Cert = {
 };
 
 function CertificatesPage() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
+  const studentName = profile?.full_name?.trim() || user?.email?.split("@")[0] || "Student";
   const [loading, setLoading] = useState(true);
   const [certs, setCerts] = useState<Cert[]>([]);
 
@@ -66,13 +68,16 @@ function CertificatesPage() {
                 Issued {new Date(c.issued_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
               </p>
               <Button
-                asChild
-                disabled={!c.certificate_url}
+                onClick={() =>
+                  generateCertificate({
+                    studentName,
+                    courseTitle: c.course_title,
+                    issuedAt: c.issued_at,
+                  })
+                }
                 className="mt-5 rounded-full bg-forest text-mint hover:bg-forest/90"
               >
-                <a href={c.certificate_url ?? "#"} target="_blank" rel="noreferrer">
-                  <Download className="h-4 w-4 mr-1" /> {c.certificate_url ? "Download Certificate" : "Pending"}
-                </a>
+                <Download className="h-4 w-4 mr-1" /> Download Certificate
               </Button>
             </div>
           ))}
