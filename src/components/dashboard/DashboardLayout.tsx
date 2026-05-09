@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, BookOpen, Award, User, LogOut, Menu, ArrowLeft, Shield, GraduationCap, ClipboardCheck } from "lucide-react";
+import { LayoutDashboard, BookOpen, Award, User, LogOut, Menu, ArrowLeft, Shield, GraduationCap, ClipboardCheck, Users, Wallet, Mail } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { Logo } from "@/components/landing/Logo";
 import { Button } from "@/components/ui/button";
@@ -20,8 +20,13 @@ const studentItems: NavItem[] = [
   { label: "Profile", to: "/dashboard/profile", icon: User },
 ];
 const adminItems: NavItem[] = [
-  { label: "Admin · Courses", to: "/admin/courses", icon: Shield },
-  { label: "Admin · Capstones", to: "/admin/capstones", icon: ClipboardCheck },
+  { label: "Overview", to: "/admin", icon: Shield },
+  { label: "Students", to: "/admin/students", icon: Users },
+  { label: "Courses", to: "/admin/courses", icon: BookOpen },
+  { label: "Enrollments", to: "/admin/enrollments", icon: ClipboardCheck },
+  { label: "Payments", to: "/admin/payments", icon: Wallet },
+  { label: "Inquiries", to: "/admin/inquiries", icon: Mail },
+  { label: "Capstones", to: "/admin/capstones", icon: ClipboardCheck },
 ];
 const instructorItems: NavItem[] = [
   { label: "Instructor · Capstones", to: "/instructor/capstones", icon: GraduationCap },
@@ -46,8 +51,9 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
     ...(isInstructor ? instructorItems : []),
   ];
 
+  const exactMatch = (to: string) => to === "/dashboard" || to === "/admin";
   const current = allItems.find((it) =>
-    it.to === "/dashboard" ? path === it.to : path.startsWith(it.to),
+    exactMatch(it.to) ? path === it.to : path.startsWith(it.to),
   );
 
   const renderGroup = (label: string, group: typeof studentItems) => (
@@ -56,7 +62,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         {label}
       </p>
       {group.map((it) => {
-        const active = it.to === "/dashboard" ? path === it.to : path.startsWith(it.to);
+        const active = exactMatch(it.to) ? path === it.to : path.startsWith(it.to);
         return (
           <Link
             key={it.to}
