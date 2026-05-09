@@ -51,8 +51,9 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
     ...(isInstructor ? instructorItems : []),
   ];
 
+  const exactMatch = (to: string) => to === "/dashboard" || to === "/admin";
   const current = allItems.find((it) =>
-    it.to === "/dashboard" ? path === it.to : path.startsWith(it.to),
+    exactMatch(it.to) ? path === it.to : path.startsWith(it.to),
   );
 
   const renderGroup = (label: string, group: typeof studentItems) => (
@@ -61,7 +62,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         {label}
       </p>
       {group.map((it) => {
-        const active = it.to === "/dashboard" ? path === it.to : path.startsWith(it.to);
+        const active = exactMatch(it.to) ? path === it.to : path.startsWith(it.to);
         return (
           <Link
             key={it.to}
