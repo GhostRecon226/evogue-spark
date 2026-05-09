@@ -60,7 +60,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         return (
           <Link
             key={it.to}
-            to={it.to}
+            to={it.to as "/dashboard"}
             onClick={() => setOpen(false)}
             className={`group relative flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all ${
               active
