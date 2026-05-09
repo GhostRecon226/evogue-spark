@@ -10,7 +10,7 @@ export function Logo({ variant = "dark" }: LogoProps) {
       <img
         src={logoUrl}
         alt="Evogue Academy"
-        className={`h-12 w-auto ${variant === "light" ? "brightness-0 invert" : ""}`}
+        className={`h-16 md:h-20 w-auto ${variant === "light" ? "brightness-0 invert" : ""}`}
       />
     </div>
   );
