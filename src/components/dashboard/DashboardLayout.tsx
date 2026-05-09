@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, BookOpen, Award, User, LogOut, Menu, ArrowLeft } from "lucide-react";
+import { LayoutDashboard, BookOpen, Award, User, LogOut, Menu, ArrowLeft, Shield, GraduationCap, ClipboardCheck } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { Logo } from "@/components/landing/Logo";
 import { Button } from "@/components/ui/button";
@@ -11,15 +11,24 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Toaster } from "@/components/ui/sonner";
 import { useAuth } from "@/hooks/use-auth";
 
-const items = [
-  { label: "Dashboard", to: "/dashboard" as const, icon: LayoutDashboard },
-  { label: "My Courses", to: "/dashboard/courses" as const, icon: BookOpen },
-  { label: "Certificates", to: "/dashboard/certificates" as const, icon: Award },
-  { label: "Profile", to: "/dashboard/profile" as const, icon: User },
+type NavItem = { label: string; to: string; icon: typeof LayoutDashboard };
+
+const studentItems: NavItem[] = [
+  { label: "Dashboard", to: "/dashboard", icon: LayoutDashboard },
+  { label: "My Courses", to: "/dashboard/courses", icon: BookOpen },
+  { label: "Certificates", to: "/dashboard/certificates", icon: Award },
+  { label: "Profile", to: "/dashboard/profile", icon: User },
+];
+const adminItems: NavItem[] = [
+  { label: "Admin · Courses", to: "/admin/courses", icon: Shield },
+  { label: "Admin · Capstones", to: "/admin/capstones", icon: ClipboardCheck },
+];
+const instructorItems: NavItem[] = [
+  { label: "Instructor · Capstones", to: "/instructor/capstones", icon: GraduationCap },
 ];
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
-  const { user, signOut } = useAuth();
+  const { user, signOut, isAdmin, isInstructor } = useAuth();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
 
@@ -31,8 +40,39 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
     .toUpperCase();
   const displayName = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Student";
 
-  const current = items.find((it) =>
+  const allItems = [
+    ...studentItems,
+    ...(isAdmin ? adminItems : []),
+    ...(isInstructor ? instructorItems : []),
+  ];
+
+  const current = allItems.find((it) =>
     it.to === "/dashboard" ? path === it.to : path.startsWith(it.to),
+  );
+
+  const renderGroup = (label: string, group: typeof studentItems) => (
+    <>
+      <p className="px-4 pb-2 pt-3 text-[11px] uppercase tracking-[0.16em] font-semibold text-mint/45">
+        {label}
+      </p>
+      {group.map((it) => {
+        const active = it.to === "/dashboard" ? path === it.to : path.startsWith(it.to);
+        return (
+          <Link
+            key={it.to}
+            to={it.to as "/dashboard"}
+            onClick={() => setOpen(false)}
+            className={`group relative flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all ${
+              active
+                ? "bg-mint text-forest shadow-[0_10px_30px_-12px_color-mix(in_oklab,var(--mint)_55%,transparent)]"
+                : "text-mint/80 hover:bg-mint/10 hover:text-mint"
+            }`}
+          >
+            <it.icon className="h-4 w-4" /> {it.label}
+          </Link>
+        );
+      })}
+    </>
   );
 
   const Sidebar = (
@@ -45,27 +85,10 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
           <Logo variant="light" />
         </Link>
       </div>
-      <nav className="flex-1 px-3 py-5 space-y-1">
-        <p className="px-4 pb-2 text-[11px] uppercase tracking-[0.16em] font-semibold text-mint/45">
-          Menu
-        </p>
-        {items.map((it) => {
-          const active = it.to === "/dashboard" ? path === it.to : path.startsWith(it.to);
-          return (
-            <Link
-              key={it.to}
-              to={it.to}
-              onClick={() => setOpen(false)}
-              className={`group relative flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all ${
-                active
-                  ? "bg-mint text-forest shadow-[0_10px_30px_-12px_color-mix(in_oklab,var(--mint)_55%,transparent)]"
-                  : "text-mint/80 hover:bg-mint/10 hover:text-mint"
-              }`}
-            >
-              <it.icon className="h-4 w-4" /> {it.label}
-            </Link>
-          );
-        })}
+      <nav className="flex-1 px-3 py-3 space-y-1 overflow-y-auto">
+        {renderGroup("Student", studentItems)}
+        {isInstructor && renderGroup("Instructor", instructorItems)}
+        {isAdmin && renderGroup("Admin", adminItems)}
       </nav>
       <div className="px-3 py-4 border-t border-mint/15 space-y-1">
         <Link

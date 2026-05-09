@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      capstone_submissions: {
+        Row: {
+          course_id: string
+          file_url: string | null
+          id: string
+          instructor_note: string | null
+          instructor_recommendation: boolean
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["capstone_status"]
+          student_id: string
+          submission_text: string
+          submitted_at: string
+        }
+        Insert: {
+          course_id: string
+          file_url?: string | null
+          id?: string
+          instructor_note?: string | null
+          instructor_recommendation?: boolean
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["capstone_status"]
+          student_id: string
+          submission_text: string
+          submitted_at?: string
+        }
+        Update: {
+          course_id?: string
+          file_url?: string | null
+          id?: string
+          instructor_note?: string | null
+          instructor_recommendation?: boolean
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["capstone_status"]
+          student_id?: string
+          submission_text?: string
+          submitted_at?: string
+        }
+        Relationships: []
+      }
       certificates: {
         Row: {
           certificate_url: string | null
@@ -77,8 +119,32 @@ export type Database = {
         }
         Relationships: []
       }
+      course_instructors: {
+        Row: {
+          course_id: string
+          created_at: string
+          id: string
+          instructor_id: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          id?: string
+          instructor_id: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          id?: string
+          instructor_id?: string
+        }
+        Relationships: []
+      }
       courses: {
         Row: {
+          capstone_brief: string | null
+          capstone_brief_url: string | null
+          capstone_released: boolean
           category: string | null
           cover_image_url: string | null
           created_at: string
@@ -93,6 +159,9 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          capstone_brief?: string | null
+          capstone_brief_url?: string | null
+          capstone_released?: boolean
           category?: string | null
           cover_image_url?: string | null
           created_at?: string
@@ -107,6 +176,9 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          capstone_brief?: string | null
+          capstone_brief_url?: string | null
+          capstone_released?: boolean
           category?: string | null
           cover_image_url?: string | null
           created_at?: string
@@ -386,9 +458,14 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_course_instructor: {
+        Args: { _course_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "instructor" | "student"
+      capstone_status: "pending" | "recommended" | "approved" | "rejected"
       payment_status: "pending" | "paid"
     }
     CompositeTypes: {
@@ -518,6 +595,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "instructor", "student"],
+      capstone_status: ["pending", "recommended", "approved", "rejected"],
       payment_status: ["pending", "paid"],
     },
   },
