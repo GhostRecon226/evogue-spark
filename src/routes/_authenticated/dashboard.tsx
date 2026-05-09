@@ -11,8 +11,8 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 });
 
 function DashboardHome() {
-  const { user } = useAuth();
-  const name = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Student";
+  const { user, profile } = useAuth();
+  const name = profile?.full_name?.trim() || user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Student";
   const last = courses[0];
 
   return (
