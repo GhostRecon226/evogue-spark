@@ -56,7 +56,7 @@ function CertificatesPage() {
         <div className="mt-10 rounded-3xl border border-dashed border-border bg-background p-12 text-center">
           <Award className="h-12 w-12 text-secondary mx-auto" />
           <p className="mt-4 font-display text-lg font-bold text-forest">No certificates yet</p>
-          <p className="mt-1 text-sm text-foreground/60">Complete a course to earn your first certificate.</p>
+          <p className="mt-1 text-sm text-foreground/60">Complete and submit your capstone project to earn your certificate.</p>
         </div>
       ) : (
         <div className="mt-8 grid gap-5 md:grid-cols-2">

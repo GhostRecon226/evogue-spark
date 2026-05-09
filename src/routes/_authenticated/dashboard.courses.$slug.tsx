@@ -194,13 +194,7 @@ function ClassroomPage() {
           </main>
         )}
       </div>
-      <CertificateModal
-        open={showCert}
-        onOpenChange={setShowCert}
-        studentName={profile?.full_name?.trim() || user?.email?.split("@")[0] || "Student"}
-        courseTitle={course.title}
-        issuedAt={certIssuedAt ?? new Date().toISOString()}
-      />
+      {course && <CapstoneSection course={course} />}
     </DashboardLayout>
   );
 }
