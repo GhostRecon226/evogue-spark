@@ -2,6 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Clock, Signal, CheckCircle2, ArrowRight } from "lucide-react";
 import { PublicShell } from "@/components/PublicShell";
 import { Button } from "@/components/ui/button";
+import { EnrollButton } from "@/components/EnrollButton";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getCourseBySlug, type Course } from "@/lib/courses-data";
