@@ -19,6 +19,8 @@ type Continue = {
   category: string | null;
   progress: number;
 };
+type Announcement = { id: string; title: string; message: string; created_at: string };
+type UpcomingLesson = { id: string; title: string; lesson_date: string; zoom_live_link: string | null; courseSlug: string };
 
 function DashboardHome() {
   const { user, profile } = useAuth();
@@ -27,6 +29,8 @@ function DashboardHome() {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ enrolled: 0, completedLessons: 0, pendingCapstone: 0, certificates: 0 });
   const [next, setNext] = useState<Continue | null>(null);
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [upcoming, setUpcoming] = useState<UpcomingLesson | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -36,7 +40,7 @@ function DashboardHome() {
       const [{ data: enrollments }, { count: certCount }, { count: completedLessons }, { count: pendingCapstone }] = await Promise.all([
         supabase
           .from("enrollments")
-          .select("course_id, enrolled_at, courses(slug, title, description, cover_image_url, category)")
+          .select("course_id, cohort_id, enrolled_at, courses(slug, title, description, cover_image_url, category)")
           .eq("student_id", user.id)
           .order("enrolled_at", { ascending: false }),
         supabase.from("certificates").select("id", { count: "exact", head: true }).eq("student_id", user.id),
@@ -45,6 +49,36 @@ function DashboardHome() {
       ]);
 
       const enrolled = enrollments ?? [];
+      const cohortIds = enrolled.map((e) => e.cohort_id).filter((id): id is string => Boolean(id));
+      const courseSlugById = new Map(enrolled.map((e) => [e.course_id, e.courses?.slug ?? ""]));
+
+      let annRows: Announcement[] = [];
+      let nextLesson: UpcomingLesson | null = null;
+      if (cohortIds.length > 0) {
+        const [{ data: ann }, { data: up }] = await Promise.all([
+          supabase.from("announcements")
+            .select("id, title, message, created_at")
+            .in("cohort_id", cohortIds)
+            .order("created_at", { ascending: false }).limit(5),
+          supabase.from("lessons")
+            .select("id, title, lesson_date, zoom_live_link, course_id")
+            .in("cohort_id", cohortIds)
+            .gte("lesson_date", new Date().toISOString())
+            .order("lesson_date", { ascending: true }).limit(1),
+        ]);
+        annRows = (ann ?? []) as Announcement[];
+        const u = up?.[0];
+        if (u && u.lesson_date) {
+          nextLesson = {
+            id: u.id,
+            title: u.title,
+            lesson_date: u.lesson_date,
+            zoom_live_link: u.zoom_live_link,
+            courseSlug: courseSlugById.get(u.course_id) ?? "",
+          };
+        }
+      }
+
       let nextCourse: Continue | null = null;
       if (enrolled[0]?.courses) {
         const c = enrolled[0];
@@ -74,6 +108,8 @@ function DashboardHome() {
           certificates: certCount ?? 0,
         });
         setNext(nextCourse);
+        setAnnouncements(annRows);
+        setUpcoming(nextLesson);
         setLoading(false);
       }
     })();
@@ -97,13 +133,28 @@ function DashboardHome() {
         <Stat icon={Award} label="Certificates earned" value={loading ? "…" : String(stats.certificates)} />
       </div>
 
-      <div className="mt-8 rounded-2xl border border-mint/40 bg-mint/15 p-5 flex items-start gap-4">
-        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-mint text-forest"><Megaphone className="h-5 w-5" /></span>
-        <div>
-          <p className="font-display font-bold text-forest">Welcome to your cohort</p>
-          <p className="mt-1 text-sm text-foreground/70">Cohort announcements from your instructor will appear here. Check back daily for live class reminders and updates.</p>
+      {announcements.length > 0 ? (
+        <div className="mt-8 space-y-3">
+          {announcements.map((a) => (
+            <div key={a.id} className="rounded-2xl border border-mint/40 bg-mint/15 p-5 flex items-start gap-4">
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-mint text-forest"><Megaphone className="h-5 w-5" /></span>
+              <div className="min-w-0">
+                <p className="font-display font-bold text-forest">{a.title}</p>
+                <p className="mt-1 text-sm text-foreground/70 whitespace-pre-wrap">{a.message}</p>
+                <p className="mt-2 text-xs text-foreground/50">{new Date(a.created_at).toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</p>
+              </div>
+            </div>
+          ))}
         </div>
-      </div>
+      ) : (
+        <div className="mt-8 rounded-2xl border border-mint/40 bg-mint/15 p-5 flex items-start gap-4">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-mint text-forest"><Megaphone className="h-5 w-5" /></span>
+          <div>
+            <p className="font-display font-bold text-forest">No announcements yet</p>
+            <p className="mt-1 text-sm text-foreground/70">Your cohort announcements will show up here.</p>
+          </div>
+        </div>
+      )}
 
       <div className="mt-10 grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
@@ -141,8 +192,24 @@ function DashboardHome() {
           <h2 className="font-display text-xl font-bold text-forest">Upcoming live class</h2>
           <div className="mt-4 rounded-3xl border border-border bg-background p-6">
             <span className="grid h-10 w-10 place-items-center rounded-xl bg-forest text-mint"><Video className="h-5 w-5" /></span>
-            <p className="mt-4 font-display font-bold text-forest">No sessions scheduled</p>
-            <p className="mt-1 text-sm text-foreground/65">Your next Zoom live class will appear here with a one-click join link.</p>
+            {upcoming ? (
+              <>
+                <p className="mt-4 font-display font-bold text-forest">{upcoming.title}</p>
+                <p className="mt-1 text-sm text-foreground/65">
+                  {new Date(upcoming.lesson_date).toLocaleString(undefined, { weekday: "short", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                </p>
+                {upcoming.zoom_live_link && (
+                  <Button asChild className="mt-4 rounded-full bg-mint text-forest hover:bg-mint/90 font-bold">
+                    <a href={upcoming.zoom_live_link} target="_blank" rel="noreferrer">Join Zoom</a>
+                  </Button>
+                )}
+              </>
+            ) : (
+              <>
+                <p className="mt-4 font-display font-bold text-forest">No sessions scheduled</p>
+                <p className="mt-1 text-sm text-foreground/65">Your next Zoom live class will appear here with a one-click join link.</p>
+              </>
+            )}
           </div>
         </div>
       </div>

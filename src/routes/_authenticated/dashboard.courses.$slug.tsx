@@ -1,9 +1,10 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
-import { Download, Video, CheckCircle2, Loader2, Lock } from "lucide-react";
+import { Download, Video, CheckCircle2, Loader2, Lock, PlayCircle } from "lucide-react";
 import { toast } from "sonner";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { CapstoneSection } from "@/components/dashboard/CapstoneSection";
+import { LessonNotes } from "@/components/dashboard/LessonNotes";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
@@ -19,7 +20,10 @@ type Lesson = {
   title: string;
   lesson_number: number;
   zoom_link: string | null;
+  zoom_live_link: string | null;
+  zoom_recording_link: string | null;
   pdf_url: string | null;
+  lesson_date: string | null;
 };
 type Course = {
   id: string;
@@ -48,14 +52,26 @@ function ClassroomPage() {
       .from("courses").select("id, slug, title, capstone_released, capstone_brief, capstone_brief_url")
       .eq("slug", slug).eq("is_published", true).maybeSingle();
     if (!courseRow) { setCourse(null); setLoading(false); throw notFound(); }
-    setCourse(courseRow as Course);
 
     const [{ data: enr }, { data: lessonRows }, { data: progressRows }] = await Promise.all([
-      supabase.from("enrollments").select("id").eq("student_id", user.id).eq("course_id", courseRow.id).maybeSingle(),
-      supabase.from("lessons").select("id, title, lesson_number, zoom_link, pdf_url")
+      supabase.from("enrollments")
+        .select("id, cohort_id, cohorts:cohort_id(capstone_released, capstone_brief_text, capstone_brief_url)")
+        .eq("student_id", user.id).eq("course_id", courseRow.id).maybeSingle(),
+      supabase.from("lessons")
+        .select("id, title, lesson_number, zoom_link, zoom_live_link, zoom_recording_link, pdf_url, lesson_date")
         .eq("course_id", courseRow.id).eq("is_published", true).order("lesson_number"),
       supabase.from("lesson_progress").select("lesson_id, completed").eq("student_id", user.id).eq("course_id", courseRow.id),
     ]);
+
+    // Cohort overrides for capstone visibility / brief
+    const cohort = (enr as { cohorts?: { capstone_released: boolean; capstone_brief_text: string | null; capstone_brief_url: string | null } | null } | null)?.cohorts ?? null;
+    const merged: Course = {
+      ...(courseRow as Course),
+      capstone_released: cohort?.capstone_released ?? courseRow.capstone_released,
+      capstone_brief: cohort?.capstone_brief_text ?? courseRow.capstone_brief,
+      capstone_brief_url: cohort?.capstone_brief_url ?? courseRow.capstone_brief_url,
+    };
+    setCourse(merged);
 
     setEnrolled(Boolean(enr));
     setLessons(lessonRows ?? []);
@@ -168,17 +184,34 @@ function ClassroomPage() {
                 <p className="mt-2 text-sm text-mint/70">Video lesson placeholder</p>
               </div>
             </div>
+            {active.lesson_date && (
+              <p className="mt-3 text-xs text-foreground/55">
+                Live class: {new Date(active.lesson_date).toLocaleString(undefined, { weekday: "short", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+              </p>
+            )}
             <div className="mt-5 flex flex-wrap gap-3">
               <Button asChild variant="outline" className="rounded-full" disabled={!active.pdf_url}>
                 <a href={active.pdf_url ?? "#"} target="_blank" rel="noreferrer">
                   <Download className="h-4 w-4 mr-1" /> {active.pdf_url ? "Download PDF" : "PDF coming soon"}
                 </a>
               </Button>
-              <Button asChild className="rounded-full bg-mint text-forest hover:bg-mint/90 font-bold" disabled={!active.zoom_link}>
-                <a href={active.zoom_link ?? "#"} target="_blank" rel="noreferrer">
-                  <Video className="h-4 w-4 mr-1" /> {active.zoom_link ? "Join Zoom Live" : "Zoom link coming soon"}
-                </a>
-              </Button>
+              {(() => {
+                const live = active.zoom_live_link ?? active.zoom_link;
+                return (
+                  <Button asChild className="rounded-full bg-mint text-forest hover:bg-mint/90 font-bold" disabled={!live}>
+                    <a href={live ?? "#"} target="_blank" rel="noreferrer">
+                      <Video className="h-4 w-4 mr-1" /> {live ? "Join Zoom Live" : "Zoom link coming soon"}
+                    </a>
+                  </Button>
+                );
+              })()}
+              {active.zoom_recording_link && (
+                <Button asChild variant="outline" className="rounded-full">
+                  <a href={active.zoom_recording_link} target="_blank" rel="noreferrer">
+                    <PlayCircle className="h-4 w-4 mr-1" /> Watch Recording
+                  </a>
+                </Button>
+              )}
             </div>
             <div className="mt-8">
               <Button onClick={() => toggleComplete(active.id)} disabled={saving}
@@ -187,6 +220,7 @@ function ClassroomPage() {
                 {done[active.id] ? "Marked Complete" : "Mark as Complete"}
               </Button>
             </div>
+            <LessonNotes lessonId={active.id} />
           </main>
         ) : (
           <main className="rounded-2xl bg-background border border-dashed border-border p-12 text-center text-foreground/60">
