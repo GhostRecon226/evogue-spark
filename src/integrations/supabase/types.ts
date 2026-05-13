@@ -402,6 +402,7 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          registration_number: string | null
           role: string
           updated_at: string
           whatsapp_number: string | null
@@ -412,6 +413,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id: string
+          registration_number?: string | null
           role?: string
           updated_at?: string
           whatsapp_number?: string | null
@@ -422,6 +424,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          registration_number?: string | null
           role?: string
           updated_at?: string
           whatsapp_number?: string | null
@@ -454,6 +457,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_registration_number: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
