@@ -40,7 +40,7 @@ function DashboardHome() {
       const [{ data: enrollments }, { count: certCount }, { count: completedLessons }, { count: pendingCapstone }] = await Promise.all([
         supabase
           .from("enrollments")
-          .select("course_id, enrolled_at, courses(slug, title, description, cover_image_url, category)")
+          .select("course_id, cohort_id, enrolled_at, courses(slug, title, description, cover_image_url, category)")
           .eq("student_id", user.id)
           .order("enrolled_at", { ascending: false }),
         supabase.from("certificates").select("id", { count: "exact", head: true }).eq("student_id", user.id),
@@ -49,6 +49,36 @@ function DashboardHome() {
       ]);
 
       const enrolled = enrollments ?? [];
+      const cohortIds = enrolled.map((e) => e.cohort_id).filter((id): id is string => Boolean(id));
+      const courseSlugById = new Map(enrolled.map((e) => [e.course_id, e.courses?.slug ?? ""]));
+
+      let annRows: Announcement[] = [];
+      let nextLesson: UpcomingLesson | null = null;
+      if (cohortIds.length > 0) {
+        const [{ data: ann }, { data: up }] = await Promise.all([
+          supabase.from("announcements")
+            .select("id, title, message, created_at")
+            .in("cohort_id", cohortIds)
+            .order("created_at", { ascending: false }).limit(5),
+          supabase.from("lessons")
+            .select("id, title, lesson_date, zoom_live_link, course_id")
+            .in("cohort_id", cohortIds)
+            .gte("lesson_date", new Date().toISOString())
+            .order("lesson_date", { ascending: true }).limit(1),
+        ]);
+        annRows = (ann ?? []) as Announcement[];
+        const u = up?.[0];
+        if (u && u.lesson_date) {
+          nextLesson = {
+            id: u.id,
+            title: u.title,
+            lesson_date: u.lesson_date,
+            zoom_live_link: u.zoom_live_link,
+            courseSlug: courseSlugById.get(u.course_id) ?? "",
+          };
+        }
+      }
+
       let nextCourse: Continue | null = null;
       if (enrolled[0]?.courses) {
         const c = enrolled[0];
