@@ -9,12 +9,14 @@ type Props = Omit<ButtonProps, "asChild"> & {
 };
 
 /**
- * Enroll CTA — sends authenticated users to /dashboard, others to /register.
+ * Enroll CTA — sends authenticated users to /dashboard, others to /contact (inquiry form).
+ * Self-registration is intentionally disabled — students receive credentials via email
+ * after admin creates their account.
  */
 export const EnrollButton = forwardRef<HTMLButtonElement, Props>(
   ({ children, onNavigate, ...buttonProps }, ref) => {
     const { user, loading } = useAuth();
-    const to = user ? "/dashboard" : "/register";
+    const to = user ? "/dashboard" : "/contact";
     return (
       <Button ref={ref} asChild disabled={loading} {...buttonProps}>
         <Link to={to} onClick={onNavigate}>{children}</Link>

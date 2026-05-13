@@ -93,9 +93,14 @@ export function Navbar() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button asChild variant="outline" className="h-10 rounded-full border-forest/20 px-5 text-sm font-semibold text-forest hover:bg-forest hover:text-mint">
-              <Link to="/login">Login</Link>
-            </Button>
+            <>
+              <Button asChild variant="outline" className="h-10 rounded-full border-forest/20 px-5 text-sm font-semibold text-forest hover:bg-forest hover:text-mint">
+                <Link to="/login">Login</Link>
+              </Button>
+              <Button asChild className="h-10 rounded-full bg-secondary px-5 text-sm font-semibold text-forest hover:bg-secondary/90">
+                <Link to="/contact">Enroll Now</Link>
+              </Button>
+            </>
           )}
           </div>
         </div>
@@ -137,9 +142,14 @@ export function Navbar() {
                 )}
               </nav>
               {!user && (
-                <Button asChild variant="outline" className="mt-6 h-11 w-full rounded-full border-forest/20 text-sm font-semibold text-forest hover:bg-forest hover:text-mint">
-                  <Link to="/login" onClick={() => setOpen(false)}>Login</Link>
-                </Button>
+                <>
+                  <Button asChild variant="outline" className="mt-6 h-11 w-full rounded-full border-forest/20 text-sm font-semibold text-forest hover:bg-forest hover:text-mint">
+                    <Link to="/login" onClick={() => setOpen(false)}>Login</Link>
+                  </Button>
+                  <Button asChild className="mt-3 h-11 w-full rounded-full bg-secondary text-forest hover:bg-secondary/90 text-sm font-semibold">
+                    <Link to="/contact" onClick={() => setOpen(false)}>Enroll Now</Link>
+                  </Button>
+                </>
               )}
             </div>
           </SheetContent>
