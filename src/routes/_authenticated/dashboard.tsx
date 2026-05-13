@@ -29,6 +29,8 @@ function DashboardHome() {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ enrolled: 0, completedLessons: 0, pendingCapstone: 0, certificates: 0 });
   const [next, setNext] = useState<Continue | null>(null);
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [upcoming, setUpcoming] = useState<UpcomingLesson | null>(null);
 
   useEffect(() => {
     if (!user) return;
