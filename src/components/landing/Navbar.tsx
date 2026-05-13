@@ -92,7 +92,11 @@ export function Navbar() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          ) : null}
+          ) : (
+            <Button asChild className="rounded-full bg-forest text-mint hover:bg-forest/90 px-5">
+              <Link to="/login">Login</Link>
+            </Button>
+          )}
           </div>
         </div>
 
@@ -132,6 +136,11 @@ export function Navbar() {
                   </>
                 )}
               </nav>
+              {!user && (
+                <Button asChild className="mt-4 w-full rounded-full bg-forest text-mint hover:bg-forest/90">
+                  <Link to="/login" onClick={() => setOpen(false)}>Login</Link>
+                </Button>
+              )}
             </div>
           </SheetContent>
         </Sheet>
