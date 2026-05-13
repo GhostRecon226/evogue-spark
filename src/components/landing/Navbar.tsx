@@ -113,31 +113,32 @@ export function Navbar() {
             <SheetTitle className="sr-only">Menu</SheetTitle>
             <div className="mt-2 flex flex-col gap-1">
               <Logo />
-              <nav className="mt-8 flex flex-col gap-1">
+              <nav className="mt-8 flex flex-col items-end gap-1">
                 {links.map((l) => (
                   <Link
                     key={l.to}
                     to={l.to}
+                    activeOptions={{ exact: l.to === "/" }}
                     onClick={() => setOpen(false)}
-                    className="rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-accent"
+                    className="rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-accent data-[status=active]:bg-secondary/10 data-[status=active]:text-secondary"
                   >
                     {l.label}
                   </Link>
                 ))}
                 {user ? (
                   <>
-                    <Link to="/dashboard" onClick={() => setOpen(false)} className="rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-accent">
+                    <Link to="/dashboard" onClick={() => setOpen(false)} className="rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-accent data-[status=active]:bg-secondary/10 data-[status=active]:text-secondary">
                       Dashboard
                     </Link>
                     <button
                       onClick={async () => { setOpen(false); await signOut(); }}
-                      className="text-left rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-accent"
+                      className="text-right rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-accent"
                     >
                       Logout
                     </button>
                   </>
                 ) : (
-                  <Link to="/login" onClick={() => setOpen(false)} className="rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-accent">
+                  <Link to="/login" onClick={() => setOpen(false)} className="rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-accent data-[status=active]:bg-secondary/10 data-[status=active]:text-secondary">
                     Login
                   </Link>
                 )}
