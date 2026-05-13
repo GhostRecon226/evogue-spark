@@ -60,6 +60,7 @@ function ScholarshipPage() {
       course_interest: parsed.data.course,
       message: parsed.data.motivation,
       source: "scholarship",
+      type: "scholarship",
     });
     setLoading(false);
     if (error) {
