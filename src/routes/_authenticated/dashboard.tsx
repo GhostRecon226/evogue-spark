@@ -108,6 +108,8 @@ function DashboardHome() {
           certificates: certCount ?? 0,
         });
         setNext(nextCourse);
+        setAnnouncements(annRows);
+        setUpcoming(nextLesson);
         setLoading(false);
       }
     })();
