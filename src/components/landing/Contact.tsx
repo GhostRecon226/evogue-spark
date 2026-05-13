@@ -52,6 +52,7 @@ export function Contact() {
       email: parsed.data.email,
       message: parsed.data.message,
       source: "contact",
+      type: "contact",
     });
     setLoading(false);
     if (error) {
