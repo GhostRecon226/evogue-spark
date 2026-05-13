@@ -97,9 +97,9 @@ export function Navbar() {
               <Link to="/login">Login</Link>
             </Button>
           )}
-          <EnrollButton className="rounded-full bg-forest text-mint hover:bg-forest/90 px-5">
-            Enroll Now
-          </EnrollButton>
+          <Button asChild className="rounded-full bg-forest text-mint hover:bg-forest/90 px-5">
+            <Link to="/login">Login</Link>
+          </Button>
           </div>
         </div>
 
