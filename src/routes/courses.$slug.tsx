@@ -116,6 +116,23 @@ function CourseDetailPage() {
                 </div>
               </div>
             </div>
+            <div>
+              <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-forest">How it works</h2>
+              <ol className="mt-6 space-y-4">
+                {[
+                  "Fill out the enrollment inquiry form on the contact page.",
+                  "Our team contacts you within 24 hours to discuss your goals.",
+                  "Confirm payment to secure your spot in the next cohort.",
+                  "Receive your login credentials and registration number via email.",
+                  "Log in to your dashboard and access your cohort, lessons and live classes.",
+                ].map((step, i) => (
+                  <li key={i} className="flex items-start gap-4 rounded-2xl border border-border bg-background p-5">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-mint text-forest font-bold">{i + 1}</span>
+                    <p className="text-foreground/80">{step}</p>
+                  </li>
+                ))}
+              </ol>
+            </div>
           </div>
 
           <aside className="lg:sticky lg:top-28 h-fit">
@@ -128,7 +145,7 @@ function CourseDetailPage() {
                 <li className="flex gap-2"><CheckCircle2 className="h-4 w-4 text-secondary" /> Career support</li>
               </ul>
               <EnrollButton className="mt-6 w-full rounded-full bg-forest text-mint hover:bg-forest/90 h-12">
-                Enroll Now
+                Apply for This Course
               </EnrollButton>
               <p className="mt-3 text-xs text-foreground/55 text-center">Scholarships available</p>
             </div>

@@ -20,6 +20,7 @@ function ProfilePage() {
   const [pwLoading, setPwLoading] = useState(false);
   const [form, setForm] = useState({ full_name: "", email: "", whatsapp_number: "", avatar_url: "" });
   const [newPw, setNewPw] = useState("");
+  const [enrolledCount, setEnrolledCount] = useState<number | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -29,7 +30,14 @@ function ProfilePage() {
       whatsapp_number: profile?.whatsapp_number ?? "",
       avatar_url: profile?.avatar_url ?? "",
     });
+    supabase
+      .from("enrollments")
+      .select("id", { count: "exact", head: true })
+      .eq("student_id", user.id)
+      .then(({ count }) => setEnrolledCount(count ?? 0));
   }, [user, profile]);
+
+  const accountCreated = profile?.created_at ?? user?.created_at;
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,6 +97,22 @@ function ProfilePage() {
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save Changes"}
         </Button>
       </form>
+
+      <div className="mt-6 max-w-xl rounded-2xl bg-mint-tint border border-border p-6">
+        <h2 className="font-display font-bold text-forest">Account</h2>
+        <dl className="mt-4 grid grid-cols-2 gap-4 text-sm">
+          <div>
+            <dt className="text-foreground/55">Member since</dt>
+            <dd className="mt-1 font-semibold text-forest">
+              {accountCreated ? new Date(accountCreated).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) : "—"}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-foreground/55">Enrolled courses</dt>
+            <dd className="mt-1 font-semibold text-forest">{enrolledCount ?? "…"}</dd>
+          </div>
+        </dl>
+      </div>
 
       <form onSubmit={changePw} className="mt-6 max-w-xl rounded-2xl bg-background border border-border p-6 space-y-4">
         <h2 className="font-display font-bold text-forest">Change password</h2>
