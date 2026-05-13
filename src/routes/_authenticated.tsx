@@ -1,5 +1,7 @@
 import { createFileRoute, Outlet, Navigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/_authenticated")({
@@ -7,11 +9,16 @@ export const Route = createFileRoute("/_authenticated")({
 });
 
 function AuthenticatedLayout() {
-  const { user, loading } = useAuth();
+  const { user, profile, loading, signOut } = useAuth();
 
-  // While the Supabase session is still hydrating from storage, render a
-  // calm loading screen instead of flashing the dashboard or bouncing to
-  // /login (the source of the race condition on hard refresh).
+  // If the profile shows the account is suspended, sign out and bounce to login.
+  useEffect(() => {
+    if (!loading && user && profile && profile.is_active === false) {
+      toast.error("Your account has been suspended. Please contact Evogue Academy for support.");
+      void signOut();
+    }
+  }, [loading, user, profile, signOut]);
+
   if (loading) {
     return (
       <div className="min-h-screen grid place-items-center bg-mint-tint">
