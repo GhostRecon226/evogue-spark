@@ -118,7 +118,7 @@ export function Navbar() {
                     {l.label}
                   </Link>
                 ))}
-                {user ? (
+                {user && (
                   <>
                     <Link to="/dashboard" onClick={() => setOpen(false)} className="rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-accent data-[status=active]:bg-secondary/10 data-[status=active]:text-secondary">
                       Dashboard
@@ -130,10 +130,6 @@ export function Navbar() {
                       Logout
                     </button>
                   </>
-                ) : (
-                  <Link to="/login" onClick={() => setOpen(false)} className="rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-accent data-[status=active]:bg-secondary/10 data-[status=active]:text-secondary">
-                    Login
-                  </Link>
                 )}
               </nav>
               <Button asChild className="mt-4 w-full rounded-full bg-forest text-mint hover:bg-forest/90">
