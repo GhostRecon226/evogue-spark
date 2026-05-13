@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, BookOpen, Award, User, LogOut, Menu, ArrowLeft, Shield, GraduationCap, ClipboardCheck, Users, Wallet, Mail } from "lucide-react";
+import { LayoutDashboard, BookOpen, Award, User, LogOut, Menu, ArrowLeft, Shield, GraduationCap, ClipboardCheck, Users, Wallet, Mail, CalendarDays, PlayCircle, Megaphone, Settings as SettingsIcon } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { Logo } from "@/components/landing/Logo";
 import { Button } from "@/components/ui/button";
@@ -23,10 +23,15 @@ const adminItems: NavItem[] = [
   { label: "Overview", to: "/admin", icon: Shield },
   { label: "Students", to: "/admin/students", icon: Users },
   { label: "Courses", to: "/admin/courses", icon: BookOpen },
+  { label: "Cohorts", to: "/admin/cohorts", icon: CalendarDays },
+  { label: "Lessons", to: "/admin/lessons", icon: PlayCircle },
   { label: "Enrollments", to: "/admin/enrollments", icon: ClipboardCheck },
+  { label: "Capstones", to: "/admin/capstones", icon: ClipboardCheck },
+  { label: "Certificates", to: "/admin/certificates", icon: Award },
   { label: "Payments", to: "/admin/payments", icon: Wallet },
   { label: "Inquiries", to: "/admin/inquiries", icon: Mail },
-  { label: "Capstones", to: "/admin/capstones", icon: ClipboardCheck },
+  { label: "Announcements", to: "/admin/announcements", icon: Megaphone },
+  { label: "Settings", to: "/admin/settings", icon: SettingsIcon },
 ];
 const instructorItems: NavItem[] = [
   { label: "Overview", to: "/instructor", icon: GraduationCap },
