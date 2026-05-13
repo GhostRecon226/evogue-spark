@@ -31,11 +31,16 @@ import { Route as AuthenticatedDashboardProfileRouteImport } from './routes/_aut
 import { Route as AuthenticatedDashboardCoursesRouteImport } from './routes/_authenticated/dashboard.courses'
 import { Route as AuthenticatedDashboardCertificatesRouteImport } from './routes/_authenticated/dashboard.certificates'
 import { Route as AuthenticatedAdminStudentsRouteImport } from './routes/_authenticated/admin.students'
+import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin.settings'
 import { Route as AuthenticatedAdminPaymentsRouteImport } from './routes/_authenticated/admin.payments'
+import { Route as AuthenticatedAdminLessonsRouteImport } from './routes/_authenticated/admin.lessons'
 import { Route as AuthenticatedAdminInquiriesRouteImport } from './routes/_authenticated/admin.inquiries'
 import { Route as AuthenticatedAdminEnrollmentsRouteImport } from './routes/_authenticated/admin.enrollments'
 import { Route as AuthenticatedAdminCoursesRouteImport } from './routes/_authenticated/admin.courses'
+import { Route as AuthenticatedAdminCohortsRouteImport } from './routes/_authenticated/admin.cohorts'
+import { Route as AuthenticatedAdminCertificatesRouteImport } from './routes/_authenticated/admin.certificates'
 import { Route as AuthenticatedAdminCapstonesRouteImport } from './routes/_authenticated/admin.capstones'
+import { Route as AuthenticatedAdminAnnouncementsRouteImport } from './routes/_authenticated/admin.announcements'
 import { Route as AuthenticatedDashboardCoursesSlugRouteImport } from './routes/_authenticated/dashboard.courses.$slug'
 
 const ScholarshipRoute = ScholarshipRouteImport.update({
@@ -156,10 +161,22 @@ const AuthenticatedAdminStudentsRoute =
     path: '/admin/students',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAdminSettingsRoute =
+  AuthenticatedAdminSettingsRouteImport.update({
+    id: '/admin/settings',
+    path: '/admin/settings',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAdminPaymentsRoute =
   AuthenticatedAdminPaymentsRouteImport.update({
     id: '/admin/payments',
     path: '/admin/payments',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedAdminLessonsRoute =
+  AuthenticatedAdminLessonsRouteImport.update({
+    id: '/admin/lessons',
+    path: '/admin/lessons',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedAdminInquiriesRoute =
@@ -180,10 +197,28 @@ const AuthenticatedAdminCoursesRoute =
     path: '/admin/courses',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAdminCohortsRoute =
+  AuthenticatedAdminCohortsRouteImport.update({
+    id: '/admin/cohorts',
+    path: '/admin/cohorts',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedAdminCertificatesRoute =
+  AuthenticatedAdminCertificatesRouteImport.update({
+    id: '/admin/certificates',
+    path: '/admin/certificates',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAdminCapstonesRoute =
   AuthenticatedAdminCapstonesRouteImport.update({
     id: '/admin/capstones',
     path: '/admin/capstones',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedAdminAnnouncementsRoute =
+  AuthenticatedAdminAnnouncementsRouteImport.update({
+    id: '/admin/announcements',
+    path: '/admin/announcements',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedDashboardCoursesSlugRoute =
@@ -205,11 +240,16 @@ export interface FileRoutesByFullPath {
   '/scholarship': typeof ScholarshipRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/courses/$slug': typeof CoursesSlugRoute
+  '/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
   '/admin/capstones': typeof AuthenticatedAdminCapstonesRoute
+  '/admin/certificates': typeof AuthenticatedAdminCertificatesRoute
+  '/admin/cohorts': typeof AuthenticatedAdminCohortsRoute
   '/admin/courses': typeof AuthenticatedAdminCoursesRoute
   '/admin/enrollments': typeof AuthenticatedAdminEnrollmentsRoute
   '/admin/inquiries': typeof AuthenticatedAdminInquiriesRoute
+  '/admin/lessons': typeof AuthenticatedAdminLessonsRoute
   '/admin/payments': typeof AuthenticatedAdminPaymentsRoute
+  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/students': typeof AuthenticatedAdminStudentsRoute
   '/dashboard/certificates': typeof AuthenticatedDashboardCertificatesRoute
   '/dashboard/courses': typeof AuthenticatedDashboardCoursesRouteWithChildren
@@ -234,11 +274,16 @@ export interface FileRoutesByTo {
   '/scholarship': typeof ScholarshipRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/courses/$slug': typeof CoursesSlugRoute
+  '/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
   '/admin/capstones': typeof AuthenticatedAdminCapstonesRoute
+  '/admin/certificates': typeof AuthenticatedAdminCertificatesRoute
+  '/admin/cohorts': typeof AuthenticatedAdminCohortsRoute
   '/admin/courses': typeof AuthenticatedAdminCoursesRoute
   '/admin/enrollments': typeof AuthenticatedAdminEnrollmentsRoute
   '/admin/inquiries': typeof AuthenticatedAdminInquiriesRoute
+  '/admin/lessons': typeof AuthenticatedAdminLessonsRoute
   '/admin/payments': typeof AuthenticatedAdminPaymentsRoute
+  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/students': typeof AuthenticatedAdminStudentsRoute
   '/dashboard/certificates': typeof AuthenticatedDashboardCertificatesRoute
   '/dashboard/courses': typeof AuthenticatedDashboardCoursesRouteWithChildren
@@ -265,11 +310,16 @@ export interface FileRoutesById {
   '/scholarship': typeof ScholarshipRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/courses/$slug': typeof CoursesSlugRoute
+  '/_authenticated/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
   '/_authenticated/admin/capstones': typeof AuthenticatedAdminCapstonesRoute
+  '/_authenticated/admin/certificates': typeof AuthenticatedAdminCertificatesRoute
+  '/_authenticated/admin/cohorts': typeof AuthenticatedAdminCohortsRoute
   '/_authenticated/admin/courses': typeof AuthenticatedAdminCoursesRoute
   '/_authenticated/admin/enrollments': typeof AuthenticatedAdminEnrollmentsRoute
   '/_authenticated/admin/inquiries': typeof AuthenticatedAdminInquiriesRoute
+  '/_authenticated/admin/lessons': typeof AuthenticatedAdminLessonsRoute
   '/_authenticated/admin/payments': typeof AuthenticatedAdminPaymentsRoute
+  '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/admin/students': typeof AuthenticatedAdminStudentsRoute
   '/_authenticated/dashboard/certificates': typeof AuthenticatedDashboardCertificatesRoute
   '/_authenticated/dashboard/courses': typeof AuthenticatedDashboardCoursesRouteWithChildren
@@ -296,11 +346,16 @@ export interface FileRouteTypes {
     | '/scholarship'
     | '/dashboard'
     | '/courses/$slug'
+    | '/admin/announcements'
     | '/admin/capstones'
+    | '/admin/certificates'
+    | '/admin/cohorts'
     | '/admin/courses'
     | '/admin/enrollments'
     | '/admin/inquiries'
+    | '/admin/lessons'
     | '/admin/payments'
+    | '/admin/settings'
     | '/admin/students'
     | '/dashboard/certificates'
     | '/dashboard/courses'
@@ -325,11 +380,16 @@ export interface FileRouteTypes {
     | '/scholarship'
     | '/dashboard'
     | '/courses/$slug'
+    | '/admin/announcements'
     | '/admin/capstones'
+    | '/admin/certificates'
+    | '/admin/cohorts'
     | '/admin/courses'
     | '/admin/enrollments'
     | '/admin/inquiries'
+    | '/admin/lessons'
     | '/admin/payments'
+    | '/admin/settings'
     | '/admin/students'
     | '/dashboard/certificates'
     | '/dashboard/courses'
@@ -355,11 +415,16 @@ export interface FileRouteTypes {
     | '/scholarship'
     | '/_authenticated/dashboard'
     | '/courses/$slug'
+    | '/_authenticated/admin/announcements'
     | '/_authenticated/admin/capstones'
+    | '/_authenticated/admin/certificates'
+    | '/_authenticated/admin/cohorts'
     | '/_authenticated/admin/courses'
     | '/_authenticated/admin/enrollments'
     | '/_authenticated/admin/inquiries'
+    | '/_authenticated/admin/lessons'
     | '/_authenticated/admin/payments'
+    | '/_authenticated/admin/settings'
     | '/_authenticated/admin/students'
     | '/_authenticated/dashboard/certificates'
     | '/_authenticated/dashboard/courses'
@@ -542,11 +607,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminStudentsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/settings': {
+      id: '/_authenticated/admin/settings'
+      path: '/admin/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AuthenticatedAdminSettingsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/admin/payments': {
       id: '/_authenticated/admin/payments'
       path: '/admin/payments'
       fullPath: '/admin/payments'
       preLoaderRoute: typeof AuthenticatedAdminPaymentsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/admin/lessons': {
+      id: '/_authenticated/admin/lessons'
+      path: '/admin/lessons'
+      fullPath: '/admin/lessons'
+      preLoaderRoute: typeof AuthenticatedAdminLessonsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/admin/inquiries': {
@@ -570,11 +649,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminCoursesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/cohorts': {
+      id: '/_authenticated/admin/cohorts'
+      path: '/admin/cohorts'
+      fullPath: '/admin/cohorts'
+      preLoaderRoute: typeof AuthenticatedAdminCohortsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/admin/certificates': {
+      id: '/_authenticated/admin/certificates'
+      path: '/admin/certificates'
+      fullPath: '/admin/certificates'
+      preLoaderRoute: typeof AuthenticatedAdminCertificatesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/admin/capstones': {
       id: '/_authenticated/admin/capstones'
       path: '/admin/capstones'
       fullPath: '/admin/capstones'
       preLoaderRoute: typeof AuthenticatedAdminCapstonesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/admin/announcements': {
+      id: '/_authenticated/admin/announcements'
+      path: '/admin/announcements'
+      fullPath: '/admin/announcements'
+      preLoaderRoute: typeof AuthenticatedAdminAnnouncementsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/dashboard/courses/$slug': {
@@ -624,11 +724,16 @@ const AuthenticatedDashboardRouteWithChildren =
 
 interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRouteWithChildren
+  AuthenticatedAdminAnnouncementsRoute: typeof AuthenticatedAdminAnnouncementsRoute
   AuthenticatedAdminCapstonesRoute: typeof AuthenticatedAdminCapstonesRoute
+  AuthenticatedAdminCertificatesRoute: typeof AuthenticatedAdminCertificatesRoute
+  AuthenticatedAdminCohortsRoute: typeof AuthenticatedAdminCohortsRoute
   AuthenticatedAdminCoursesRoute: typeof AuthenticatedAdminCoursesRoute
   AuthenticatedAdminEnrollmentsRoute: typeof AuthenticatedAdminEnrollmentsRoute
   AuthenticatedAdminInquiriesRoute: typeof AuthenticatedAdminInquiriesRoute
+  AuthenticatedAdminLessonsRoute: typeof AuthenticatedAdminLessonsRoute
   AuthenticatedAdminPaymentsRoute: typeof AuthenticatedAdminPaymentsRoute
+  AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
   AuthenticatedAdminStudentsRoute: typeof AuthenticatedAdminStudentsRoute
   AuthenticatedInstructorCapstonesRoute: typeof AuthenticatedInstructorCapstonesRoute
   AuthenticatedInstructorCoursesRoute: typeof AuthenticatedInstructorCoursesRoute
@@ -640,11 +745,16 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRouteWithChildren,
+  AuthenticatedAdminAnnouncementsRoute: AuthenticatedAdminAnnouncementsRoute,
   AuthenticatedAdminCapstonesRoute: AuthenticatedAdminCapstonesRoute,
+  AuthenticatedAdminCertificatesRoute: AuthenticatedAdminCertificatesRoute,
+  AuthenticatedAdminCohortsRoute: AuthenticatedAdminCohortsRoute,
   AuthenticatedAdminCoursesRoute: AuthenticatedAdminCoursesRoute,
   AuthenticatedAdminEnrollmentsRoute: AuthenticatedAdminEnrollmentsRoute,
   AuthenticatedAdminInquiriesRoute: AuthenticatedAdminInquiriesRoute,
+  AuthenticatedAdminLessonsRoute: AuthenticatedAdminLessonsRoute,
   AuthenticatedAdminPaymentsRoute: AuthenticatedAdminPaymentsRoute,
+  AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
   AuthenticatedAdminStudentsRoute: AuthenticatedAdminStudentsRoute,
   AuthenticatedInstructorCapstonesRoute: AuthenticatedInstructorCapstonesRoute,
   AuthenticatedInstructorCoursesRoute: AuthenticatedInstructorCoursesRoute,
