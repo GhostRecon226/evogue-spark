@@ -13,9 +13,9 @@ import { useAuth } from "@/hooks/use-auth";
 
 const links = [
   { label: "Home", to: "/" },
+  { label: "About", to: "/about" },
   { label: "Courses", to: "/courses" },
   { label: "Scholarship", to: "/scholarship" },
-  { label: "About", to: "/about" },
   { label: "Blog", to: "/blog" },
   { label: "Contact", to: "/contact" },
 ] as const;
