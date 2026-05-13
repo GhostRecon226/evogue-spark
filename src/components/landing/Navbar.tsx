@@ -143,12 +143,9 @@ export function Navbar() {
                   </Link>
                 )}
               </nav>
-              <EnrollButton
-                className="mt-4 w-full rounded-full bg-forest text-mint hover:bg-forest/90"
-                onNavigate={() => setOpen(false)}
-              >
-                Enroll Now
-              </EnrollButton>
+              <Button asChild className="mt-4 w-full rounded-full bg-forest text-mint hover:bg-forest/90">
+                <Link to="/login" onClick={() => setOpen(false)}>Login</Link>
+              </Button>
             </div>
           </SheetContent>
         </Sheet>
