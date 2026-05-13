@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      academy_settings: {
+        Row: {
+          academy_name: string
+          contact_email: string | null
+          id: string
+          location: string | null
+          logo_url: string | null
+          paystack_public_key: string | null
+          resend_api_key: string | null
+          updated_at: string
+          updated_by: string | null
+          whatsapp_number: string | null
+        }
+        Insert: {
+          academy_name?: string
+          contact_email?: string | null
+          id?: string
+          location?: string | null
+          logo_url?: string | null
+          paystack_public_key?: string | null
+          resend_api_key?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          whatsapp_number?: string | null
+        }
+        Update: {
+          academy_name?: string
+          contact_email?: string | null
+          id?: string
+          location?: string | null
+          logo_url?: string | null
+          paystack_public_key?: string | null
+          resend_api_key?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          whatsapp_number?: string | null
+        }
+        Relationships: []
+      }
       announcements: {
         Row: {
           cohort_id: string
