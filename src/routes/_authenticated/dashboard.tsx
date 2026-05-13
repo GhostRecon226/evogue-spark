@@ -84,6 +84,11 @@ function DashboardHome() {
     <DashboardLayout>
       <h1 className="font-display text-3xl font-extrabold text-forest">Welcome back, {name} 👋</h1>
       <p className="mt-1 text-foreground/65">Here's where you left off.</p>
+      {profile?.registration_number && (
+        <p className="mt-2 inline-flex items-center gap-2 rounded-full border border-forest/15 bg-mint/40 px-3 py-1 text-xs font-semibold text-forest">
+          Registration No: <span className="font-mono tracking-wider">{profile.registration_number}</span>
+        </p>
+      )}
 
       <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <Stat icon={BookOpen} label="Enrolled courses" value={loading ? "…" : String(stats.enrolled)} />

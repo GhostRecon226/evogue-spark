@@ -101,6 +101,12 @@ function ProfilePage() {
       <div className="mt-6 max-w-xl rounded-2xl bg-mint-tint border border-border p-6">
         <h2 className="font-display font-bold text-forest">Account</h2>
         <dl className="mt-4 grid grid-cols-2 gap-4 text-sm">
+          <div className="col-span-2">
+            <dt className="text-foreground/55">Registration number</dt>
+            <dd className="mt-1 font-mono text-base font-bold tracking-wider text-forest">
+              {profile?.registration_number ?? "—"}
+            </dd>
+          </div>
           <div>
             <dt className="text-foreground/55">Member since</dt>
             <dd className="mt-1 font-semibold text-forest">
