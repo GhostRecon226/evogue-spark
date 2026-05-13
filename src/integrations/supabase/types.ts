@@ -14,8 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      announcements: {
+        Row: {
+          cohort_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          message: string
+          title: string
+        }
+        Insert: {
+          cohort_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          message: string
+          title: string
+        }
+        Update: {
+          cohort_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          message?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "announcements_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       capstone_submissions: {
         Row: {
+          admin_feedback: string | null
+          cohort_id: string | null
           course_id: string
           file_url: string | null
           id: string
@@ -29,6 +66,8 @@ export type Database = {
           submitted_at: string
         }
         Insert: {
+          admin_feedback?: string | null
+          cohort_id?: string | null
           course_id: string
           file_url?: string | null
           id?: string
@@ -42,6 +81,8 @@ export type Database = {
           submitted_at?: string
         }
         Update: {
+          admin_feedback?: string | null
+          cohort_id?: string | null
           course_id?: string
           file_url?: string | null
           id?: string
@@ -54,31 +95,52 @@ export type Database = {
           submission_text?: string
           submitted_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "capstone_submissions_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       certificates: {
         Row: {
           certificate_url: string | null
+          cohort_id: string | null
           course_id: string
           id: string
           issued_at: string
+          registration_number: string | null
           student_id: string
         }
         Insert: {
           certificate_url?: string | null
+          cohort_id?: string | null
           course_id: string
           id?: string
           issued_at?: string
+          registration_number?: string | null
           student_id: string
         }
         Update: {
           certificate_url?: string | null
+          cohort_id?: string | null
           course_id?: string
           id?: string
           issued_at?: string
+          registration_number?: string | null
           student_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "certificates_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "certificates_course_id_fkey"
             columns: ["course_id"]
@@ -91,6 +153,53 @@ export type Database = {
             columns: ["student_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cohorts: {
+        Row: {
+          capstone_brief_text: string | null
+          capstone_brief_url: string | null
+          capstone_released: boolean
+          course_id: string
+          created_at: string
+          end_date: string | null
+          id: string
+          name: string
+          start_date: string | null
+          status: string
+        }
+        Insert: {
+          capstone_brief_text?: string | null
+          capstone_brief_url?: string | null
+          capstone_released?: boolean
+          course_id: string
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          name: string
+          start_date?: string | null
+          status?: string
+        }
+        Update: {
+          capstone_brief_text?: string | null
+          capstone_brief_url?: string | null
+          capstone_released?: boolean
+          course_id?: string
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          name?: string
+          start_date?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cohorts_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
             referencedColumns: ["id"]
           },
         ]
@@ -151,6 +260,7 @@ export type Database = {
           description: string | null
           duration: string | null
           id: string
+          instructor_id: string | null
           is_published: boolean
           level: string | null
           price: string | null
@@ -168,6 +278,7 @@ export type Database = {
           description?: string | null
           duration?: string | null
           id?: string
+          instructor_id?: string | null
           is_published?: boolean
           level?: string | null
           price?: string | null
@@ -185,6 +296,7 @@ export type Database = {
           description?: string | null
           duration?: string | null
           id?: string
+          instructor_id?: string | null
           is_published?: boolean
           level?: string | null
           price?: string | null
@@ -223,30 +335,43 @@ export type Database = {
       }
       enrollments: {
         Row: {
+          cohort_id: string | null
           course_id: string
           enrolled_at: string
+          enrolled_by: string | null
           id: string
           payment_reference: string | null
           payment_status: Database["public"]["Enums"]["payment_status"]
           student_id: string
         }
         Insert: {
+          cohort_id?: string | null
           course_id: string
           enrolled_at?: string
+          enrolled_by?: string | null
           id?: string
           payment_reference?: string | null
           payment_status?: Database["public"]["Enums"]["payment_status"]
           student_id: string
         }
         Update: {
+          cohort_id?: string | null
           course_id?: string
           enrolled_at?: string
+          enrolled_by?: string | null
           id?: string
           payment_reference?: string | null
           payment_status?: Database["public"]["Enums"]["payment_status"]
           student_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "enrollments_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "enrollments_course_id_fkey"
             columns: ["course_id"]
@@ -273,6 +398,7 @@ export type Database = {
           is_read: boolean
           message: string
           source: string
+          type: string
           whatsapp_number: string | null
         }
         Insert: {
@@ -284,6 +410,7 @@ export type Database = {
           is_read?: boolean
           message: string
           source?: string
+          type?: string
           whatsapp_number?: string | null
         }
         Update: {
@@ -295,6 +422,7 @@ export type Database = {
           is_read?: boolean
           message?: string
           source?: string
+          type?: string
           whatsapp_number?: string | null
         }
         Relationships: []
@@ -353,39 +481,58 @@ export type Database = {
       }
       lessons: {
         Row: {
+          cohort_id: string | null
           course_id: string
           created_at: string
           id: string
           is_published: boolean
+          lesson_date: string | null
           lesson_number: number
           pdf_url: string | null
           title: string
           updated_at: string
           zoom_link: string | null
+          zoom_live_link: string | null
+          zoom_recording_link: string | null
         }
         Insert: {
+          cohort_id?: string | null
           course_id: string
           created_at?: string
           id?: string
           is_published?: boolean
+          lesson_date?: string | null
           lesson_number: number
           pdf_url?: string | null
           title: string
           updated_at?: string
           zoom_link?: string | null
+          zoom_live_link?: string | null
+          zoom_recording_link?: string | null
         }
         Update: {
+          cohort_id?: string | null
           course_id?: string
           created_at?: string
           id?: string
           is_published?: boolean
+          lesson_date?: string | null
           lesson_number?: number
           pdf_url?: string | null
           title?: string
           updated_at?: string
           zoom_link?: string | null
+          zoom_live_link?: string | null
+          zoom_recording_link?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "lessons_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "lessons_course_id_fkey"
             columns: ["course_id"]
@@ -448,6 +595,41 @@ export type Database = {
           year?: number
         }
         Relationships: []
+      }
+      student_notes: {
+        Row: {
+          created_at: string
+          id: string
+          lesson_id: string
+          note_text: string
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lesson_id: string
+          note_text?: string
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lesson_id?: string
+          note_text?: string
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_notes_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
