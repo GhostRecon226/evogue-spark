@@ -57,7 +57,7 @@ export function Navbar() {
                 key={l.to}
                 to={l.to}
                 activeOptions={{ exact: l.to === "/" }}
-                className="text-sm font-medium text-foreground/80 transition-colors hover:text-secondary data-[status=active]:text-secondary"
+                className="relative text-sm font-medium text-foreground/80 transition-colors hover:text-secondary data-[status=active]:text-secondary data-[status=active]:after:absolute data-[status=active]:after:left-0 data-[status=active]:after:right-0 data-[status=active]:after:-bottom-1.5 data-[status=active]:after:h-0.5 data-[status=active]:after:rounded-full data-[status=active]:after:bg-secondary"
               >
                 {l.label}
               </Link>
