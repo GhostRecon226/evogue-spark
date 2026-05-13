@@ -3,7 +3,7 @@ import { Menu, LayoutDashboard, LogOut, User } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Logo } from "./Logo";
 import { Button } from "@/components/ui/button";
-import { EnrollButton } from "@/components/EnrollButton";
+
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
@@ -13,9 +13,9 @@ import { useAuth } from "@/hooks/use-auth";
 
 const links = [
   { label: "Home", to: "/" },
+  { label: "About", to: "/about" },
   { label: "Courses", to: "/courses" },
   { label: "Scholarship", to: "/scholarship" },
-  { label: "About", to: "/about" },
   { label: "Blog", to: "/blog" },
   { label: "Contact", to: "/contact" },
 ] as const;
@@ -97,9 +97,9 @@ export function Navbar() {
               <Link to="/login">Login</Link>
             </Button>
           )}
-          <EnrollButton className="rounded-full bg-forest text-mint hover:bg-forest/90 px-5">
-            Enroll Now
-          </EnrollButton>
+          <Button asChild className="rounded-full bg-forest text-mint hover:bg-forest/90 px-5">
+            <Link to="/login">Login</Link>
+          </Button>
           </div>
         </div>
 
@@ -143,12 +143,9 @@ export function Navbar() {
                   </Link>
                 )}
               </nav>
-              <EnrollButton
-                className="mt-4 w-full rounded-full bg-forest text-mint hover:bg-forest/90"
-                onNavigate={() => setOpen(false)}
-              >
-                Enroll Now
-              </EnrollButton>
+              <Button asChild className="mt-4 w-full rounded-full bg-forest text-mint hover:bg-forest/90">
+                <Link to="/login" onClick={() => setOpen(false)}>Login</Link>
+              </Button>
             </div>
           </SheetContent>
         </Sheet>
