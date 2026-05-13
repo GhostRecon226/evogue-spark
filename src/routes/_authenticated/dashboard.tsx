@@ -192,8 +192,24 @@ function DashboardHome() {
           <h2 className="font-display text-xl font-bold text-forest">Upcoming live class</h2>
           <div className="mt-4 rounded-3xl border border-border bg-background p-6">
             <span className="grid h-10 w-10 place-items-center rounded-xl bg-forest text-mint"><Video className="h-5 w-5" /></span>
-            <p className="mt-4 font-display font-bold text-forest">No sessions scheduled</p>
-            <p className="mt-1 text-sm text-foreground/65">Your next Zoom live class will appear here with a one-click join link.</p>
+            {upcoming ? (
+              <>
+                <p className="mt-4 font-display font-bold text-forest">{upcoming.title}</p>
+                <p className="mt-1 text-sm text-foreground/65">
+                  {new Date(upcoming.lesson_date).toLocaleString(undefined, { weekday: "short", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                </p>
+                {upcoming.zoom_live_link && (
+                  <Button asChild className="mt-4 rounded-full bg-mint text-forest hover:bg-mint/90 font-bold">
+                    <a href={upcoming.zoom_live_link} target="_blank" rel="noreferrer">Join Zoom</a>
+                  </Button>
+                )}
+              </>
+            ) : (
+              <>
+                <p className="mt-4 font-display font-bold text-forest">No sessions scheduled</p>
+                <p className="mt-1 text-sm text-foreground/65">Your next Zoom live class will appear here with a one-click join link.</p>
+              </>
+            )}
           </div>
         </div>
       </div>
