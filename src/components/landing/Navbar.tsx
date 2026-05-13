@@ -50,20 +50,21 @@ export function Navbar() {
           <Logo />
         </Link>
 
-        <nav className="hidden md:flex items-center gap-7">
-          {links.map((l) => (
-            <Link
-              key={l.to}
-              to={l.to}
-              activeOptions={{ exact: l.to === "/" }}
-              className="text-sm font-medium text-foreground/80 transition-colors hover:text-secondary data-[status=active]:text-secondary"
-            >
-              {l.label}
-            </Link>
-          ))}
-        </nav>
+        <div className="hidden md:flex items-center gap-7 ml-auto">
+          <nav className="flex items-center gap-7">
+            {links.map((l) => (
+              <Link
+                key={l.to}
+                to={l.to}
+                activeOptions={{ exact: l.to === "/" }}
+                className="text-sm font-medium text-foreground/80 transition-colors hover:text-secondary data-[status=active]:text-secondary"
+              >
+                {l.label}
+              </Link>
+            ))}
+          </nav>
 
-        <div className="hidden md:flex items-center gap-3">
+          <div className="flex items-center gap-3">
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -99,6 +100,7 @@ export function Navbar() {
           <EnrollButton className="rounded-full bg-forest text-mint hover:bg-forest/90 px-5">
             Enroll Now
           </EnrollButton>
+          </div>
         </div>
 
         <Sheet open={open} onOpenChange={setOpen}>
