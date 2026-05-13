@@ -8,7 +8,6 @@ import { Label } from "@/components/ui/label";
 import { Toaster } from "@/components/ui/sonner";
 import { Logo } from "@/components/landing/Logo";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 
 export const Route = createFileRoute("/login")({
   beforeLoad: async () => {
@@ -28,16 +27,37 @@ function LoginPage() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword(form);
-    setLoading(false);
-    if (error) { toast.error(error.message); return; }
-    toast.success("Welcome back!");
-    navigate({ to: "/dashboard" });
-  };
+    const { data: signIn, error } = await supabase.auth.signInWithPassword(form);
+    if (error || !signIn.user) {
+      setLoading(false);
+      toast.error(error?.message ?? "Unable to sign in");
+      return;
+    }
 
-  const google = async () => {
-    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/dashboard" });
-    if (result.error) toast.error(String(result.error));
+    // Fetch profile to verify the account is active and decide where to land.
+    const [{ data: profile }, { data: roleRows }] = await Promise.all([
+      supabase.from("profiles").select("is_active, full_name").eq("id", signIn.user.id).maybeSingle(),
+      supabase.from("user_roles").select("role").eq("user_id", signIn.user.id),
+    ]);
+
+    if (profile && profile.is_active === false) {
+      await supabase.auth.signOut();
+      setLoading(false);
+      toast.error("Your account has been suspended. Please contact Evogue Academy for support.");
+      return;
+    }
+
+    const roles = (roleRows ?? []).map((r) => r.role as string);
+    setLoading(false);
+    toast.success(`Welcome back${profile?.full_name ? `, ${profile.full_name}` : ""}!`);
+
+    if (roles.includes("admin")) {
+      navigate({ to: "/admin" });
+    } else if (roles.includes("instructor")) {
+      navigate({ to: "/instructor" });
+    } else {
+      navigate({ to: "/dashboard" });
+    }
   };
 
   return (
@@ -64,12 +84,6 @@ function LoginPage() {
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Login"}
           </Button>
         </form>
-        <div className="my-5 flex items-center gap-3 text-xs text-foreground/50">
-          <div className="h-px flex-1 bg-border" /> OR <div className="h-px flex-1 bg-border" />
-        </div>
-        <Button type="button" variant="outline" className="w-full h-12 rounded-full" onClick={google}>
-          Continue with Google
-        </Button>
         <p className="mt-6 text-sm text-center text-foreground/70">
           Don't have an account? <Link to="/contact" className="text-secondary font-semibold hover:underline">Contact us to enroll</Link>.
         </p>
