@@ -91,7 +91,6 @@ function AdminCertificatesPage() {
       await generateCertificate({
         studentName: c.student_name,
         courseTitle: c.course_title,
-        registrationNumber: c.registration_number ?? "—",
         issuedAt: new Date(c.issued_at),
       });
     } catch (e: any) {
