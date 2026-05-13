@@ -92,14 +92,7 @@ export function Navbar() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          ) : (
-            <Button asChild variant="ghost" className="rounded-full">
-              <Link to="/login">Login</Link>
-            </Button>
-          )}
-          <Button asChild className="rounded-full bg-forest text-mint hover:bg-forest/90 px-5">
-            <Link to="/login">Login</Link>
-          </Button>
+          ) : null}
           </div>
         </div>
 
