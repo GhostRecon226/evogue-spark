@@ -133,13 +133,28 @@ function DashboardHome() {
         <Stat icon={Award} label="Certificates earned" value={loading ? "…" : String(stats.certificates)} />
       </div>
 
-      <div className="mt-8 rounded-2xl border border-mint/40 bg-mint/15 p-5 flex items-start gap-4">
-        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-mint text-forest"><Megaphone className="h-5 w-5" /></span>
-        <div>
-          <p className="font-display font-bold text-forest">Welcome to your cohort</p>
-          <p className="mt-1 text-sm text-foreground/70">Cohort announcements from your instructor will appear here. Check back daily for live class reminders and updates.</p>
+      {announcements.length > 0 ? (
+        <div className="mt-8 space-y-3">
+          {announcements.map((a) => (
+            <div key={a.id} className="rounded-2xl border border-mint/40 bg-mint/15 p-5 flex items-start gap-4">
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-mint text-forest"><Megaphone className="h-5 w-5" /></span>
+              <div className="min-w-0">
+                <p className="font-display font-bold text-forest">{a.title}</p>
+                <p className="mt-1 text-sm text-foreground/70 whitespace-pre-wrap">{a.message}</p>
+                <p className="mt-2 text-xs text-foreground/50">{new Date(a.created_at).toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</p>
+              </div>
+            </div>
+          ))}
         </div>
-      </div>
+      ) : (
+        <div className="mt-8 rounded-2xl border border-mint/40 bg-mint/15 p-5 flex items-start gap-4">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-mint text-forest"><Megaphone className="h-5 w-5" /></span>
+          <div>
+            <p className="font-display font-bold text-forest">No announcements yet</p>
+            <p className="mt-1 text-sm text-foreground/70">Your cohort announcements will show up here.</p>
+          </div>
+        </div>
+      )}
 
       <div className="mt-10 grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
