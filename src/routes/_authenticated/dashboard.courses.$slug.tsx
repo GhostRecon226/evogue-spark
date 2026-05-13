@@ -184,17 +184,34 @@ function ClassroomPage() {
                 <p className="mt-2 text-sm text-mint/70">Video lesson placeholder</p>
               </div>
             </div>
+            {active.lesson_date && (
+              <p className="mt-3 text-xs text-foreground/55">
+                Live class: {new Date(active.lesson_date).toLocaleString(undefined, { weekday: "short", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+              </p>
+            )}
             <div className="mt-5 flex flex-wrap gap-3">
               <Button asChild variant="outline" className="rounded-full" disabled={!active.pdf_url}>
                 <a href={active.pdf_url ?? "#"} target="_blank" rel="noreferrer">
                   <Download className="h-4 w-4 mr-1" /> {active.pdf_url ? "Download PDF" : "PDF coming soon"}
                 </a>
               </Button>
-              <Button asChild className="rounded-full bg-mint text-forest hover:bg-mint/90 font-bold" disabled={!active.zoom_link}>
-                <a href={active.zoom_link ?? "#"} target="_blank" rel="noreferrer">
-                  <Video className="h-4 w-4 mr-1" /> {active.zoom_link ? "Join Zoom Live" : "Zoom link coming soon"}
-                </a>
-              </Button>
+              {(() => {
+                const live = active.zoom_live_link ?? active.zoom_link;
+                return (
+                  <Button asChild className="rounded-full bg-mint text-forest hover:bg-mint/90 font-bold" disabled={!live}>
+                    <a href={live ?? "#"} target="_blank" rel="noreferrer">
+                      <Video className="h-4 w-4 mr-1" /> {live ? "Join Zoom Live" : "Zoom link coming soon"}
+                    </a>
+                  </Button>
+                );
+              })()}
+              {active.zoom_recording_link && (
+                <Button asChild variant="outline" className="rounded-full">
+                  <a href={active.zoom_recording_link} target="_blank" rel="noreferrer">
+                    <PlayCircle className="h-4 w-4 mr-1" /> Watch Recording
+                  </a>
+                </Button>
+              )}
             </div>
             <div className="mt-8">
               <Button onClick={() => toggleComplete(active.id)} disabled={saving}
@@ -203,6 +220,7 @@ function ClassroomPage() {
                 {done[active.id] ? "Marked Complete" : "Mark as Complete"}
               </Button>
             </div>
+            <LessonNotes lessonId={active.id} />
           </main>
         ) : (
           <main className="rounded-2xl bg-background border border-dashed border-border p-12 text-center text-foreground/60">
