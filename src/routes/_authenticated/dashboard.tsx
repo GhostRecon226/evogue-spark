@@ -19,6 +19,8 @@ type Continue = {
   category: string | null;
   progress: number;
 };
+type Announcement = { id: string; title: string; message: string; created_at: string };
+type UpcomingLesson = { id: string; title: string; lesson_date: string; zoom_live_link: string | null; courseSlug: string };
 
 function DashboardHome() {
   const { user, profile } = useAuth();
