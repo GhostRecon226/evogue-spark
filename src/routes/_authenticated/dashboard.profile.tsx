@@ -98,6 +98,22 @@ function ProfilePage() {
         </Button>
       </form>
 
+      <div className="mt-6 max-w-xl rounded-2xl bg-mint-tint border border-border p-6">
+        <h2 className="font-display font-bold text-forest">Account</h2>
+        <dl className="mt-4 grid grid-cols-2 gap-4 text-sm">
+          <div>
+            <dt className="text-foreground/55">Member since</dt>
+            <dd className="mt-1 font-semibold text-forest">
+              {accountCreated ? new Date(accountCreated).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) : "—"}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-foreground/55">Enrolled courses</dt>
+            <dd className="mt-1 font-semibold text-forest">{enrolledCount ?? "…"}</dd>
+          </div>
+        </dl>
+      </div>
+
       <form onSubmit={changePw} className="mt-6 max-w-xl rounded-2xl bg-background border border-border p-6 space-y-4">
         <h2 className="font-display font-bold text-forest">Change password</h2>
         <div className="space-y-1.5"><Label>New password</Label><Input type="password" value={newPw} onChange={(e) => setNewPw(e.target.value)} /></div>
