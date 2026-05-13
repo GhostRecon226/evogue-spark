@@ -71,7 +71,7 @@ function LoginPage() {
           Continue with Google
         </Button>
         <p className="mt-6 text-sm text-center text-foreground/70">
-          New here? <Link to="/register" className="text-secondary font-semibold hover:underline">Create an account</Link>
+          Don't have an account? <Link to="/contact" className="text-secondary font-semibold hover:underline">Contact us to enroll</Link>.
         </p>
       </div>
       <Toaster richColors position="top-center" />
