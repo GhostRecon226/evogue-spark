@@ -100,6 +100,7 @@ export function Navbar() {
           <EnrollButton className="rounded-full bg-forest text-mint hover:bg-forest/90 px-5">
             Enroll Now
           </EnrollButton>
+          </div>
         </div>
 
         <Sheet open={open} onOpenChange={setOpen}>
