@@ -87,7 +87,7 @@ function AdminCapstones() {
         <div className="mt-10 rounded-3xl border border-dashed border-border bg-background p-12 text-center text-foreground/60">No submissions yet.</div>
       ) : (
         <div className="mt-8 overflow-x-auto rounded-2xl border border-border bg-background">
-          <table className="w-full text-sm">
+          <table className="w-full text-sm min-w-[640px]">
             <thead className="bg-mint-tint text-foreground/70">
               <tr>
                 <th className="text-left p-3 font-semibold">Student</th>
