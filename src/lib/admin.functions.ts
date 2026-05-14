@@ -98,7 +98,7 @@ export const adminCreateEnrollment = createServerFn({ method: "POST" })
         student_id: z.string().uuid(),
         course_id: z.string().uuid(),
         cohort_id: z.string().uuid().optional().nullable(),
-        payment_status: z.enum(["paid", "pending", "failed", "refunded"]).default("paid"),
+        payment_status: z.enum(["paid", "pending"]).default("paid"),
         payment_reference: z.string().trim().max(120).optional().nullable(),
       })
       .parse(input),
