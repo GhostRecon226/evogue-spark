@@ -38,7 +38,7 @@ const emptyForm = {
 };
 
 function UploadContent() {
-  const { user, instructorCourseIds } = useAuth();
+  const { instructorCourseIds } = useAuth();
   const [courses, setCourses] = useState<Course[]>([]);
   const [cohorts, setCohorts] = useState<Cohort[]>([]);
   const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -257,7 +257,6 @@ function UploadContent() {
                 );
               })
             )}
-            {!user && null}
           </div>
         </div>
       )}
