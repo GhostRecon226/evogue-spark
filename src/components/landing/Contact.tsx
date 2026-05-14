@@ -74,7 +74,7 @@ export function Contact() {
             Let's start your <span className="text-secondary">tech journey</span>
           </h2>
           <p className="mt-4 text-foreground/70 text-base sm:text-lg">
-            Questions about courses, scholarships, or partnerships? Reach out — we usually reply within a day.
+            Curious about a course? Not sure which track is right for you? Send us a message. We actually reply.
           </p>
         </div>
 
