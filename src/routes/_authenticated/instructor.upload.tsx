@@ -38,7 +38,7 @@ const emptyForm = {
 };
 
 function UploadContent() {
-  const { instructorCourseIds } = useAuth();
+  const { instructorCourseIds, user } = useAuth();
   const [courses, setCourses] = useState<Course[]>([]);
   const [cohorts, setCohorts] = useState<Cohort[]>([]);
   const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -47,13 +47,14 @@ function UploadContent() {
   const [submitting, setSubmitting] = useState(false);
 
   const reload = async () => {
-    if (instructorCourseIds.length === 0) return;
+    if (instructorCourseIds.length === 0 || !user) return;
     const [{ data: cs }, { data: cohs }, { data: ls }] = await Promise.all([
       supabase.from("courses").select("id, title").in("id", instructorCourseIds).order("title"),
       supabase.from("cohorts").select("id, name, course_id").in("course_id", instructorCourseIds).order("start_date", { ascending: false }),
       supabase.from("lessons")
         .select("id, course_id, cohort_id, title, lesson_number, lesson_date, zoom_live_link, zoom_recording_link, pdf_url, is_published")
         .in("course_id", instructorCourseIds)
+        .eq("uploaded_by", user.id)
         .order("lesson_number", { ascending: false })
         .limit(50),
     ]);
@@ -62,7 +63,7 @@ function UploadContent() {
     setLessons(ls ?? []);
   };
 
-  useEffect(() => { void reload(); }, [instructorCourseIds.join(",")]);
+  useEffect(() => { void reload(); }, [instructorCourseIds.join(","), user?.id]);
 
   // Auto-suggest next lesson_number when course changes (only for new lessons)
   useEffect(() => {

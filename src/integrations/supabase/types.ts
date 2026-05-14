@@ -530,6 +530,7 @@ export type Database = {
           pdf_url: string | null
           title: string
           updated_at: string
+          uploaded_by: string | null
           zoom_link: string | null
           zoom_live_link: string | null
           zoom_recording_link: string | null
@@ -545,6 +546,7 @@ export type Database = {
           pdf_url?: string | null
           title: string
           updated_at?: string
+          uploaded_by?: string | null
           zoom_link?: string | null
           zoom_live_link?: string | null
           zoom_recording_link?: string | null
@@ -560,6 +562,7 @@ export type Database = {
           pdf_url?: string | null
           title?: string
           updated_at?: string
+          uploaded_by?: string | null
           zoom_link?: string | null
           zoom_live_link?: string | null
           zoom_recording_link?: string | null

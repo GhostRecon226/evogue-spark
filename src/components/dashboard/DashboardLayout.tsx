@@ -38,7 +38,7 @@ const instructorItems: NavItem[] = [
   { label: "My Courses", to: "/instructor/courses", icon: BookOpen },
   { label: "Students", to: "/instructor/students", icon: Users },
   { label: "Upload Content", to: "/instructor/upload", icon: ClipboardCheck },
-  { label: "Capstones", to: "/instructor/capstones", icon: ClipboardCheck },
+  { label: "Capstone Reviews", to: "/instructor/capstones", icon: ClipboardCheck },
 ];
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
