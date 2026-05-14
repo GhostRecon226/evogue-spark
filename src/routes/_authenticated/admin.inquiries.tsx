@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Mail, Loader2, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import { DataTable, type Column } from "@/components/admin/DataTable";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/admin/inquiries")({
@@ -19,6 +20,7 @@ type Inquiry = {
   course_interest: string | null;
   message: string;
   source: string;
+  type: string;
   is_read: boolean;
   created_at: string;
 };
@@ -26,6 +28,7 @@ type Inquiry = {
 function InquiriesPage() {
   const [rows, setRows] = useState<Inquiry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [typeFilter, setTypeFilter] = useState("all");
 
   useEffect(() => {
     (async () => {
@@ -37,6 +40,11 @@ function InquiriesPage() {
       setLoading(false);
     })();
   }, []);
+
+  const filtered = useMemo(() =>
+    typeFilter === "all" ? rows : rows.filter((r) => (r.type || r.source) === typeFilter),
+    [rows, typeFilter]
+  );
 
   const toggleRead = async (id: string, next: boolean) => {
     const prev = rows;
@@ -59,8 +67,8 @@ function InquiriesPage() {
     { key: "message", header: "Message", accessor: (r) => r.message,
       cell: (r) => <span className="line-clamp-2 max-w-md inline-block">{r.message}</span>,
       sortable: false },
-    { key: "source", header: "Source", accessor: (r) => r.source,
-      cell: (r) => <span className="capitalize">{r.source}</span> },
+    { key: "type", header: "Type", accessor: (r) => r.type || r.source,
+      cell: (r) => <span className="capitalize">{r.type || r.source}</span> },
     { key: "created_at", header: "Date", accessor: (r) => r.created_at,
       cell: (r) => new Date(r.created_at).toLocaleDateString() },
   ];
@@ -73,13 +81,24 @@ function InquiriesPage() {
       </div>
       <p className="mt-1 text-foreground/65">Contact and scholarship form submissions.</p>
 
+      <div className="mt-6 flex flex-wrap gap-3">
+        <Select value={typeFilter} onValueChange={setTypeFilter}>
+          <SelectTrigger className="w-44 rounded-full"><SelectValue placeholder="Type" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All types</SelectItem>
+            <SelectItem value="contact">Contact</SelectItem>
+            <SelectItem value="scholarship">Scholarship</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
       <div className="mt-6">
         {loading ? (
           <div className="grid place-items-center py-20 text-foreground/50"><Loader2 className="h-6 w-6 animate-spin" /></div>
         ) : (
           <DataTable
-            rows={rows} columns={columns} rowKey={(r) => r.id} pageSize={10}
-            emptyMessage="No inquiries yet."
+            rows={filtered} columns={columns} rowKey={(r) => r.id} pageSize={10}
+            emptyMessage="No inquiries match."
             actions={(r) => (
               <Button size="sm" variant="outline" className="rounded-full"
                 onClick={() => toggleRead(r.id, !r.is_read)}>

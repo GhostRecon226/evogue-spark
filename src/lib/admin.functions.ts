@@ -89,3 +89,30 @@ export const promoteToAdmin = createServerFn({ method: "POST" })
     if (error && !error.message.includes("duplicate")) throw new Error(error.message);
     return { ok: true };
   });
+
+export const adminCreateEnrollment = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z
+      .object({
+        student_id: z.string().uuid(),
+        course_id: z.string().uuid(),
+        cohort_id: z.string().uuid().optional().nullable(),
+        payment_status: z.enum(["paid", "pending"]).default("paid"),
+        payment_reference: z.string().trim().max(120).optional().nullable(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.userId);
+    const { error } = await supabaseAdmin.from("enrollments").insert({
+      student_id: data.student_id,
+      course_id: data.course_id,
+      cohort_id: data.cohort_id ?? null,
+      payment_status: data.payment_status,
+      payment_reference: data.payment_reference ?? null,
+      enrolled_by: context.userId,
+    });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
