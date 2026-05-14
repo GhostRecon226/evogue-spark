@@ -63,7 +63,7 @@ function UploadContent() {
     setLessons(ls ?? []);
   };
 
-  useEffect(() => { void reload(); }, [instructorCourseIds.join(",")]);
+  useEffect(() => { void reload(); }, [instructorCourseIds.join(","), user?.id]);
 
   // Auto-suggest next lesson_number when course changes (only for new lessons)
   useEffect(() => {
