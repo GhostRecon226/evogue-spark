@@ -13,7 +13,7 @@ const features = [
   {
     icon: Globe2,
     title: "Global Standards",
-    text: "Curriculum benchmarked against the best companies and design schools worldwide.",
+    text: "Every module is built around what top companies actually hire for. Nothing theoretical. Nothing outdated.",
     iconBg: "bg-secondary/15 text-secondary",
   },
   {

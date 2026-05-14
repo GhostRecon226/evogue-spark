@@ -63,7 +63,7 @@ export function EnrollCta() {
           Join the next cohort
         </h2>
         <p className="mt-4 text-mint/80 text-base sm:text-lg">
-          Limited seats. Submit your details and we'll guide you through enrollment, payment options and scholarships.
+          Seats are limited per cohort. Drop your details and our team will reach out within 24 hours to walk you through everything.
         </p>
 
         <form

@@ -28,8 +28,7 @@ export function Hero() {
           </h1>
 
           <p className="mt-6 max-w-xl mx-auto lg:mx-0 text-base sm:text-lg text-foreground/70">
-            Join Africa's most visionary design and tech learning platform.
-            Hands-on cohorts, world-class mentors, real career outcomes.
+            Real projects. Expert mentors. A community that pushes you further than you thought possible.
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start">
@@ -51,11 +50,6 @@ export function Hero() {
 
           <div className="mt-10 flex items-center justify-center lg:justify-start gap-6 text-sm text-foreground/60">
             <div>
-              <p className="font-display text-2xl font-bold text-forest">9+</p>
-              <p>Tech tracks</p>
-            </div>
-            <div className="h-8 w-px bg-border" />
-            <div>
               <p className="font-display text-2xl font-bold text-forest">1.2k+</p>
               <p>Students trained</p>
             </div>
@@ -63,6 +57,11 @@ export function Hero() {
             <div>
               <p className="font-display text-2xl font-bold text-forest">87%</p>
               <p>Job outcome</p>
+            </div>
+            <div className="h-8 w-px bg-border" />
+            <div>
+              <p className="font-display text-2xl font-bold text-forest">4.9/5.0</p>
+              <p>Avg. rating</p>
             </div>
           </div>
         </div>
