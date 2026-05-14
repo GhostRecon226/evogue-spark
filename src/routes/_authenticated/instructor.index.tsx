@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Users, BookOpen, TrendingUp, Loader2, FileText } from "lucide-react";
+import { Users, BookOpen, TrendingUp, Loader2, FileText, ClipboardCheck } from "lucide-react";
 import { InstructorGuard } from "@/components/instructor/InstructorGuard";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,16 +12,17 @@ export const Route = createFileRoute("/_authenticated/instructor/")({
 function InstructorOverview() {
   const { instructorCourseIds } = useAuth();
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({ students: 0, lessons: 0, completionRate: 0 });
+  const [stats, setStats] = useState({ students: 0, lessons: 0, completionRate: 0, pendingCapstones: 0 });
 
   useEffect(() => {
     if (instructorCourseIds.length === 0) { setLoading(false); return; }
     let cancelled = false;
     (async () => {
-      const [{ data: enrol }, { data: lessons }, { data: progress }] = await Promise.all([
+      const [{ data: enrol }, { data: lessons }, { data: progress }, { data: caps }] = await Promise.all([
         supabase.from("enrollments").select("student_id, course_id").in("course_id", instructorCourseIds),
         supabase.from("lessons").select("id, course_id").in("course_id", instructorCourseIds),
         supabase.from("lesson_progress").select("student_id, course_id, completed").in("course_id", instructorCourseIds),
+        supabase.from("capstone_submissions").select("id, status").in("course_id", instructorCourseIds).in("status", ["pending", "recommended"]),
       ]);
       if (cancelled) return;
 
@@ -51,6 +52,7 @@ function InstructorOverview() {
         students: uniqueStudents.size,
         lessons: (lessons ?? []).length,
         completionRate: pctCount > 0 ? Math.round(pctSum / pctCount) : 0,
+        pendingCapstones: (caps ?? []).length,
       });
       setLoading(false);
     })();
@@ -61,6 +63,7 @@ function InstructorOverview() {
     { label: "Total Students", value: stats.students.toLocaleString(), icon: Users },
     { label: "Lessons Uploaded", value: stats.lessons.toLocaleString(), icon: FileText },
     { label: "Avg Completion Rate", value: `${stats.completionRate}%`, icon: TrendingUp },
+    { label: "Pending Capstone Reviews", value: stats.pendingCapstones.toLocaleString(), icon: ClipboardCheck },
   ];
 
   return (
@@ -76,7 +79,7 @@ function InstructorOverview() {
         </div>
       ) : (
         <>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {cards.map((c) => (
               <div key={c.label} className="rounded-2xl border border-border bg-background p-5">
                 <div className="flex items-center justify-between">
@@ -88,7 +91,7 @@ function InstructorOverview() {
             ))}
           </div>
 
-          <div className="mt-10 grid gap-4 sm:grid-cols-2">
+          <div className="mt-10 grid gap-4 sm:grid-cols-3">
             <Link to="/instructor/courses" className="rounded-2xl border border-border bg-background p-5 hover:bg-mint-tint/30 transition">
               <BookOpen className="h-6 w-6 text-secondary" />
               <p className="mt-3 font-display font-bold text-forest">View My Courses</p>
@@ -97,7 +100,12 @@ function InstructorOverview() {
             <Link to="/instructor/upload" className="rounded-2xl border border-border bg-background p-5 hover:bg-mint-tint/30 transition">
               <FileText className="h-6 w-6 text-secondary" />
               <p className="mt-3 font-display font-bold text-forest">Upload New Lesson</p>
-              <p className="text-sm text-foreground/60">Add a lesson with PDF and Zoom link.</p>
+              <p className="text-sm text-foreground/60">Add a lesson with PDF and Zoom links.</p>
+            </Link>
+            <Link to="/instructor/capstones" className="rounded-2xl border border-border bg-background p-5 hover:bg-mint-tint/30 transition">
+              <ClipboardCheck className="h-6 w-6 text-secondary" />
+              <p className="mt-3 font-display font-bold text-forest">Review Capstones</p>
+              <p className="text-sm text-foreground/60">{stats.pendingCapstones} awaiting your review.</p>
             </Link>
           </div>
         </>

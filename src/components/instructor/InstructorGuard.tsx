@@ -5,14 +5,14 @@ import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { useAuth } from "@/hooks/use-auth";
 
 export function InstructorGuard({ children }: { children: ReactNode }) {
-  const { isInstructor, loading } = useAuth();
+  const { isInstructor, isAdmin, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && !isInstructor) {
-      navigate({ to: "/dashboard", replace: true });
-    }
-  }, [loading, isInstructor, navigate]);
+    if (loading) return;
+    if (isInstructor) return;
+    navigate({ to: isAdmin ? "/admin" : "/dashboard", replace: true });
+  }, [loading, isInstructor, isAdmin, navigate]);
 
   if (loading || !isInstructor) {
     return (
