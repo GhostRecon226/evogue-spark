@@ -20,6 +20,7 @@ type Inquiry = {
   course_interest: string | null;
   message: string;
   source: string;
+  type: string;
   is_read: boolean;
   created_at: string;
 };
@@ -27,6 +28,7 @@ type Inquiry = {
 function InquiriesPage() {
   const [rows, setRows] = useState<Inquiry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [typeFilter, setTypeFilter] = useState("all");
 
   useEffect(() => {
     (async () => {
@@ -38,6 +40,11 @@ function InquiriesPage() {
       setLoading(false);
     })();
   }, []);
+
+  const filtered = useMemo(() =>
+    typeFilter === "all" ? rows : rows.filter((r) => (r.type || r.source) === typeFilter),
+    [rows, typeFilter]
+  );
 
   const toggleRead = async (id: string, next: boolean) => {
     const prev = rows;
