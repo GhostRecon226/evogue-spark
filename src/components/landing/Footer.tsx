@@ -18,7 +18,7 @@ const cols = [
     links: [
       { label: "Contact", to: "/contact" as const },
       { label: "Login", to: "/login" as const },
-      { label: "FAQ", to: "/contact" as const },
+      { label: "FAQ", to: "/faq" as const },
     ],
   },
 ];
