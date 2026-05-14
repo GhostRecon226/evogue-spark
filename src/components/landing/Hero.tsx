@@ -50,11 +50,6 @@ export function Hero() {
 
           <div className="mt-10 flex items-center justify-center lg:justify-start gap-6 text-sm text-foreground/60">
             <div>
-              <p className="font-display text-2xl font-bold text-forest">9+</p>
-              <p>Tech tracks</p>
-            </div>
-            <div className="h-8 w-px bg-border" />
-            <div>
               <p className="font-display text-2xl font-bold text-forest">1.2k+</p>
               <p>Students trained</p>
             </div>
@@ -62,6 +57,11 @@ export function Hero() {
             <div>
               <p className="font-display text-2xl font-bold text-forest">87%</p>
               <p>Job outcome</p>
+            </div>
+            <div className="h-8 w-px bg-border" />
+            <div>
+              <p className="font-display text-2xl font-bold text-forest">4.9/5.0</p>
+              <p>Avg. rating</p>
             </div>
           </div>
         </div>
