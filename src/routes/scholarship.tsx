@@ -424,18 +424,18 @@ function ScholarshipPage() {
       </section>
 
       {/* Section 5: Closing CTA */}
-      <section style={{ backgroundColor: "#0A2E1A" }} className="py-16 sm:py-20">
+      <section style={{ backgroundColor: "#0A2E1A" }} className="py-12">
         <div className="mx-auto max-w-3xl px-4 text-center text-white">
           <h2 className="font-display text-3xl sm:text-4xl font-extrabold leading-tight">
             Scholarship not the right fit?
           </h2>
-          <p className="mt-5 text-white/75 text-base sm:text-lg leading-relaxed">
+          <p className="mt-4 text-white/75 text-base sm:text-lg leading-relaxed">
             We get it. Finances are complicated wherever you are in the world. We offer flexible payment plans designed to be accessible no matter where you are based. Talk to us and we will figure something out together.
           </p>
           <Button
             asChild
             variant="outline"
-            className="mt-8 h-12 rounded-full px-8 font-bold border-2 bg-transparent hover:bg-mint hover:text-forest"
+            className="mt-6 h-12 rounded-full px-8 font-bold border-2 bg-transparent hover:bg-mint hover:text-forest"
             style={{ borderColor: "#00F5A0", color: "#00F5A0" }}
           >
             <Link to="/contact">Let's talk</Link>

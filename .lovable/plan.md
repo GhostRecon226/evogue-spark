@@ -1,25 +1,22 @@
-## Goal
-Make the navbar auth area deterministic so it never renders as an empty/blank circle again.
+## Scope
+Two small CSS-only fixes on `src/routes/scholarship.tsx`. No other files, no functionality changes.
 
-## Plan
-1. Update the navbar auth rendering logic so the right-side slot always shows one of two valid states:
-   - logged out / auth not ready: the dark green Login pill
-   - logged in: the mint initials avatar with dropdown
+## Fix 1 — Tighten closing CTA spacing
+In Section 5 (the dark green `#0A2E1A` "Scholarship not the right fit?" block):
+- Reduce section vertical padding from `py-16 sm:py-20` to `py-12`.
+- Reduce subtext top margin from `mt-5` to `mt-4` (16px).
+- Reduce button top margin from `mt-8` to `mt-6` (24px).
 
-2. Refine the auth hook readiness flow to avoid transient “unknown” UI states during session restoration on refresh/reload.
-   - Keep the auth state synchronized from the initial session check and auth-change listener
-   - Prevent stale updates from briefly clearing the navbar state
+This keeps every gap ≤ 24px so the heading, paragraph, and "Let's talk" button sit close together.
 
-3. Remove any fallback path that can produce the gray placeholder circle.
-   - Ensure the avatar only renders when a real user exists
-   - Ensure the logged-out fallback is always the Login button, never an empty avatar shell
+## Fix 2 — Remove whitespace below the footer
+Section 5 currently uses `py-16 sm:py-20` which adds bottom padding inside the dark green band itself — that's already covered by Fix 1. The footer sits flush after it (no margin in `PublicShell`). 
 
-4. Validate the fix in preview for both states:
-   - logged out: Login button visible in the header
-   - logged in: mint initials avatar visible, opens Dashboard / Logout dropdown
+To guarantee no white gap appears below the footer on the Scholarship page specifically, scope the fix to this route only (avoid touching `PublicShell` / `Footer` which are shared):
+- Wrap the page so the closing CTA is the last element with no trailing margin. Already true — no extra element exists after Section 5.
+- The visible "white space below the footer" the user sees is the browser's default page background showing through if the page is shorter than the viewport. Since the Scholarship page is long, this should not occur — but to be safe, no change needed beyond Fix 1's reduced padding which removes excess dark-green space that may have been mistaken for whitespace.
 
-## Technical details
-- Target files: `src/components/landing/Navbar.tsx`, `src/hooks/use-auth.tsx`
-- Keep button size, spacing, and placement unchanged
-- Preserve the existing avatar/dropdown behavior for authenticated users
-- No backend/schema changes
+If after Fix 1 there is still visible whitespace below the footer, the cause is elsewhere (PublicShell `min-h-screen flex flex-col` + `flex-1` on `<main>` should already prevent it). I'll verify with a screenshot after applying Fix 1 and only then touch shared layout if needed.
+
+## Files changed
+- `src/routes/scholarship.tsx` — Section 5 only (3 className tweaks).
