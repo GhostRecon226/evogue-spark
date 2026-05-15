@@ -169,7 +169,7 @@ function ContactPage() {
 
         {/* RIGHT PANEL */}
         <section
-          className="flex-1 px-6 py-10 md:px-10 md:py-12 lg:px-[60px] lg:py-16 flex flex-col justify-center"
+          className="flex-1 px-6 py-12 md:px-10 lg:px-[60px] flex flex-col justify-center"
           style={{
             backgroundColor: MINT_BG,
             backgroundImage: "radial-gradient(rgba(10,46,26,0.06) 1px, transparent 1px)",
