@@ -247,18 +247,18 @@ function AdminOverview() {
             {cards.map((c) => {
               const up = c.trend >= 0;
               return (
-                <div key={c.label} className={`relative overflow-hidden rounded-2xl ${c.bg} ${c.text} p-5 shadow-sm`}>
+                <div key={c.label} className={`relative overflow-hidden rounded-2xl ${c.bg} ${c.text} px-4 py-3 shadow-sm max-h-[120px]`}>
                   <div className="flex items-start justify-between">
-                    <div className={`grid h-11 w-11 place-items-center rounded-xl ${c.iconWrap}`}>
-                      <c.icon className="h-5 w-5" />
+                    <div className={`grid h-9 w-9 place-items-center rounded-lg ${c.iconWrap}`}>
+                      <c.icon className="h-4 w-4" />
                     </div>
-                    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-bold ${up ? "bg-white/20" : "bg-white/15"}`}>
+                    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${c.trendBg}`}>
                       {up ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
                       {Math.abs(c.trend)}%
                     </span>
                   </div>
-                  <p className="mt-5 font-display text-3xl font-extrabold leading-none">{c.value}</p>
-                  <p className="mt-2 text-xs font-semibold opacity-80">{c.label}</p>
+                  <p className="mt-2 font-display text-2xl font-extrabold leading-none">{c.value}</p>
+                  <p className="mt-1 text-[11px] font-semibold opacity-80">{c.label}</p>
                 </div>
               );
             })}
