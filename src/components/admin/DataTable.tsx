@@ -16,14 +16,16 @@ type Props<T> = {
   columns: Column<T>[];
   pageSize?: number;
   emptyMessage?: string;
+  emptyState?: ReactNode;
   rowKey: (row: T) => string;
   initialSort?: { key: string; direction: "asc" | "desc" };
   actions?: (row: T) => ReactNode;
+  alwaysShowHeader?: boolean;
 };
 
 export function DataTable<T>({
-  rows, columns, pageSize = 10, emptyMessage = "No records found.",
-  rowKey, initialSort, actions,
+  rows, columns, pageSize = 10, emptyMessage = "No records found.", emptyState,
+  rowKey, initialSort, actions, alwaysShowHeader,
 }: Props<T>) {
   const [sort, setSort] = useState<{ key: string; direction: "asc" | "desc" } | null>(initialSort ?? null);
   const [page, setPage] = useState(0);
