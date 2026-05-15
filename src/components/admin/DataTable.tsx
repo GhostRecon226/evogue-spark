@@ -109,12 +109,13 @@ export function DataTable<T>({
           </tbody>
         </table>
       </div>
-      {sorted.length > pageSize && (
+      {sorted.length > 0 && (
         <div className="flex items-center justify-between px-4 py-3 border-t border-border bg-background">
           <p className="text-xs text-foreground/60">
-            Page {safePage + 1} of {totalPages} · {sorted.length} records
+            Showing {sorted.length === 0 ? 0 : safePage * pageSize + 1}–{Math.min(sorted.length, (safePage + 1) * pageSize)} of {sorted.length}
           </p>
           <div className="flex items-center gap-2">
+            <span className="text-xs text-foreground/60">Page {safePage + 1} of {totalPages}</span>
             <Button variant="outline" size="sm" className="rounded-full"
               onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={safePage === 0}>
               <ChevronLeft className="h-4 w-4" />

@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Loader2, ExternalLink, ClipboardCheck, Inbox } from "lucide-react";
+import { Loader2, ExternalLink, ClipboardCheck, Inbox, X } from "lucide-react";
 import { toast } from "sonner";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
@@ -132,6 +132,16 @@ function AdminCapstones() {
             <SelectItem value="rejected">Rejected</SelectItem>
           </SelectContent>
         </Select>
+        {(courseFilter !== "all" || cohortFilter !== "all" || statusFilter !== "all") && (
+          <Button
+            type="button"
+            variant="outline"
+            className="rounded-full"
+            onClick={() => { setCourseFilter("all"); setCohortFilter("all"); setStatusFilter("all"); }}
+          >
+            <X className="h-3.5 w-3.5 mr-1" /> Reset filters
+          </Button>
+        )}
       </div>
 
       {loading ? (

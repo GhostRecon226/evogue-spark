@@ -40,26 +40,31 @@ function StudentsPage() {
 
   const load = async () => {
     setLoading(true);
-    const [profilesRes, enrolRes] = await Promise.all([
+    const [profilesRes, enrolRes, rolesRes] = await Promise.all([
       supabase
         .from("profiles")
         .select("id, full_name, email, whatsapp_number, registration_number, is_active, created_at, role")
         .eq("role", "student")
         .order("created_at", { ascending: false }),
       supabase.from("enrollments").select("student_id"),
+      supabase.from("user_roles").select("user_id, role").in("role", ["admin", "instructor"]),
     ]);
+    const excluded = new Set<string>();
+    for (const r of rolesRes.data ?? []) excluded.add(r.user_id);
     const counts = new Map<string, number>();
     for (const e of enrolRes.data ?? []) counts.set(e.student_id, (counts.get(e.student_id) ?? 0) + 1);
-    setRows((profilesRes.data ?? []).map((p) => ({
-      id: p.id,
-      full_name: p.full_name ?? "",
-      email: p.email ?? "",
-      whatsapp_number: p.whatsapp_number,
-      registration_number: p.registration_number,
-      is_active: p.is_active,
-      created_at: p.created_at,
-      enrolled_count: counts.get(p.id) ?? 0,
-    })));
+    setRows((profilesRes.data ?? [])
+      .filter((p) => p.role === "student" && !excluded.has(p.id))
+      .map((p) => ({
+        id: p.id,
+        full_name: p.full_name ?? "",
+        email: p.email ?? "",
+        whatsapp_number: p.whatsapp_number,
+        registration_number: p.registration_number,
+        is_active: p.is_active,
+        created_at: p.created_at,
+        enrolled_count: counts.get(p.id) ?? 0,
+      })));
     setLoading(false);
   };
 
