@@ -23,7 +23,7 @@ const links = [
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const { user, signOut } = useAuth();
+  const { user, loading, signOut } = useAuth();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -65,7 +65,9 @@ export function Navbar() {
           </nav>
 
           <div className="flex items-center gap-3">
-          {user ? (
+          {loading ? (
+            <div className="h-10 w-10 rounded-full bg-muted/50 animate-pulse" aria-hidden />
+          ) : user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="rounded-full ring-2 ring-transparent hover:ring-secondary/40 transition">
@@ -136,7 +138,7 @@ export function Navbar() {
                   </>
                 )}
               </nav>
-              {!user && (
+              {!loading && !user && (
                 <Button asChild className="mt-6 h-11 w-full rounded-full bg-secondary text-forest hover:bg-secondary/90 text-sm font-semibold">
                   <Link to="/login" onClick={() => setOpen(false)}>Login</Link>
                 </Button>
