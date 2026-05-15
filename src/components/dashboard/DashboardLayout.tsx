@@ -147,6 +147,16 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
             <Button asChild variant="ghost" className="hidden sm:inline-flex rounded-full text-sm">
               <Link to="/courses">Browse courses</Link>
             </Button>
+            <button
+              type="button"
+              aria-label="Notifications"
+              className="relative h-11 w-11 grid place-items-center rounded-full hover:bg-mint/15 transition"
+            >
+              <Bell className="h-5 w-5 text-forest" />
+              <span className="absolute top-2 right-2 min-w-[18px] h-[18px] px-1 grid place-items-center rounded-full bg-mint text-forest text-[10px] font-extrabold ring-2 ring-background">
+                3
+              </span>
+            </button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="rounded-full ring-2 ring-transparent hover:ring-secondary/40 transition h-11 w-11 grid place-items-center" aria-label="Account menu">
