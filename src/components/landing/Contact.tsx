@@ -24,8 +24,8 @@ const info = [
   {
     icon: MessageCircle,
     label: "WhatsApp",
-    value: "+234 800 000 0000",
-    href: "https://wa.me/2348000000000",
+    value: "+44 7404 331835",
+    href: "https://wa.me/447404331835",
   },
   {
     icon: MapPin,

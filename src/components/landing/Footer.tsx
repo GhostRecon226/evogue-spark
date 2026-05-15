@@ -57,7 +57,7 @@ export function Footer() {
                 <a href="mailto:hello@evogueacademy.com" className="hover:text-mint">hello@evogueacademy.com</a>
               </li>
               <li>
-                <a href="tel:+2348000000000" className="hover:text-mint">+234 800 000 0000</a>
+                <a href="tel:+447404331835" className="hover:text-mint">+44 7404 331835</a>
               </li>
               <li className="text-mint/60">Lagos, Nigeria</li>
             </ul>
