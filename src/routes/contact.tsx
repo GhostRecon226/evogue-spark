@@ -99,7 +99,7 @@ function ContactPage() {
               No ticket queues.<br />
               <span className="italic" style={{ color: MINT }}>Just us.</span>
             </h1>
-            <p className="mt-5 text-sm" style={{ color: "rgba(237,247,240,0.6)", maxWidth: "100%" }}>
+            <p className="mt-5 text-sm" style={{ color: "rgba(237,247,240,0.6)", maxWidth: 300 }}>
               Got a question about a course, a scholarship, or just not sure where to start? We read every message and we reply to every one.
             </p>
           </div>
