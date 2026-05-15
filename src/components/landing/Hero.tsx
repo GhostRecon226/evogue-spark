@@ -58,11 +58,6 @@ export function Hero() {
               <p className="font-display text-2xl font-bold text-forest">87%</p>
               <p>Job outcome</p>
             </div>
-            <div className="h-8 w-px bg-border" />
-            <div>
-              <p className="font-display text-2xl font-bold text-forest">4.9/5.0</p>
-              <p>Avg. rating</p>
-            </div>
           </div>
         </div>
 

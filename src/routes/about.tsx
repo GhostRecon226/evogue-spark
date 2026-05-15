@@ -22,10 +22,10 @@ const features = [
 ];
 
 const team = [
-  { name: "Adaeze Okonkwo", role: "Head of Design", avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80" },
-  { name: "Tunde Bakare", role: "Head of Product", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80" },
-  { name: "Funmi Adesanya", role: "Head of Engineering", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80" },
-  { name: "Kemi Lawal", role: "Head of Data", avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80" },
+  { name: "Adaeze Okonkwo", role: "Head of Design", avatar: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&q=80" },
+  { name: "Tunde Bakare", role: "Head of Product", avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&q=80" },
+  { name: "Funmi Adesanya", role: "Head of Engineering", avatar: "https://images.unsplash.com/photo-1573497019418-b400bb3ab074?w=400&q=80" },
+  { name: "Kemi Lawal", role: "Head of Data", avatar: "https://images.unsplash.com/photo-1580894732444-8ecded7900cd?w=400&q=80" },
 ];
 
 function AboutPage() {
@@ -59,7 +59,7 @@ function AboutPage() {
         </div>
       </section>
 
-      <section className="bg-mint-tint py-14 sm:py-20">
+      <section className="bg-mint-tint py-12 sm:py-16">
         <div className="mx-auto max-w-4xl px-4 text-center">
           <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-forest">Our Mission</h2>
           <p className="mt-5 text-foreground/75 text-base sm:text-lg leading-relaxed">
@@ -69,7 +69,7 @@ function AboutPage() {
         </div>
       </section>
 
-      <section className="py-14 sm:py-20">
+      <section className="py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-center font-display text-3xl sm:text-4xl font-extrabold text-forest">Our Values</h2>
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

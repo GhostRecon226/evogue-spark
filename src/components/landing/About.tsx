@@ -1,5 +1,5 @@
 const aboutImg =
-  "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=1600&q=80";
+  "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1600&q=80";
 
 export function About() {
   return (
@@ -18,7 +18,7 @@ export function About() {
           </p>
         </div>
 
-        <div className="mt-10 overflow-hidden rounded-3xl shadow-[var(--shadow-soft)]">
+        <div className="mt-8 overflow-hidden rounded-3xl shadow-[var(--shadow-soft)]">
           <img
             src={aboutImg}
             alt="Diverse team of professionals collaborating in a modern workspace"
