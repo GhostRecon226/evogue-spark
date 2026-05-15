@@ -71,9 +71,10 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
   const isStudent = !isAdmin && !isInstructor;
 
   const exactMatch = (to: string) => to === "/dashboard" || to === "/admin" || to === "/instructor";
-  const current = navItems.find((it) =>
-    exactMatch(it.to) ? path === it.to : path.startsWith(it.to),
-  );
+  // Pick the longest matching nav item so deeper routes (e.g. /dashboard/courses) win over /dashboard.
+  const current = [...navItems]
+    .sort((a, b) => b.to.length - a.to.length)
+    .find((it) => (exactMatch(it.to) ? path === it.to : path === it.to || path.startsWith(it.to + "/")));
   const todayStr = new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric", year: "numeric" });
 
   const renderSidebar = (isMobile: boolean) => {
