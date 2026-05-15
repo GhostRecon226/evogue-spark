@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { BookOpen, Award, ArrowRight, Loader2, CheckCircle2, ClipboardCheck, Megaphone, Video } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
