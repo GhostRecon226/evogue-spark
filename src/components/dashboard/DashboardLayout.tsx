@@ -100,9 +100,30 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
             )}
           </div>
           {!isCollapsed && (
-            <div className="mt-4">
-              <p className="text-[14px] font-semibold text-white truncate">{displayName}</p>
-              <p className="text-[11px] uppercase tracking-[0.18em] font-bold text-mint mt-0.5">{roleLabel}</p>
+            <div className="mt-5">
+              {isStudent ? (
+                <div className="flex items-center gap-3">
+                  <Avatar className="h-11 w-11 ring-2 ring-mint/40">
+                    <AvatarImage src={avatarUrl} alt="" />
+                    <AvatarFallback className="bg-mint text-forest font-bold text-sm">{initials}</AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0">
+                    <p className="text-[14px] font-semibold text-white truncate">{displayName}</p>
+                    {profile?.registration_number ? (
+                      <p className="text-[11px] font-mono tracking-wider text-mint truncate">
+                        {profile.registration_number}
+                      </p>
+                    ) : (
+                      <p className="text-[11px] uppercase tracking-[0.18em] font-bold text-mint mt-0.5">Student</p>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <p className="text-[14px] font-semibold text-white truncate">{displayName}</p>
+                  <p className="text-[11px] uppercase tracking-[0.18em] font-bold text-mint mt-0.5">{roleLabel}</p>
+                </>
+              )}
             </div>
           )}
           {!isMobile && canCollapse && isCollapsed && (
@@ -128,8 +149,8 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                 aria-current={active ? "page" : undefined}
                 className={`group relative flex items-center ${isCollapsed ? "justify-center px-0" : "gap-3 px-5"} rounded-xl py-3 text-sm font-semibold transition-all ${
                   active
-                    ? "bg-mint text-forest shadow-[0_10px_30px_-12px_color-mix(in_oklab,var(--mint)_55%,transparent)]"
-                    : "text-mint/80 hover:bg-mint/10 hover:text-mint"
+                    ? "bg-mint/15 text-mint shadow-[inset_3px_0_0_0_var(--mint)]"
+                    : "text-mint/75 hover:bg-mint/10 hover:text-mint"
                 }`}
               >
                 <it.icon className="h-4 w-4 shrink-0" />
