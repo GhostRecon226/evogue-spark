@@ -37,7 +37,7 @@ const sections: { title: string; items: { q: string; a: string }[] }[] = [
       },
       {
         q: "Do I get a certificate?",
-        a: "Yes. Once you complete coursework and pass the capstone review, you receive a verifiable Evogue Academy certificate with a unique registration number.",
+        a: "Yes. Once you complete coursework and pass the capstone review, you receive a verifiable Evogue Academy certificate with a unique Student ID.",
       },
     ],
   },

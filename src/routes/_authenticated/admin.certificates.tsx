@@ -99,7 +99,7 @@ function AdminCertificatesPage() {
   };
 
   const columns: Column<Cert>[] = [
-    { key: "registration_number", header: "Reg #", accessor: (r) => r.registration_number ?? "—",
+    { key: "registration_number", header: "Student ID", accessor: (r) => r.registration_number ?? "—",
       cell: (r) => <span className="font-mono text-xs tracking-wider text-forest">{r.registration_number ?? "—"}</span> },
     { key: "student_name", header: "Student", accessor: (r) => r.student_name },
     { key: "course_title", header: "Course", accessor: (r) => r.course_title },

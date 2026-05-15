@@ -152,7 +152,7 @@ function AdminCapstones() {
             <table className="w-full text-sm min-w-[720px]">
               <thead className="bg-mint-tint/60 text-forest">
                 <tr>
-                  <th className="text-left font-bold px-4 py-3">Reg No</th>
+                  <th className="text-left font-bold px-4 py-3">Student ID</th>
                   <th className="text-left font-bold px-4 py-3">Student</th>
                   <th className="text-left font-bold px-4 py-3">Course</th>
                   <th className="text-left font-bold px-4 py-3">Cohort</th>

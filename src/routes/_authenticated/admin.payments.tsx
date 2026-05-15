@@ -72,7 +72,7 @@ function PaymentsPage() {
   const total = filtered.reduce((s, r) => s + r.amount, 0);
 
   const exportCsv = () => {
-    const head = ["Registration No", "Student", "Course", "Cohort", "Amount (NGN)", "Reference", "Date"];
+    const head = ["Student ID", "Student", "Course", "Cohort", "Amount (NGN)", "Reference", "Date"];
     const lines = [head.join(",")];
     for (const r of filtered) {
       const cells = [

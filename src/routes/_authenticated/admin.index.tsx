@@ -345,7 +345,7 @@ function AdminOverview() {
                 <table className="w-full min-w-[640px] text-sm">
                   <thead>
                     <tr className="text-left text-[11px] uppercase tracking-wide text-foreground/55 border-b border-border">
-                      <th className="py-2.5 px-5 font-semibold">Reg No</th>
+                      <th className="py-2.5 px-5 font-semibold">Student ID</th>
                       <th className="py-2.5 px-2 font-semibold">Student</th>
                       <th className="py-2.5 px-2 font-semibold">Course</th>
                       <th className="py-2.5 px-2 font-semibold">Cohort</th>
