@@ -65,7 +65,9 @@ export function Navbar() {
           </nav>
 
           <div className="flex items-center gap-3">
-          {user ? (
+          {loading ? (
+            <div className="h-10 w-10 rounded-full bg-muted/50 animate-pulse" aria-hidden />
+          ) : user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="rounded-full ring-2 ring-transparent hover:ring-secondary/40 transition">
