@@ -188,3 +188,22 @@
 .sidebar-scroll:focus-within::-webkit-scrollbar-thumb {
   background-color: color-mix(in oklab, var(--mint) 45%, transparent);
 }
+
+@keyframes scholarship-hero-rise {
+  0% { opacity: 0; transform: translateY(16px) scale(0.98); filter: drop-shadow(0 0 0 rgba(0, 245, 160, 0)); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: drop-shadow(0 0 28px rgba(0, 245, 160, 0.35)); }
+}
+@keyframes scholarship-hero-glow {
+  0%, 100% { filter: drop-shadow(0 0 18px rgba(0, 245, 160, 0.25)); }
+  50% { filter: drop-shadow(0 0 34px rgba(0, 245, 160, 0.5)); }
+}
+.scholarship-hero-svg {
+  animation: scholarship-hero-rise 0.9s ease-out both, scholarship-hero-glow 5s ease-in-out 0.9s infinite;
+  transition: transform 0.4s ease;
+}
+.scholarship-hero-svg:hover {
+  transform: translateY(-4px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .scholarship-hero-svg { animation: none; }
+}
