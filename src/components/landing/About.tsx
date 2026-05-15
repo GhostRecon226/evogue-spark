@@ -18,7 +18,7 @@ export function About() {
           </p>
         </div>
 
-        <div className="mt-10 overflow-hidden rounded-3xl shadow-[var(--shadow-soft)]">
+        <div className="mt-8 overflow-hidden rounded-3xl shadow-[var(--shadow-soft)]">
           <img
             src={aboutImg}
             alt="Diverse team of professionals collaborating in a modern workspace"
