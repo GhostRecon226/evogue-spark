@@ -83,7 +83,7 @@ export function Hero() {
           </h1>
 
           <p className="mt-6 max-w-xl mx-auto lg:mx-0 text-base sm:text-lg text-foreground/70">
-            Real projects. Expert mentors. A community that pushes you further than you thought possible.
+            Real projects. Expert mentors. A community of builders from Lagos to London, Nairobi to New York.
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start">
