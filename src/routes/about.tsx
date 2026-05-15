@@ -9,7 +9,7 @@ export const Route = createFileRoute("/about")({
       { title: "About — Evogue Academy" },
       { name: "description", content: "Our founder story, mission and team behind Evogue Academy." },
       { property: "og:title", content: "About — Evogue Academy" },
-      { property: "og:description", content: "Building Africa's next generation of tech leaders." },
+      { property: "og:description", content: "Building the next generation of global tech leaders." },
     ],
   }),
   component: AboutPage,
