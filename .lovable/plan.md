@@ -1,20 +1,25 @@
-The Login button is missing because the navbar intentionally renders nothing while auth is still in its loading state.
-
-## What’s happening
-- `Navbar.tsx` currently does: `loading ? null : user ? avatar : Login`
-- That means the right side of the header is blank whenever auth has not finished restoring the session yet.
-- In `use-auth.tsx`, `loading` starts as `true` and only flips after the initial auth/session check resolves.
-- If that initial check is delayed during preview reloads or session restore, the navbar shows an empty state instead of the Login button.
+## Goal
+Make the navbar auth area deterministic so it never renders as an empty/blank circle again.
 
 ## Plan
-1. Refine the auth readiness flow in `use-auth.tsx` so the session restoration path is handled deterministically.
-2. Update the navbar rendering logic so it never shows a blank placeholder circle or empty auth slot.
-3. Keep the intended behavior:
-   - logged out → show Login button
-   - logged in → show avatar with initials and dropdown
-4. Verify both desktop and mobile nav states after session load, sign-in, and sign-out.
+1. Update the navbar auth rendering logic so the right-side slot always shows one of two valid states:
+   - logged out / auth not ready: the dark green Login pill
+   - logged in: the mint initials avatar with dropdown
+
+2. Refine the auth hook readiness flow to avoid transient “unknown” UI states during session restoration on refresh/reload.
+   - Keep the auth state synchronized from the initial session check and auth-change listener
+   - Prevent stale updates from briefly clearing the navbar state
+
+3. Remove any fallback path that can produce the gray placeholder circle.
+   - Ensure the avatar only renders when a real user exists
+   - Ensure the logged-out fallback is always the Login button, never an empty avatar shell
+
+4. Validate the fix in preview for both states:
+   - logged out: Login button visible in the header
+   - logged in: mint initials avatar visible, opens Dashboard / Logout dropdown
 
 ## Technical details
-- Review the ordering between `getSession()` and `onAuthStateChange()` in the auth hook.
-- Preserve the current logged-in avatar/dropdown behavior.
-- Remove any transient empty auth UI from the navbar so visitors always see a clear final state.
+- Target files: `src/components/landing/Navbar.tsx`, `src/hooks/use-auth.tsx`
+- Keep button size, spacing, and placement unchanged
+- Preserve the existing avatar/dropdown behavior for authenticated users
+- No backend/schema changes
