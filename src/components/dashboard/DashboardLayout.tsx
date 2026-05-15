@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, BookOpen, Award, User, LogOut, Menu, ArrowLeft, Shield, GraduationCap, ClipboardCheck, Users, Wallet, Mail, CalendarDays, PlayCircle, Megaphone, Settings as SettingsIcon, Bell, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { LayoutDashboard, BookOpen, Award, User, LogOut, Menu, ArrowLeft, Shield, GraduationCap, ClipboardCheck, Users, Wallet, Mail, CalendarDays, PlayCircle, Megaphone, Settings as SettingsIcon, Bell, PanelLeftClose, PanelLeftOpen, UserCircle2 } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { Logo } from "@/components/landing/Logo";
 import { Button } from "@/components/ui/button";
@@ -42,7 +42,7 @@ const instructorItems: NavItem[] = [
 ];
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
-  const { user, signOut, isAdmin, isInstructor } = useAuth();
+  const { user, profile, signOut, isAdmin, isInstructor } = useAuth();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
   const canCollapse = isAdmin || isInstructor;
@@ -56,22 +56,25 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
     }
   }, [collapsed]);
 
-  const initials = (user?.user_metadata?.full_name || user?.email || "U")
+  const initials = (profile?.full_name || user?.user_metadata?.full_name || user?.email || "U")
     .split(/\s+/)
     .map((p: string) => p[0])
     .slice(0, 2)
     .join("")
     .toUpperCase();
-  const displayName = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Student";
+  const displayName = profile?.full_name || user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Student";
+  const avatarUrl = profile?.avatar_url || user?.user_metadata?.avatar_url;
 
   // Role-based: admin sees ONLY admin nav, instructor sees ONLY instructor nav, student sees student nav.
   const navItems: NavItem[] = isAdmin ? adminItems : isInstructor ? instructorItems : studentItems;
   const roleLabel = isAdmin ? "Admin" : isInstructor ? "Instructor" : "Student";
+  const isStudent = !isAdmin && !isInstructor;
 
   const exactMatch = (to: string) => to === "/dashboard" || to === "/admin" || to === "/instructor";
   const current = navItems.find((it) =>
     exactMatch(it.to) ? path === it.to : path.startsWith(it.to),
   );
+  const todayStr = new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric", year: "numeric" });
 
   const renderSidebar = (isMobile: boolean) => {
     const isCollapsed = !isMobile && canCollapse && collapsed;
@@ -97,9 +100,30 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
             )}
           </div>
           {!isCollapsed && (
-            <div className="mt-4">
-              <p className="text-[14px] font-semibold text-white truncate">{displayName}</p>
-              <p className="text-[11px] uppercase tracking-[0.18em] font-bold text-mint mt-0.5">{roleLabel}</p>
+            <div className="mt-5">
+              {isStudent ? (
+                <div className="flex items-center gap-3">
+                  <Avatar className="h-11 w-11 ring-2 ring-mint/40">
+                    <AvatarImage src={avatarUrl} alt="" />
+                    <AvatarFallback className="bg-mint text-forest font-bold text-sm">{initials}</AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0">
+                    <p className="text-[14px] font-semibold text-white truncate">{displayName}</p>
+                    {profile?.registration_number ? (
+                      <p className="text-[11px] font-mono tracking-wider text-mint truncate">
+                        {profile.registration_number}
+                      </p>
+                    ) : (
+                      <p className="text-[11px] uppercase tracking-[0.18em] font-bold text-mint mt-0.5">Student</p>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <p className="text-[14px] font-semibold text-white truncate">{displayName}</p>
+                  <p className="text-[11px] uppercase tracking-[0.18em] font-bold text-mint mt-0.5">{roleLabel}</p>
+                </>
+              )}
             </div>
           )}
           {!isMobile && canCollapse && isCollapsed && (
@@ -125,8 +149,8 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                 aria-current={active ? "page" : undefined}
                 className={`group relative flex items-center ${isCollapsed ? "justify-center px-0" : "gap-3 px-5"} rounded-xl py-3 text-sm font-semibold transition-all ${
                   active
-                    ? "bg-mint text-forest shadow-[0_10px_30px_-12px_color-mix(in_oklab,var(--mint)_55%,transparent)]"
-                    : "text-mint/80 hover:bg-mint/10 hover:text-mint"
+                    ? "bg-mint/15 text-mint shadow-[inset_3px_0_0_0_var(--mint)]"
+                    : "text-mint/75 hover:bg-mint/10 hover:text-mint"
                 }`}
               >
                 <it.icon className="h-4 w-4 shrink-0" />
@@ -182,9 +206,14 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
             <div className="lg:hidden min-w-0">
               <Link to="/" aria-label="Evogue Academy home"><Logo /></Link>
             </div>
-            <h1 className="hidden lg:block font-display text-lg font-bold text-forest truncate">
-              {current?.label ?? "Dashboard"}
-            </h1>
+            <div className="hidden lg:flex flex-col min-w-0">
+              <h1 className="font-display text-lg font-bold text-forest truncate leading-tight">
+                {current?.label ?? "Dashboard"}
+              </h1>
+              {isStudent && (
+                <p className="text-[11px] text-foreground/55 truncate">{todayStr}</p>
+              )}
+            </div>
           </div>
 
           <div className="flex items-center gap-2">

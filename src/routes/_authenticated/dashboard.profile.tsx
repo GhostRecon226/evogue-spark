@@ -80,50 +80,64 @@ function ProfilePage() {
   return (
     <DashboardLayout>
       <h1 className="font-display text-3xl font-extrabold text-forest">Profile</h1>
-      <p className="mt-1 text-foreground/65">Update your details and photo.</p>
+      <p className="mt-1 text-foreground/65">Manage your personal details and account security.</p>
 
-      <form onSubmit={save} className="mt-8 max-w-xl rounded-2xl bg-background border border-border p-6 space-y-5">
+      {/* Registration number — prominent read-only highlight */}
+      <div className="mt-6 max-w-2xl rounded-2xl border-2 border-mint bg-mint/15 p-5 flex items-center justify-between gap-4 flex-wrap">
+        <div>
+          <p className="text-[11px] uppercase tracking-[0.18em] font-bold text-secondary">Registration Number</p>
+          <p className="mt-1 font-mono text-2xl font-extrabold tracking-widest text-forest">
+            {profile?.registration_number ?? "—"}
+          </p>
+        </div>
+        {accountCreated && (
+          <p className="text-xs text-foreground/60">
+            Member since{" "}
+            <span className="font-semibold text-forest">
+              {new Date(accountCreated).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
+            </span>
+          </p>
+        )}
+      </div>
+
+      {/* Section 1 — Personal Details */}
+      <form onSubmit={save} className="mt-6 max-w-2xl rounded-2xl bg-background border border-border p-6 space-y-5">
+        <div>
+          <h2 className="font-display text-lg font-bold text-forest">Personal Details</h2>
+          <p className="text-xs text-foreground/55 mt-0.5">Your name, contact info, and profile photo.</p>
+        </div>
         <div className="flex items-center gap-5">
-          <Avatar className="h-20 w-20"><AvatarImage src={form.avatar_url} /><AvatarFallback>{form.full_name[0] ?? "U"}</AvatarFallback></Avatar>
+          <Avatar className="h-20 w-20 ring-2 ring-mint/40">
+            <AvatarImage src={form.avatar_url} />
+            <AvatarFallback className="bg-mint text-forest font-bold">{form.full_name[0] ?? "U"}</AvatarFallback>
+          </Avatar>
           <div>
             <Label htmlFor="photo" className="cursor-pointer text-sm font-semibold text-secondary hover:underline">Upload new photo</Label>
             <input id="photo" type="file" accept="image/*" className="hidden" onChange={upload} />
+            <p className="text-[11px] text-foreground/50 mt-1">PNG or JPG, square works best.</p>
           </div>
         </div>
-        <div className="space-y-1.5"><Label>Full name</Label><Input value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} /></div>
-        <div className="space-y-1.5"><Label>Email</Label><Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
-        <div className="space-y-1.5"><Label>WhatsApp number</Label><Input value={form.whatsapp_number} onChange={(e) => setForm({ ...form, whatsapp_number: e.target.value })} /></div>
-        <Button type="submit" disabled={loading} className="rounded-full bg-forest text-mint hover:bg-forest/90">
-          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save Changes"}
-        </Button>
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div className="space-y-1.5"><Label>Full name</Label><Input value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} /></div>
+          <div className="space-y-1.5"><Label>Email</Label><Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
+          <div className="space-y-1.5 sm:col-span-2"><Label>WhatsApp number</Label><Input value={form.whatsapp_number} onChange={(e) => setForm({ ...form, whatsapp_number: e.target.value })} /></div>
+        </div>
+        <div className="flex items-center justify-between flex-wrap gap-3 pt-2">
+          <p className="text-xs text-foreground/55">Enrolled in <span className="font-semibold text-forest">{enrolledCount ?? "…"}</span> course{enrolledCount === 1 ? "" : "s"}</p>
+          <Button type="submit" disabled={loading} className="rounded-full bg-[#0A2E1A] text-mint hover:bg-[#0A2E1A]/90">
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save Changes"}
+          </Button>
+        </div>
       </form>
 
-      <div className="mt-6 max-w-xl rounded-2xl bg-mint-tint border border-border p-6">
-        <h2 className="font-display font-bold text-forest">Account</h2>
-        <dl className="mt-4 grid grid-cols-2 gap-4 text-sm">
-          <div className="col-span-2">
-            <dt className="text-foreground/55">Registration number</dt>
-            <dd className="mt-1 font-mono text-base font-bold tracking-wider text-forest">
-              {profile?.registration_number ?? "—"}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-foreground/55">Member since</dt>
-            <dd className="mt-1 font-semibold text-forest">
-              {accountCreated ? new Date(accountCreated).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) : "—"}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-foreground/55">Enrolled courses</dt>
-            <dd className="mt-1 font-semibold text-forest">{enrolledCount ?? "…"}</dd>
-          </div>
-        </dl>
-      </div>
-
-      <form onSubmit={changePw} className="mt-6 max-w-xl rounded-2xl bg-background border border-border p-6 space-y-4">
-        <h2 className="font-display font-bold text-forest">Change password</h2>
+      {/* Section 2 — Security */}
+      <form onSubmit={changePw} className="mt-6 max-w-2xl rounded-2xl bg-background border border-border p-6 space-y-4">
+        <div>
+          <h2 className="font-display text-lg font-bold text-forest">Security</h2>
+          <p className="text-xs text-foreground/55 mt-0.5">Change your password. Use at least 8 characters.</p>
+        </div>
         <div className="space-y-1.5"><Label>New password</Label><Input type="password" value={newPw} onChange={(e) => setNewPw(e.target.value)} /></div>
-        <Button type="submit" disabled={pwLoading} variant="outline" className="rounded-full">
+        <Button type="submit" disabled={pwLoading} className="rounded-full bg-[#0A2E1A] text-mint hover:bg-[#0A2E1A]/90">
           {pwLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Update Password"}
         </Button>
       </form>

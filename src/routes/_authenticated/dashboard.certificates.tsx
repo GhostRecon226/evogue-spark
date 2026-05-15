@@ -53,20 +53,30 @@ function CertificatesPage() {
       {loading ? (
         <div className="mt-12 grid place-items-center text-foreground/50"><Loader2 className="h-6 w-6 animate-spin" /></div>
       ) : certs.length === 0 ? (
-        <div className="mt-10 rounded-3xl border border-dashed border-border bg-background p-12 text-center">
-          <Award className="h-12 w-12 text-secondary mx-auto" />
-          <p className="mt-4 font-display text-lg font-bold text-forest">No certificates yet</p>
-          <p className="mt-1 text-sm text-foreground/60">Complete and submit your capstone project to earn your certificate.</p>
+        <div className="mt-10 rounded-3xl border border-dashed border-mint/50 bg-mint/10 p-12 text-center">
+          <div className="mx-auto h-20 w-20 rounded-full bg-mint/30 grid place-items-center">
+            <Award className="h-10 w-10 text-secondary" />
+          </div>
+          <p className="mt-5 font-display text-lg font-bold text-forest">No certificates yet</p>
+          <p className="mt-1 text-sm text-foreground/60 max-w-sm mx-auto">
+            Your certificate will appear here after your capstone is approved.
+          </p>
         </div>
       ) : (
-        <div className="mt-8 grid gap-5 md:grid-cols-2">
+        <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {certs.map((c) => (
-            <div key={c.id} className="rounded-2xl bg-background border border-border p-6">
-              <Award className="h-8 w-8 text-secondary" />
-              <h3 className="mt-4 font-display font-bold text-forest">{c.course_title}</h3>
-              <p className="mt-1 text-sm text-foreground/60">
+            <div key={c.id} className="rounded-2xl bg-background border border-border border-t-4 border-t-[#00F5A0] p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-3">
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-mint/30 text-secondary"><Award className="h-5 w-5" /></span>
+                <p className="text-[11px] uppercase tracking-wider font-bold text-secondary">Certificate</p>
+              </div>
+              <h3 className="mt-4 font-display text-lg font-bold text-forest line-clamp-2">{c.course_title}</h3>
+              <p className="mt-1 text-xs text-foreground/60">
                 Issued {new Date(c.issued_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
               </p>
+              {profile?.registration_number && (
+                <p className="mt-1 text-xs font-mono tracking-wider text-foreground/55">Reg. {profile.registration_number}</p>
+              )}
               <Button
                 onClick={() =>
                   generateCertificate({
@@ -75,7 +85,7 @@ function CertificatesPage() {
                     issuedAt: c.issued_at,
                   })
                 }
-                className="mt-5 rounded-full bg-forest text-mint hover:bg-forest/90"
+                className="mt-5 w-full rounded-full bg-[#0A2E1A] text-mint hover:bg-[#0A2E1A]/90"
               >
                 <Download className="h-4 w-4 mr-1" /> Download Certificate
               </Button>
