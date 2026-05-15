@@ -13,11 +13,11 @@ export function About() {
             About Us
           </span>
           <h2 className="mt-4 font-display text-3xl sm:text-5xl font-extrabold leading-tight text-forest">
-            Building Africa's next generation of{" "}
-            <span className="text-secondary">tech leaders</span>
+            Building the next generation of{" "}
+            <span className="text-secondary">global tech leaders</span>
           </h2>
           <p className="mt-5 text-base sm:text-lg text-foreground/70">
-            Evogue Academy equips ambitious Africans with the design, engineering and product skills they need to compete on the global stage. Taught by practitioners who have shipped at the world's best companies. Every cohort is intentionally small so students get direct feedback, dedicated mentors, and a curriculum built around real industry briefs. Our mission is simple: produce graduates who are job-ready, confident, and globally competitive from day one.
+            Evogue Academy was built with a simple belief: where you start should never limit how far you go. We pair ambitious learners from anywhere in the world with world-class practitioners who have shipped at the best companies. Every cohort is intentionally small so students get direct feedback, dedicated mentors, and a curriculum built around real industry briefs. Our mission is simple: produce graduates who are job-ready, confident, and globally competitive from day one.
           </p>
           <div className="mt-7">
             <Button asChild variant="outline" className="rounded-full">
