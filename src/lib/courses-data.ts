@@ -27,7 +27,7 @@ export const courses: Course[] = [
     level: "Beginner – Intermediate",
     price: "₦450,000",
     category: "Design",
-    cover: "https://images.unsplash.com/photo-1561070791-2526d30994b8?w=1200&q=80",
+    cover: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=1200&q=80",
     active: true,
     whatYouLearn: [
       "Apply UX research methods to real user problems",
