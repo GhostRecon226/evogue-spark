@@ -127,10 +127,29 @@ function AdminSettingsPage() {
             </div>
             <div>
               <Label>Logo</Label>
-              <div className="flex items-center gap-3">
-                {settings.logo_url && <img src={settings.logo_url} alt="Logo" className="h-12 w-12 rounded-lg object-cover" />}
-                <Input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && handleLogoUpload(e.target.files[0])} />
-              </div>
+              {settings.logo_url ? (
+                <div className="mt-1 relative rounded-2xl border-2 border-dashed border-border bg-mint-tint/30 p-4 flex items-center gap-4">
+                  <img src={settings.logo_url} alt="Logo" className="h-20 w-20 rounded-lg object-cover bg-background" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-forest truncate">Current logo</p>
+                    <p className="text-xs text-foreground/55 mt-1">Click remove to upload a different image.</p>
+                  </div>
+                  <Button type="button" variant="outline" size="sm" className="rounded-full"
+                    onClick={() => update("logo_url", "")}>
+                    <X className="h-3.5 w-3.5 mr-1" /> Remove
+                  </Button>
+                </div>
+              ) : (
+                <label className="mt-1 flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border bg-mint-tint/30 p-8 cursor-pointer hover:bg-mint-tint/50 transition">
+                  <div className="h-12 w-12 rounded-full bg-background grid place-items-center">
+                    <UploadCloud className="h-6 w-6 text-secondary" />
+                  </div>
+                  <p className="text-sm font-semibold text-forest">Click to upload logo</p>
+                  <p className="text-xs text-foreground/55">PNG or JPG recommended</p>
+                  <input type="file" accept="image/*" className="sr-only"
+                    onChange={(e) => e.target.files?.[0] && handleLogoUpload(e.target.files[0])} />
+                </label>
+              )}
             </div>
           </div>
         </div>
