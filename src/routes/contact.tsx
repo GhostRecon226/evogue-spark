@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Mail, MessageCircle, MapPin, ArrowRight, Instagram, Twitter, Linkedin, Youtube, Loader2 } from "lucide-react";
+import { Mail, MessageCircle, MapPin, ArrowRight, Loader2 } from "lucide-react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { PublicShell } from "@/components/PublicShell";
