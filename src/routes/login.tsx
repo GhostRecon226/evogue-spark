@@ -145,9 +145,9 @@ function LoginPage() {
             </div>
           </div>
 
-          <div className="relative z-10 flex items-center gap-6 text-xs text-white/70">
+          <div className="relative z-10 flex items-center gap-10 xl:gap-14 text-xs text-white/70">
             <div className="flex items-center gap-2"><GraduationCap className="h-4 w-4 text-mint" /> 1.2k+ Students</div>
-            <div className="flex items-center gap-2"><BookOpen className="h-4 w-4 text-mint" /> 8 Tracks</div>
+            <div className="flex items-center gap-2"><BookOpen className="h-4 w-4 text-mint" /> 500+ Hours Live instruction</div>
             <div className="flex items-center gap-2"><Sparkles className="h-4 w-4 text-mint" /> 87% Job Outcome</div>
           </div>
         </div>
