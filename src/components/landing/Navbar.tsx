@@ -88,7 +88,7 @@ export function Navbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button asChild className="h-10 rounded-full bg-forest px-5 text-sm font-semibold text-primary-foreground hover:bg-forest/90">
+              <Button asChild className="h-10 rounded-full bg-forest px-5 text-sm font-semibold text-white hover:bg-forest/90 hover:text-white">
                 <Link to="/login">Login</Link>
               </Button>
             ))}
@@ -132,7 +132,7 @@ export function Navbar() {
                 )}
               </nav>
               {!loading && !user && (
-                <Button asChild className="mt-6 h-11 w-full rounded-full bg-forest text-primary-foreground hover:bg-forest/90 text-sm font-semibold">
+                <Button asChild className="mt-6 h-11 w-full rounded-full bg-forest text-white hover:bg-forest/90 hover:text-white text-sm font-semibold">
                   <Link to="/login" onClick={() => setOpen(false)}>Login</Link>
                 </Button>
               )}
