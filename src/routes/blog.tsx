@@ -6,9 +6,9 @@ export const Route = createFileRoute("/blog")({
   head: () => ({
     meta: [
       { title: "Blog — Evogue Academy" },
-      { name: "description", content: "Stories, guides and insights for African designers and engineers." },
+      { name: "description", content: "Insights, stories and lessons from our global community of builders and designers." },
       { property: "og:title", content: "Blog — Evogue Academy" },
-      { property: "og:description", content: "Stories, guides and insights for African designers and engineers." },
+      { property: "og:description", content: "Insights, stories and lessons from our global community of builders and designers." },
     ],
   }),
   component: BlogPage,
