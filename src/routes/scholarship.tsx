@@ -151,7 +151,10 @@ function ScholarshipPage() {
       {/* Section 1: Hero */}
       <section style={{ backgroundColor: "#F0FDF6" }} className="py-20">
         <div className="mx-auto max-w-4xl px-4 text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border-2 border-forest/80 bg-background/60 px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-forest">
+          <span
+            className="inline-flex items-center gap-2 rounded-full border-2 px-4 py-1.5 text-xs font-bold uppercase tracking-wide"
+            style={{ backgroundColor: "#FFFFFF", borderColor: "#0A2E1A", color: "#0A2E1A" }}
+          >
             <Sparkles className="h-3.5 w-3.5" />
             Limited Scholarship Opportunity
           </span>
