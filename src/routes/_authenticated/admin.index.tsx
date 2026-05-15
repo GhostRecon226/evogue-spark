@@ -201,7 +201,7 @@ function AdminOverview() {
     {
       label: "Total Students", value: stats.students.toLocaleString(), trend: trends.students,
       icon: Users, bg: "bg-[#0A2E1A]", text: "text-white",
-      iconWrap: "bg-white/10 text-[#00F5A0]", trendBg: "bg-white/15",
+      iconWrap: "bg-white/10 text-[#00F5A0]", trendBg: "bg-[#00F5A0]/15 text-[#00F5A0]",
     },
     {
       label: "Total Enrollments", value: stats.enrollments.toLocaleString(), trend: trends.enrollments,
@@ -211,7 +211,7 @@ function AdminOverview() {
     {
       label: "Total Revenue", value: formatNaira(stats.revenue), trend: trends.revenue,
       icon: Wallet, bg: "bg-[#1A8C4E]", text: "text-white",
-      iconWrap: "bg-white/15 text-white", trendBg: "bg-white/15",
+      iconWrap: "bg-white/15 text-white", trendBg: "bg-white/20 text-white",
     },
     {
       label: "Pending Capstones", value: stats.pendingCapstones.toLocaleString(), trend: trends.capstones,
@@ -238,31 +238,71 @@ function AdminOverview() {
         </div>
       </div>
 
+      {/* Row 1: stat cards (always rendered; skeleton while loading to prevent layout jump) */}
+      <div className="mt-6 grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+        {cards.map((c) => {
+          const up = c.trend >= 0;
+          return (
+            <div key={c.label} className={`relative overflow-hidden rounded-2xl ${c.bg} ${c.text} px-4 py-3 shadow-sm max-h-[120px]`}>
+              <div className="flex items-start justify-between">
+                <div className={`grid h-9 w-9 place-items-center rounded-lg ${c.iconWrap}`}>
+                  <c.icon className="h-4 w-4" />
+                </div>
+                {loading ? (
+                  <span className="h-5 w-12 rounded-full bg-current/10 animate-pulse" aria-hidden />
+                ) : (
+                  <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${c.trendBg}`}>
+                    {up ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
+                    {Math.abs(c.trend)}%
+                  </span>
+                )}
+              </div>
+              {loading ? (
+                <>
+                  <div className="mt-3 h-6 w-20 rounded-md bg-current/10 animate-pulse" />
+                  <div className="mt-2 h-3 w-24 rounded bg-current/10 animate-pulse" />
+                </>
+              ) : (
+                <>
+                  <p className="mt-2 font-display text-2xl font-extrabold leading-none">{c.value}</p>
+                  <p className="mt-1 text-[11px] font-semibold opacity-80">{c.label}</p>
+                </>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
       {loading ? (
         <div className="grid place-items-center py-24 text-foreground/50"><Loader2 className="h-6 w-6 animate-spin" /></div>
       ) : (
-        <>
-          {/* Row 1: stat cards */}
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {cards.map((c) => {
-              const up = c.trend >= 0;
-              return (
-                <div key={c.label} className={`relative overflow-hidden rounded-2xl ${c.bg} ${c.text} px-4 py-3 shadow-sm max-h-[120px]`}>
-                  <div className="flex items-start justify-between">
-                    <div className={`grid h-9 w-9 place-items-center rounded-lg ${c.iconWrap}`}>
-                      <c.icon className="h-4 w-4" />
-                    </div>
-                    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${c.trendBg}`}>
-                      {up ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
-                      {Math.abs(c.trend)}%
-                    </span>
-                  </div>
-                  <p className="mt-2 font-display text-2xl font-extrabold leading-none">{c.value}</p>
-                  <p className="mt-1 text-[11px] font-semibold opacity-80">{c.label}</p>
-                </div>
-              );
-            })}
-          </div>
+        <></>
+      )}
+      {!loading && (
+        <></>
+      )}
+      {!loading && (
+        <></>
+      )}
+      {!loading && (
+        <></>
+      )}
+      {!loading && (
+        <></>
+      )}
+      {!loading && (
+        <></>
+      )}
+      {!loading && (
+        <></>
+      )}
+      {!loading && (
+        <></>
+      )}
+      {!loading && (
+        <></>
+      )}
+      {!loading && (
 
           {/* Row 2: chart + activity */}
           <div className="mt-6 grid gap-4 lg:grid-cols-5">
