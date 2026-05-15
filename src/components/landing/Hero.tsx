@@ -146,9 +146,9 @@ export function Hero() {
               </div>
             </div>
 
-            {/* Bottom-right: Rating badge */}
+            {/* Bottom-right: Rating badge (inside image bounds) */}
             <div
-              className="absolute -bottom-6 -right-4 sm:-right-6 rounded-[12px] bg-white p-4"
+              className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 rounded-[12px] bg-white p-4"
               style={{ boxShadow: "0 8px 24px rgba(0,0,0,0.10)" }}
             >
               <div className="flex items-center gap-3">
