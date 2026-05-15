@@ -176,7 +176,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
               </SheetTrigger>
               <SheetContent side="left" className="p-0 w-[85vw] max-w-xs">
                 <SheetTitle className="sr-only">Dashboard menu</SheetTitle>
-                {Sidebar}
+                {renderSidebar(true)}
               </SheetContent>
             </Sheet>
             <div className="lg:hidden min-w-0">
