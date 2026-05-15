@@ -155,8 +155,13 @@ function AdminLessonsPage() {
     { key: "cohort_name", header: "Cohort", accessor: (r) => r.cohort_name ?? "—" },
     { key: "lesson_date", header: "Date", accessor: (r) => r.lesson_date,
       cell: (r) => r.lesson_date ? new Date(r.lesson_date).toLocaleString() : "—" },
-    { key: "is_published", header: "Published", accessor: (r) => r.is_published ? 1 : 0,
-      cell: (r) => <span className={`text-xs font-bold ${r.is_published ? "text-secondary" : "text-foreground/40"}`}>{r.is_published ? "Live" : "Draft"}</span> },
+    { key: "is_published", header: "Published", accessor: (r) => (r.is_published && r.cohort_id && r.lesson_date) ? 1 : 0,
+      cell: (r) => {
+        const live = r.is_published && r.cohort_id && r.lesson_date;
+        return live
+          ? <span className="inline-flex rounded-full bg-secondary/15 px-2.5 py-0.5 text-xs font-bold text-secondary">Live</span>
+          : <span className="inline-flex rounded-full bg-foreground/10 px-2.5 py-0.5 text-xs font-bold text-foreground/55">Draft</span>;
+      } },
   ];
 
   return (
