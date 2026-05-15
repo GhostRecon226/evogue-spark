@@ -177,8 +177,8 @@ function ScholarshipPage() {
               </span>
             </div>
           </div>
-          <div className="w-full">
-            <svg width="100%" viewBox="0 0 680 480" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <div className="w-full max-w-[560px] mx-auto md:mx-0 scholarship-hero-svg">
+            <svg width="100%" height="auto" viewBox="0 0 680 480" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className="block w-full h-auto">
               <defs>
                 <filter id="soft" x="-5%" y="-5%" width="110%" height="115%">
                   <feDropShadow dx="0" dy="12" stdDeviation="20" floodColor="#020e06" floodOpacity="0.45" />
