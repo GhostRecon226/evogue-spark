@@ -23,8 +23,16 @@ type Announcement = { id: string; title: string; message: string; created_at: st
 type UpcomingLesson = { id: string; title: string; lesson_date: string; zoom_live_link: string | null; courseSlug: string };
 
 function DashboardHome() {
-  const { user, profile } = useAuth();
+  const { user, profile, isAdmin, isInstructor, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
   const name = profile?.full_name?.trim() || user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Student";
+
+  // Redirect non-students away from the student dashboard.
+  useEffect(() => {
+    if (authLoading) return;
+    if (isAdmin) void navigate({ to: "/admin", replace: true });
+    else if (isInstructor) void navigate({ to: "/instructor", replace: true });
+  }, [authLoading, isAdmin, isInstructor, navigate]);
 
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ enrolled: 0, completedLessons: 0, pendingCapstone: 0, certificates: 0 });
