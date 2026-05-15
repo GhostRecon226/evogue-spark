@@ -69,7 +69,7 @@ function AboutPage() {
         </div>
       </section>
 
-      <section className="py-14 sm:py-20">
+      <section className="py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-center font-display text-3xl sm:text-4xl font-extrabold text-forest">Our Values</h2>
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
