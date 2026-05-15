@@ -43,7 +43,8 @@ function StudentsPage() {
     const [profilesRes, enrolRes] = await Promise.all([
       supabase
         .from("profiles")
-        .select("id, full_name, email, whatsapp_number, registration_number, is_active, created_at")
+        .select("id, full_name, email, whatsapp_number, registration_number, is_active, created_at, role")
+        .eq("role", "student")
         .order("created_at", { ascending: false }),
       supabase.from("enrollments").select("student_id"),
     ]);

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { CalendarDays, Loader2, Plus, Pencil, Trash2 } from "lucide-react";
+import { CalendarDays, Loader2, Plus, Pencil, Trash2, Search } from "lucide-react";
 import { toast } from "sonner";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import { DataTable, type Column } from "@/components/admin/DataTable";
@@ -58,6 +58,7 @@ function AdminCohortsPage() {
   const [form, setForm] = useState<Form>(empty);
   const [saving, setSaving] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [q, setQ] = useState("");
 
   const load = async () => {
     setLoading(true);
@@ -164,12 +165,34 @@ function AdminCohortsPage() {
       </div>
       <p className="mt-1 text-foreground/65">Manage course intakes, status, and capstone releases.</p>
 
+      <div className="mt-6 relative max-w-md">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/45" />
+        <Input value={q} onChange={(e) => setQ(e.target.value)}
+          placeholder="Search cohorts by name or course…" className="pl-9 rounded-full" />
+      </div>
+
       <div className="mt-6">
         {loading ? (
           <div className="grid place-items-center py-20 text-foreground/50"><Loader2 className="h-6 w-6 animate-spin" /></div>
         ) : (
           <DataTable
-            rows={rows} columns={columns} rowKey={(r) => r.id} pageSize={10}
+            rows={rows.filter((r) => {
+              const s = q.trim().toLowerCase();
+              if (!s) return true;
+              return r.name.toLowerCase().includes(s) || r.course_title.toLowerCase().includes(s);
+            })}
+            columns={columns} rowKey={(r) => r.id} pageSize={10}
+            emptyState={
+              <div className="flex flex-col items-center gap-3 py-6">
+                <div className="h-14 w-14 rounded-full bg-mint-tint grid place-items-center">
+                  <CalendarDays className="h-6 w-6 text-secondary" />
+                </div>
+                <p className="font-display text-base font-bold text-forest">No cohorts created yet</p>
+                <Button onClick={startCreate} className="rounded-full bg-forest text-mint hover:bg-forest/90">
+                  <Plus className="h-4 w-4 mr-1" /> New Cohort
+                </Button>
+              </div>
+            }
             actions={(r) => (
               <div className="flex justify-end gap-2">
                 <Button variant="outline" size="sm" className="rounded-full" onClick={() => startEdit(r)}><Pencil className="h-3.5 w-3.5" /></Button>

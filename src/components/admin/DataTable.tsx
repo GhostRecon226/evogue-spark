@@ -16,14 +16,16 @@ type Props<T> = {
   columns: Column<T>[];
   pageSize?: number;
   emptyMessage?: string;
+  emptyState?: ReactNode;
   rowKey: (row: T) => string;
   initialSort?: { key: string; direction: "asc" | "desc" };
   actions?: (row: T) => ReactNode;
+  alwaysShowHeader?: boolean;
 };
 
 export function DataTable<T>({
-  rows, columns, pageSize = 10, emptyMessage = "No records found.",
-  rowKey, initialSort, actions,
+  rows, columns, pageSize = 10, emptyMessage = "No records found.", emptyState,
+  rowKey, initialSort, actions, alwaysShowHeader,
 }: Props<T>) {
   const [sort, setSort] = useState<{ key: string; direction: "asc" | "desc" } | null>(initialSort ?? null);
   const [page, setPage] = useState(0);
@@ -89,7 +91,7 @@ export function DataTable<T>({
             {slice.length === 0 ? (
               <tr>
                 <td colSpan={columns.length + (actions ? 1 : 0)} className="px-4 py-10 text-center text-foreground/55">
-                  {emptyMessage}
+                  {emptyState ?? emptyMessage}
                 </td>
               </tr>
             ) : (
