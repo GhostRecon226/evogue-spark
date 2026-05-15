@@ -42,7 +42,7 @@ const instructorItems: NavItem[] = [
 ];
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
-  const { user, signOut, isAdmin, isInstructor } = useAuth();
+  const { user, profile, signOut, isAdmin, isInstructor } = useAuth();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
   const canCollapse = isAdmin || isInstructor;
@@ -56,22 +56,25 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
     }
   }, [collapsed]);
 
-  const initials = (user?.user_metadata?.full_name || user?.email || "U")
+  const initials = (profile?.full_name || user?.user_metadata?.full_name || user?.email || "U")
     .split(/\s+/)
     .map((p: string) => p[0])
     .slice(0, 2)
     .join("")
     .toUpperCase();
-  const displayName = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Student";
+  const displayName = profile?.full_name || user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Student";
+  const avatarUrl = profile?.avatar_url || user?.user_metadata?.avatar_url;
 
   // Role-based: admin sees ONLY admin nav, instructor sees ONLY instructor nav, student sees student nav.
   const navItems: NavItem[] = isAdmin ? adminItems : isInstructor ? instructorItems : studentItems;
   const roleLabel = isAdmin ? "Admin" : isInstructor ? "Instructor" : "Student";
+  const isStudent = !isAdmin && !isInstructor;
 
   const exactMatch = (to: string) => to === "/dashboard" || to === "/admin" || to === "/instructor";
   const current = navItems.find((it) =>
     exactMatch(it.to) ? path === it.to : path.startsWith(it.to),
   );
+  const todayStr = new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric", year: "numeric" });
 
   const renderSidebar = (isMobile: boolean) => {
     const isCollapsed = !isMobile && canCollapse && collapsed;
