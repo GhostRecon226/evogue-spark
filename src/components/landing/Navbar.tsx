@@ -65,38 +65,33 @@ export function Navbar() {
           </nav>
 
           <div className="flex items-center gap-3">
-          {loading ? null : user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="rounded-full ring-2 ring-transparent hover:ring-secondary/40 transition">
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage src={user.user_metadata?.avatar_url} alt="" />
-                    <AvatarFallback className="bg-[#00F5A0] text-[#0A2E1A] font-bold">{initials}</AvatarFallback>
-                  </Avatar>
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-52">
-                <DropdownMenuItem asChild>
-                  <Link to="/dashboard" className="cursor-pointer">
-                    <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/dashboard/profile" className="cursor-pointer">
-                    <User className="mr-2 h-4 w-4" /> Profile
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer">
-                  <LogOut className="mr-2 h-4 w-4" /> Logout
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <Button asChild className="h-10 rounded-full bg-[#0A2E1A] px-5 text-sm font-semibold text-white hover:bg-[#0A2E1A]/90">
-              <Link to="/login">Login</Link>
-            </Button>
-          )}
+            {!loading && (user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="rounded-full ring-2 ring-transparent hover:ring-secondary/40 transition">
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src={user.user_metadata?.avatar_url} alt="" />
+                      <AvatarFallback className="bg-secondary text-forest font-bold">{initials}</AvatarFallback>
+                    </Avatar>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-52">
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard" className="cursor-pointer">
+                      <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => signOut()} className="cursor-pointer">
+                    <LogOut className="mr-2 h-4 w-4" /> Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button asChild className="h-10 rounded-full bg-forest px-5 text-sm font-semibold text-primary-foreground hover:bg-forest/90">
+                <Link to="/login">Login</Link>
+              </Button>
+            ))}
           </div>
         </div>
 
@@ -122,7 +117,7 @@ export function Navbar() {
                     {l.label}
                   </Link>
                 ))}
-                {user && (
+                {!loading && user && (
                   <>
                     <Link to="/dashboard" onClick={() => setOpen(false)} className="rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-accent data-[status=active]:bg-secondary/10 data-[status=active]:text-secondary">
                       Dashboard
@@ -137,7 +132,7 @@ export function Navbar() {
                 )}
               </nav>
               {!loading && !user && (
-                <Button asChild className="mt-6 h-11 w-full rounded-full bg-secondary text-forest hover:bg-secondary/90 text-sm font-semibold">
+                <Button asChild className="mt-6 h-11 w-full rounded-full bg-forest text-primary-foreground hover:bg-forest/90 text-sm font-semibold">
                   <Link to="/login" onClick={() => setOpen(false)}>Login</Link>
                 </Button>
               )}
