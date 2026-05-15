@@ -25,7 +25,7 @@ export const Route = createFileRoute("/scholarship")({
 });
 
 const eligibility = [
-  "African resident, 18 years or older",
+  "18 years or older, based anywhere in the world",
   "Strong commitment to a 6–14 week cohort",
   "Reliable laptop and internet access",
   "Clear motivation to launch a tech career",
