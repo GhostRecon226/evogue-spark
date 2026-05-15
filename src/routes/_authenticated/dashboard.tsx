@@ -127,10 +127,14 @@ function DashboardHome() {
       )}
 
       <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        <Stat icon={BookOpen} label="Enrolled courses" value={loading ? "…" : String(stats.enrolled)} />
-        <Stat icon={CheckCircle2} label="Completed lessons" value={loading ? "…" : String(stats.completedLessons)} />
-        <Stat icon={ClipboardCheck} label="Pending capstone" value={loading ? "…" : String(stats.pendingCapstone)} />
-        <Stat icon={Award} label="Certificates earned" value={loading ? "…" : String(stats.certificates)} />
+        <Stat icon={BookOpen} label="Enrolled courses" value={loading ? "…" : String(stats.enrolled)}
+          iconBg="bg-[#00F5A0]" iconColor="text-[#0A2E1A]" />
+        <Stat icon={CheckCircle2} label="Completed lessons" value={loading ? "…" : String(stats.completedLessons)}
+          iconBg="bg-[#1A8C4E]" iconColor="text-white" />
+        <Stat icon={ClipboardCheck} label="Pending capstone" value={loading ? "…" : String(stats.pendingCapstone)}
+          iconBg="bg-[#F59E0B]" iconColor="text-white" />
+        <Stat icon={Award} label="Certificates earned" value={loading ? "…" : String(stats.certificates)}
+          iconBg="bg-[#0A2E1A]" iconColor="text-[#00F5A0]" />
       </div>
 
       {announcements.length > 0 ? (
