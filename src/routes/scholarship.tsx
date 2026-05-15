@@ -149,9 +149,9 @@ function ScholarshipPage() {
   return (
     <PublicShell>
       {/* Section 1: Hero */}
-      <section style={{ backgroundColor: "#F0FDF6" }} className="py-20 px-4 sm:px-8 lg:px-16">
-        <div className="mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div className="max-w-[520px] text-left">
+      <section style={{ backgroundColor: "#F0FDF6" }} className="py-12 sm:py-16 lg:py-20 px-4 sm:px-8 lg:px-16 overflow-hidden">
+        <div className="mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+          <div className="max-w-[520px] w-full text-left mx-auto md:mx-0 animate-fade-in">
             <span
               className="inline-flex items-center gap-2 rounded-full border-2 px-4 py-1.5 text-xs font-bold uppercase tracking-wide"
               style={{ backgroundColor: "#FFFFFF", borderColor: "#0A2E1A", color: "#0A2E1A" }}
