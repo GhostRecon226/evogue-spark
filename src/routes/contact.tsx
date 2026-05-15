@@ -313,33 +313,6 @@ function ContactPage() {
                 </button>
               </div>
 
-              <div
-                className="flex flex-col sm:flex-row sm:items-center sm:justify-between items-start gap-3 sm:gap-4"
-                style={{ marginTop: 28, paddingTop: 24, borderTop: "1px solid rgba(10,46,26,0.08)" }}
-              >
-                <p className="text-[13px]" style={{ color: "#4a7a5a" }}>
-                  <span style={{ color: FOREST, fontWeight: 700 }}>Rather talk it through?</span>
-                  {" "}Some things are easier over chat. We're on WhatsApp.
-                </p>
-                <a
-                  href="https://wa.me/2348000000000"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center justify-center gap-2 shrink-0 transition-colors w-full sm:w-auto"
-                  style={{
-                    background: "rgba(0,245,160,0.10)",
-                    border: "1.5px solid rgba(0,245,160,0.30)",
-                    color: FOREST,
-                    padding: "10px 20px",
-                    borderRadius: 8,
-                    fontSize: 13,
-                    fontWeight: 500,
-                  }}
-                >
-                  <MessageCircle size={16} />
-                  Chat on WhatsApp
-                </a>
-              </div>
             </form>
           </div>
         </section>
