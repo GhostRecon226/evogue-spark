@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { Settings as SettingsIcon, Loader2, Plus, ShieldCheck } from "lucide-react";
+import { Settings as SettingsIcon, Loader2, Plus, ShieldCheck, UploadCloud, X } from "lucide-react";
 import { toast } from "sonner";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import { Button } from "@/components/ui/button";
