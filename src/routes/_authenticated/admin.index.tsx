@@ -210,8 +210,8 @@ function AdminOverview() {
     },
     {
       label: "Total Revenue", value: formatNaira(stats.revenue), trend: trends.revenue,
-      icon: Wallet, bg: "bg-[#1A8C4E]", text: "text-white",
-      iconWrap: "bg-white/15 text-white", trendBg: "bg-white/20 text-white",
+      icon: Wallet, bg: "bg-[#DCFCE7]", text: "text-[#0A2E1A]",
+      iconWrap: "bg-white text-[#1A8C4E]", trendBg: "bg-[#1A8C4E]/10 text-[#1A8C4E]",
     },
     {
       label: "Pending Capstones", value: stats.pendingCapstones.toLocaleString(), trend: trends.capstones,
