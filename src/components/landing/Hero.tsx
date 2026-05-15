@@ -3,6 +3,29 @@ import { Button } from "@/components/ui/button";
 import { EnrollButton } from "@/components/EnrollButton";
 import heroImg from "@/assets/hero-designer.jpg";
 
+function DotCluster({ className }: { className?: string }) {
+  const dots = [];
+  for (let r = 0; r < 4; r++) {
+    for (let c = 0; c < 4; c++) {
+      dots.push(
+        <circle key={`${r}-${c}`} cx={c * 12 + 2} cy={r * 12 + 2} r="2" fill="#00F5A0" />
+      );
+    }
+  }
+  return (
+    <svg
+      aria-hidden
+      className={className}
+      width="52"
+      height="52"
+      viewBox="0 0 52 52"
+      style={{ opacity: 0.2 }}
+    >
+      {dots}
+    </svg>
+  );
+}
+
 export function Hero() {
   return (
     <section
@@ -15,45 +38,19 @@ export function Hero() {
         className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-mint/30 blur-3xl"
       />
 
-      {/* decorative dot clusters */}
-      <svg
+      {/* soft radial glow behind hero image (top-right) */}
+      <div
         aria-hidden
-        className="pointer-events-none absolute top-24 right-6 sm:right-12 opacity-40"
-        width="120"
-        height="80"
-        viewBox="0 0 120 80"
-      >
-        {Array.from({ length: 5 }).map((_, row) =>
-          Array.from({ length: 7 }).map((_, col) => (
-            <circle
-              key={`tr-${row}-${col}`}
-              cx={col * 16 + 6}
-              cy={row * 16 + 6}
-              r="2"
-              fill="#00F5A0"
-            />
-          ))
-        )}
-      </svg>
-      <svg
-        aria-hidden
-        className="pointer-events-none absolute bottom-10 left-6 sm:left-12 opacity-40"
-        width="120"
-        height="80"
-        viewBox="0 0 120 80"
-      >
-        {Array.from({ length: 5 }).map((_, row) =>
-          Array.from({ length: 7 }).map((_, col) => (
-            <circle
-              key={`bl-${row}-${col}`}
-              cx={col * 16 + 6}
-              cy={row * 16 + 6}
-              r="2"
-              fill="#00F5A0"
-            />
-          ))
-        )}
-      </svg>
+        className="pointer-events-none absolute top-0 right-0 h-[60%] w-[55%]"
+        style={{
+          background:
+            "radial-gradient(ellipse at top right, rgba(0,245,160,0.08) 0%, rgba(0,245,160,0) 70%)",
+        }}
+      />
+
+      {/* dot clusters */}
+      <DotCluster className="pointer-events-none absolute top-24 right-8 sm:right-16" />
+      <DotCluster className="pointer-events-none absolute bottom-8 left-6 sm:left-16" />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid gap-12 lg:grid-cols-12 lg:items-center relative">
         <div className="lg:col-span-7 text-center lg:text-left">
@@ -70,13 +67,13 @@ export function Hero() {
               Career.
               <svg
                 aria-hidden
-                className="absolute left-0 -bottom-3 w-full"
-                viewBox="0 0 200 16"
+                className="absolute -left-2 -right-2 -bottom-3 w-[calc(100%+1rem)]"
+                viewBox="0 0 220 16"
                 preserveAspectRatio="none"
                 fill="none"
               >
                 <path
-                  d="M3 11 C 50 2, 120 2, 197 9"
+                  d="M3 11 C 55 2, 150 2, 217 9"
                   stroke="#00F5A0"
                   strokeWidth="4"
                   strokeLinecap="round"
@@ -130,28 +127,40 @@ export function Hero() {
               className="relative rounded-[2rem] shadow-[var(--shadow-soft)] object-cover w-full aspect-[4/5] sm:aspect-[5/4] lg:aspect-[4/5]"
             />
 
-            {/* Bottom-left: rating card */}
-            <div className="absolute -bottom-6 -left-4 sm:-left-8 rounded-2xl bg-background p-4 shadow-soft border border-border max-w-[15rem]">
-              <div className="flex items-center gap-3">
-                <span className="grid h-12 w-12 place-items-center rounded-full bg-mint text-forest shadow-sm">
-                  <Star className="h-6 w-6 fill-forest" />
-                </span>
-                <div>
-                  <p className="font-display text-2xl font-bold text-forest leading-none">4.9</p>
-                  <p className="text-xs text-foreground/60 mt-1">Avg. student rating</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Top-right: graduates badge */}
-            <div className="absolute -top-4 -right-3 sm:-right-6 rounded-2xl bg-background p-3 shadow-soft border border-border">
+            {/* Top-left: Graduates badge (smaller) */}
+            <div
+              className="absolute -top-4 -left-4 sm:-left-6 rounded-[12px] bg-white p-3"
+              style={{ boxShadow: "0 8px 24px rgba(0,0,0,0.10)" }}
+            >
               <div className="flex items-center gap-2.5">
-                <span className="grid h-9 w-9 place-items-center rounded-full bg-mint text-forest">
+                <span
+                  className="grid h-9 w-9 place-items-center rounded-full text-white"
+                  style={{ backgroundColor: "#0A2E1A" }}
+                >
                   <Users className="h-4 w-4" />
                 </span>
                 <div>
                   <p className="font-display text-base font-bold text-forest leading-none">1.2k+</p>
-                  <p className="text-[10px] text-foreground/60 mt-0.5 uppercase tracking-wide">Graduates</p>
+                  <p className="text-[11px] text-muted-foreground mt-1">Graduates</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom-right: Rating badge */}
+            <div
+              className="absolute -bottom-6 -right-4 sm:-right-6 rounded-[12px] bg-white p-4"
+              style={{ boxShadow: "0 8px 24px rgba(0,0,0,0.10)" }}
+            >
+              <div className="flex items-center gap-3">
+                <span
+                  className="grid h-11 w-11 place-items-center rounded-full"
+                  style={{ backgroundColor: "#00F5A0" }}
+                >
+                  <Star className="h-5 w-5" fill="#F5A524" stroke="#F5A524" />
+                </span>
+                <div>
+                  <p className="font-display text-lg font-bold text-forest leading-none">4.9/5.0</p>
+                  <p className="text-xs text-muted-foreground mt-1">Average rating</p>
                 </div>
               </div>
             </div>
