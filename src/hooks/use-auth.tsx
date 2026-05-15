@@ -39,6 +39,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [instructorCourseIds, setInstructorCourseIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const applyDerivedState = useCallback((next: {
+    profile: Profile | null;
+    roles: AppRole[];
+    instructorCourseIds: string[];
+  }) => {
+    setProfile(next.profile);
+    setRoles(next.roles);
+    setInstructorCourseIds(next.instructorCourseIds);
+  }, []);
+
   const clearDerivedState = useCallback(() => {
     setProfile(null);
     setRoles([]);
@@ -51,27 +61,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       supabase.from("user_roles").select("role").eq("user_id", userId),
       supabase.from("course_instructors").select("course_id").eq("instructor_id", userId),
     ]);
-    setProfile(prof ?? null);
-    setRoles((roleRows ?? []).map((r) => r.role as AppRole));
-    setInstructorCourseIds((ciRows ?? []).map((c) => c.course_id));
+    return {
+      profile: prof ?? null,
+      roles: (roleRows ?? []).map((r) => r.role as AppRole),
+      instructorCourseIds: (ciRows ?? []).map((c) => c.course_id),
+    };
   }, []);
 
   useEffect(() => {
     let active = true;
+    let sessionVersion = 0;
 
     const applySession = (nextSession: Session | null) => {
       if (!active) return;
+
+      const currentVersion = ++sessionVersion;
 
       setSession(nextSession);
       setLoading(false);
 
       if (nextSession?.user) {
-        setTimeout(() => {
-          void loadProfile(nextSession.user.id).catch(() => {
-            if (!active) return;
+        void loadProfile(nextSession.user.id)
+          .then((nextDerivedState) => {
+            if (!active || currentVersion !== sessionVersion) return;
+            applyDerivedState(nextDerivedState);
+          })
+          .catch(() => {
+            if (!active || currentVersion !== sessionVersion) return;
             clearDerivedState();
           });
-        }, 0);
         return;
       }
 
@@ -94,7 +112,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       active = false;
       subscription.unsubscribe();
     };
-  }, [clearDerivedState, loadProfile]);
+  }, [applyDerivedState, clearDerivedState, loadProfile]);
 
   const value: AuthCtx = {
     session,
@@ -106,7 +124,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isInstructor: roles.includes("instructor"),
     loading,
     refreshProfile: async () => {
-      if (session?.user) await loadProfile(session.user.id);
+      if (session?.user) {
+        const nextDerivedState = await loadProfile(session.user.id);
+        applyDerivedState(nextDerivedState);
+      }
     },
     signOut: async () => {
       await supabase.auth.signOut();
