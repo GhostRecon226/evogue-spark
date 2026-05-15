@@ -36,7 +36,7 @@ function DashboardHome() {
 
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ enrolled: 0, completedLessons: 0, certificates: 0 });
-  const [capstoneStatus, setCapstoneStatus] = useState<"not_started" | "submitted" | "approved" | "rejected">("not_started");
+  const [capstoneStatus, setCapstoneStatus] = useState<"not_started" | "pending" | "approved" | "rejected" | "recommended">("not_started");
   const [next, setNext] = useState<Continue | null>(null);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [upcoming, setUpcoming] = useState<UpcomingLesson | null>(null);
