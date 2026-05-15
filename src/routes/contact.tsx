@@ -164,39 +164,6 @@ function ContactPage() {
               </p>
             </div>
 
-            <div className="flex items-center gap-2 mt-6">
-              {[
-                { Icon: Instagram, label: "Instagram" },
-                { Icon: Twitter, label: "X" },
-                { Icon: Linkedin, label: "LinkedIn" },
-                { Icon: Youtube, label: "YouTube" },
-              ].map(({ Icon, label }) => (
-                <a
-                  key={label}
-                  href="#"
-                  aria-label={label}
-                  className="grid place-items-center transition-colors"
-                  style={{
-                    width: 38,
-                    height: 38,
-                    borderRadius: 9,
-                    background: "rgba(255,255,255,0.05)",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    color: CREAM,
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "rgba(0,245,160,0.10)";
-                    e.currentTarget.style.borderColor = "rgba(0,245,160,0.20)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "rgba(255,255,255,0.05)";
-                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
-                  }}
-                >
-                  <Icon size={16} />
-                </a>
-              ))}
-            </div>
           </div>
         </aside>
 
