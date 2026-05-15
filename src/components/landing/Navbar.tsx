@@ -138,7 +138,7 @@ export function Navbar() {
                   </>
                 )}
               </nav>
-              {!user && (
+              {!loading && !user && (
                 <Button asChild className="mt-6 h-11 w-full rounded-full bg-secondary text-forest hover:bg-secondary/90 text-sm font-semibold">
                   <Link to="/login" onClick={() => setOpen(false)}>Login</Link>
                 </Button>
