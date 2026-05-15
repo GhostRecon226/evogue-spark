@@ -274,35 +274,9 @@ function AdminOverview() {
       </div>
 
       {loading ? (
-        <div className="grid place-items-center py-24 text-foreground/50"><Loader2 className="h-6 w-6 animate-spin" /></div>
+        <div className="grid place-items-center py-16 text-foreground/50"><Loader2 className="h-6 w-6 animate-spin" /></div>
       ) : (
-        <></>
-      )}
-      {!loading && (
-        <></>
-      )}
-      {!loading && (
-        <></>
-      )}
-      {!loading && (
-        <></>
-      )}
-      {!loading && (
-        <></>
-      )}
-      {!loading && (
-        <></>
-      )}
-      {!loading && (
-        <></>
-      )}
-      {!loading && (
-        <></>
-      )}
-      {!loading && (
-        <></>
-      )}
-      {!loading && (
+        <>
 
           {/* Row 2: chart + activity */}
           <div className="mt-6 grid gap-4 lg:grid-cols-5">
