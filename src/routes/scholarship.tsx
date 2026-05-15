@@ -79,11 +79,10 @@ function ScholarshipPage() {
             <GraduationCap className="h-7 w-7" />
           </span>
           <h1 className="mt-5 font-display text-4xl sm:text-5xl font-extrabold text-forest leading-tight">
-            Evogue <span className="text-secondary">Scholarship</span>
+            Wherever You Are, <span className="text-secondary">You Belong Here.</span>
           </h1>
           <p className="mt-5 text-foreground/75 text-base sm:text-lg">
-            We award full and partial scholarships every cohort to learners with strong
-            potential who can't pay full tuition. Apply below — we review every application.
+            Every cohort we set aside full and partial scholarships for learners who have the drive but not the funds. From Lagos to Lusaka, Accra to Amsterdam. If that is you, we want to hear from you.
           </p>
         </div>
       </section>
