@@ -116,10 +116,10 @@ function PaymentsPage() {
       </div>
       <p className="mt-1 text-foreground/65">All paid enrollments.</p>
 
-      <div className="mt-6 rounded-2xl border border-border bg-gradient-to-br from-mint to-mint-tint p-6">
-        <p className="text-xs font-bold uppercase tracking-wide text-forest/70">Total Revenue (filtered)</p>
-        <p className="mt-2 font-display text-4xl font-extrabold text-forest">{formatNaira(total)}</p>
-        <p className="mt-1 text-sm text-forest/70">{filtered.length} payment{filtered.length === 1 ? "" : "s"}</p>
+      <div className="mt-6 rounded-2xl border border-border bg-[#ECFDF5] p-5">
+        <p className="text-xs font-bold uppercase tracking-wide text-[#1A8C4E]">Total Revenue (filtered)</p>
+        <p className="mt-2 font-display text-3xl font-extrabold text-[#0A2E1A]">{formatNaira(total)}</p>
+        <p className="mt-1 text-sm text-[#0A2E1A]/65">{filtered.length} payment{filtered.length === 1 ? "" : "s"}</p>
       </div>
 
       <div className="mt-6 flex flex-wrap gap-3 items-end">
