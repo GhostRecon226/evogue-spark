@@ -18,7 +18,7 @@ export const Route = createFileRoute("/scholarship")({
       { title: "Scholarship — Evogue Academy" },
       { name: "description", content: "Apply for an Evogue Academy scholarship to launch your tech career." },
       { property: "og:title", content: "Scholarship — Evogue Academy" },
-      { property: "og:description", content: "Full and partial scholarships available for ambitious African learners." },
+      { property: "og:description", content: "Full and partial scholarships available for ambitious learners worldwide." },
     ],
   }),
   component: ScholarshipPage,
