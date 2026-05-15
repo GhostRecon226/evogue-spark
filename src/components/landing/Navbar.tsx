@@ -65,15 +65,13 @@ export function Navbar() {
           </nav>
 
           <div className="flex items-center gap-3">
-          {loading ? (
-            <div className="h-10 w-10 rounded-full bg-muted/50 animate-pulse" aria-hidden />
-          ) : user ? (
+          {loading ? null : user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="rounded-full ring-2 ring-transparent hover:ring-secondary/40 transition">
                   <Avatar className="h-10 w-10">
                     <AvatarImage src={user.user_metadata?.avatar_url} alt="" />
-                    <AvatarFallback className="bg-forest text-mint font-bold">{initials}</AvatarFallback>
+                    <AvatarFallback className="bg-[#00F5A0] text-[#0A2E1A] font-bold">{initials}</AvatarFallback>
                   </Avatar>
                 </button>
               </DropdownMenuTrigger>
@@ -95,7 +93,7 @@ export function Navbar() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button asChild className="h-10 rounded-full bg-secondary px-5 text-sm font-semibold text-forest hover:bg-secondary/90">
+            <Button asChild className="h-10 rounded-full bg-[#0A2E1A] px-5 text-sm font-semibold text-white hover:bg-[#0A2E1A]/90">
               <Link to="/login">Login</Link>
             </Button>
           )}
