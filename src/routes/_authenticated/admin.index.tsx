@@ -200,19 +200,23 @@ function AdminOverview() {
   const cards = [
     {
       label: "Total Students", value: stats.students.toLocaleString(), trend: trends.students,
-      icon: Users, bg: "bg-[#0A2E1A]", text: "text-white", iconWrap: "bg-white/10 text-[#00F5A0]",
+      icon: Users, bg: "bg-[#0A2E1A]", text: "text-white",
+      iconWrap: "bg-white/10 text-[#00F5A0]", trendBg: "bg-white/15",
     },
     {
       label: "Total Enrollments", value: stats.enrollments.toLocaleString(), trend: trends.enrollments,
-      icon: ClipboardCheck, bg: "bg-[#00F5A0]", text: "text-[#0A2E1A]", iconWrap: "bg-[#0A2E1A]/10 text-[#0A2E1A]",
+      icon: ClipboardCheck, bg: "bg-[#ECFDF5]", text: "text-[#0A2E1A]",
+      iconWrap: "bg-white text-[#1A8C4E]", trendBg: "bg-[#1A8C4E]/10 text-[#1A8C4E]",
     },
     {
       label: "Total Revenue", value: formatNaira(stats.revenue), trend: trends.revenue,
-      icon: Wallet, bg: "bg-[#1A8C4E]", text: "text-white", iconWrap: "bg-white/15 text-white",
+      icon: Wallet, bg: "bg-[#1A8C4E]", text: "text-white",
+      iconWrap: "bg-white/15 text-white", trendBg: "bg-white/15",
     },
     {
       label: "Pending Capstones", value: stats.pendingCapstones.toLocaleString(), trend: trends.capstones,
-      icon: Clock, bg: "bg-amber-500", text: "text-white", iconWrap: "bg-white/15 text-white",
+      icon: Clock, bg: "bg-[#FFFBEB]", text: "text-[#0A2E1A]",
+      iconWrap: "bg-white text-[#F59E0B]", trendBg: "bg-[#F59E0B]/15 text-[#B45309]",
     },
   ];
 
