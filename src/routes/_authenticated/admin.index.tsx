@@ -1,9 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { Users, BookOpen, ClipboardCheck, Wallet, Loader2 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  Users, ClipboardCheck, Wallet, Clock, ArrowUpRight, ArrowDownRight,
+  Loader2, UserPlus, GraduationCap, Award, FileCheck2, Search,
+} from "lucide-react";
+import {
+  ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+} from "recharts";
 import { AdminGuard } from "@/components/admin/AdminGuard";
-import { DataTable, formatNaira, parsePrice, type Column } from "@/components/admin/DataTable";
+import { formatNaira, parsePrice } from "@/components/admin/DataTable";
 import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
   component: AdminOverview,
@@ -12,105 +19,361 @@ export const Route = createFileRoute("/_authenticated/admin/")({
 type RecentRow = {
   id: string;
   student: string;
+  reg_no: string;
   course: string;
+  cohort: string;
   enrolled_at: string;
   payment_status: string;
 };
+type CapstoneRow = {
+  id: string;
+  student: string;
+  reg_no: string;
+  course: string;
+  submitted_at: string;
+};
+type ActivityItem = {
+  id: string;
+  type: "enrollment" | "student" | "capstone" | "certificate";
+  title: string;
+  meta: string;
+  at: string;
+};
+
+function fmtRelative(iso: string) {
+  const diff = Date.now() - new Date(iso).getTime();
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return "just now";
+  if (m < 60) return `${m} min ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h} hour${h === 1 ? "" : "s"} ago`;
+  const d = Math.floor(h / 24);
+  if (d < 30) return `${d} day${d === 1 ? "" : "s"} ago`;
+  return new Date(iso).toLocaleDateString();
+}
+
+function monthKey(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+}
+function monthLabel(d: Date) {
+  return d.toLocaleString("en-US", { month: "short" });
+}
 
 function AdminOverview() {
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({ students: 0, enrollments: 0, revenue: 0, activeCourses: 0 });
+  const [stats, setStats] = useState({ students: 0, enrollments: 0, revenue: 0, pendingCapstones: 0 });
   const [recent, setRecent] = useState<RecentRow[]>([]);
+  const [pendingCapstones, setPendingCapstones] = useState<CapstoneRow[]>([]);
+  const [chartRange, setChartRange] = useState<"month" | "year">("year");
+  const [chartData, setChartData] = useState<{ month: string; enrollments: number; revenue: number }[]>([]);
+  const [activity, setActivity] = useState<ActivityItem[]>([]);
+  const [trends, setTrends] = useState({ students: 0, enrollments: 0, revenue: 0, capstones: 0 });
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const [studentsRes, enrolRes, coursesRes, recentRes] = await Promise.all([
-        supabase.from("profiles").select("id", { count: "exact", head: true }),
-        supabase.from("enrollments").select("id, payment_status, course_id", { count: "exact" }),
-        supabase.from("courses").select("id, price, is_published"),
+      const [studentsRes, enrolRes, coursesRes, recentRes, capRes, certRes, profRes] = await Promise.all([
+        supabase.from("profiles").select("id, created_at"),
+        supabase.from("enrollments").select("id, payment_status, course_id, enrolled_at, cohort_id"),
+        supabase.from("courses").select("id, price, title"),
         supabase.from("enrollments")
-          .select("id, enrolled_at, payment_status, profiles:student_id(full_name, email), courses:course_id(title, price)")
-          .order("enrolled_at", { ascending: false }).limit(50),
+          .select("id, enrolled_at, payment_status, profiles:student_id(full_name, email, registration_number), courses:course_id(title), cohorts:cohort_id(name)")
+          .order("enrolled_at", { ascending: false }).limit(8),
+        supabase.from("capstone_submissions")
+          .select("id, status, submitted_at, student:profiles!capstone_submissions_student_id_fkey(full_name, email, registration_number), course:courses!capstone_submissions_course_id_fkey(title)")
+          .order("submitted_at", { ascending: false }).limit(20),
+        supabase.from("certificates").select("id, issued_at").order("issued_at", { ascending: false }).limit(5),
+        supabase.from("profiles").select("id, full_name, email, created_at").order("created_at", { ascending: false }).limit(5),
       ]);
       if (cancelled) return;
 
       const courseRows = coursesRes.data ?? [];
       const courseMap = new Map(courseRows.map((c) => [c.id, c]));
       const enrolRows = enrolRes.data ?? [];
+      const profileRows = studentsRes.data ?? [];
+      const capRows = capRes.data ?? [];
+
       const revenue = enrolRows
         .filter((e) => e.payment_status === "paid")
         .reduce((sum, e) => sum + parsePrice(courseMap.get(e.course_id)?.price ?? null), 0);
 
+      const pendingCount = capRows.filter((c) => c.status === "pending" || c.status === "submitted").length;
+
       setStats({
-        students: studentsRes.count ?? 0,
-        enrollments: enrolRes.count ?? enrolRows.length,
+        students: profileRows.length,
+        enrollments: enrolRows.length,
         revenue,
-        activeCourses: courseRows.filter((c) => c.is_published).length,
+        pendingCapstones: pendingCount,
       });
 
-      setRecent((recentRes.data ?? []).slice(0, 10).map((r) => ({
+      // Trend calc: last 30d vs prior 30d
+      const now = Date.now();
+      const day = 86400000;
+      const calc = (rows: { created_at?: string | null; enrolled_at?: string | null }[], key: "created_at" | "enrolled_at") => {
+        const recent = rows.filter((r) => r[key] && now - new Date(r[key]!).getTime() < 30 * day).length;
+        const prior = rows.filter((r) => {
+          const t = r[key] ? now - new Date(r[key]!).getTime() : 0;
+          return t >= 30 * day && t < 60 * day;
+        }).length;
+        if (prior === 0) return recent > 0 ? 100 : 0;
+        return Math.round(((recent - prior) / prior) * 100);
+      };
+      setTrends({
+        students: calc(profileRows, "created_at"),
+        enrollments: calc(enrolRows, "enrolled_at"),
+        revenue: calc(enrolRows.filter((e) => e.payment_status === "paid"), "enrolled_at"),
+        capstones: capRows.length > 0 ? Math.round(((pendingCount - capRows.length / 2) / Math.max(capRows.length / 2, 1)) * 100) : 0,
+      });
+
+      // Chart: build last 6 months series
+      const months: { date: Date; key: string; label: string }[] = [];
+      for (let i = 5; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(1);
+        d.setMonth(d.getMonth() - i);
+        months.push({ date: d, key: monthKey(d), label: monthLabel(d) });
+      }
+      const series = months.map((m) => {
+        const monthEnrols = enrolRows.filter((e) => e.enrolled_at && monthKey(new Date(e.enrolled_at)) === m.key);
+        const rev = monthEnrols
+          .filter((e) => e.payment_status === "paid")
+          .reduce((sum, e) => sum + parsePrice(courseMap.get(e.course_id)?.price ?? null), 0);
+        return { month: m.label, enrollments: monthEnrols.length, revenue: Math.round(rev / 1000) };
+      });
+      setChartData(series);
+
+      setRecent((recentRes.data ?? []).slice(0, 5).map((r) => ({
         id: r.id,
         student: r.profiles?.full_name || r.profiles?.email || "—",
+        reg_no: r.profiles?.registration_number || "—",
         course: r.courses?.title || "—",
+        cohort: r.cohorts?.name || "—",
         enrolled_at: r.enrolled_at,
         payment_status: r.payment_status,
       })));
+
+      setPendingCapstones(
+        capRows
+          .filter((c) => c.status === "pending" || c.status === "submitted")
+          .slice(0, 4)
+          .map((c) => ({
+            id: c.id,
+            student: c.student?.full_name || c.student?.email || "—",
+            reg_no: c.student?.registration_number || "—",
+            course: c.course?.title || "—",
+            submitted_at: c.submitted_at,
+          })),
+      );
+
+      // Build activity feed
+      const acts: ActivityItem[] = [];
+      (profRes.data ?? []).slice(0, 3).forEach((p) =>
+        acts.push({ id: `p-${p.id}`, type: "student", title: "New student registered", meta: p.full_name || p.email || "", at: p.created_at }),
+      );
+      (recentRes.data ?? []).slice(0, 3).forEach((r) =>
+        acts.push({ id: `e-${r.id}`, type: "enrollment", title: "New enrollment", meta: `${r.profiles?.full_name || "Student"} → ${r.courses?.title || ""}`, at: r.enrolled_at }),
+      );
+      capRows.slice(0, 3).forEach((c) =>
+        acts.push({ id: `c-${c.id}`, type: "capstone", title: "Capstone submitted", meta: c.student?.full_name || "—", at: c.submitted_at }),
+      );
+      (certRes.data ?? []).slice(0, 2).forEach((c) =>
+        acts.push({ id: `cert-${c.id}`, type: "certificate", title: "Certificate issued", meta: "", at: c.issued_at }),
+      );
+      acts.sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime());
+      setActivity(acts.slice(0, 8));
+
       setLoading(false);
     })();
     return () => { cancelled = true; };
   }, []);
 
-  const cards = [
-    { label: "Total Students", value: stats.students.toLocaleString(), icon: Users },
-    { label: "Total Enrollments", value: stats.enrollments.toLocaleString(), icon: ClipboardCheck },
-    { label: "Total Revenue", value: formatNaira(stats.revenue), icon: Wallet },
-    { label: "Active Courses", value: stats.activeCourses.toLocaleString(), icon: BookOpen },
-  ];
+  const visibleChart = useMemo(() => {
+    return chartRange === "month" ? chartData.slice(-1) : chartData;
+  }, [chartData, chartRange]);
 
-  const columns: Column<RecentRow>[] = [
-    { key: "student", header: "Student", accessor: (r) => r.student },
-    { key: "course", header: "Course", accessor: (r) => r.course },
+  const cards = [
     {
-      key: "enrolled_at", header: "Date",
-      accessor: (r) => r.enrolled_at,
-      cell: (r) => new Date(r.enrolled_at).toLocaleDateString(),
+      label: "Total Students", value: stats.students.toLocaleString(), trend: trends.students,
+      icon: Users, bg: "bg-[#0A2E1A]", text: "text-white", iconWrap: "bg-white/10 text-[#00F5A0]",
     },
     {
-      key: "payment_status", header: "Payment",
-      accessor: (r) => r.payment_status,
-      cell: (r) => <PaymentBadge status={r.payment_status} />,
+      label: "Total Enrollments", value: stats.enrollments.toLocaleString(), trend: trends.enrollments,
+      icon: ClipboardCheck, bg: "bg-[#00F5A0]", text: "text-[#0A2E1A]", iconWrap: "bg-[#0A2E1A]/10 text-[#0A2E1A]",
+    },
+    {
+      label: "Total Revenue", value: formatNaira(stats.revenue), trend: trends.revenue,
+      icon: Wallet, bg: "bg-[#1A8C4E]", text: "text-white", iconWrap: "bg-white/15 text-white",
+    },
+    {
+      label: "Pending Capstones", value: stats.pendingCapstones.toLocaleString(), trend: trends.capstones,
+      icon: Clock, bg: "bg-amber-500", text: "text-white", iconWrap: "bg-white/15 text-white",
     },
   ];
 
   return (
     <AdminGuard>
-      <h1 className="font-display text-3xl font-extrabold text-forest">Admin Overview</h1>
-      <p className="mt-1 text-foreground/65">A snapshot of activity across the academy.</p>
+      {/* Page header w/ search */}
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h1 className="font-display text-2xl md:text-3xl font-extrabold text-[#0A2E1A]">Dashboard Overview</h1>
+          <p className="mt-1 text-sm text-foreground/60">A snapshot of activity across the academy.</p>
+        </div>
+        <div className="relative w-full md:w-72">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground/40" />
+          <input
+            type="search"
+            placeholder="Search students, courses…"
+            className="w-full rounded-full border border-border bg-white pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#00F5A0]/40"
+          />
+        </div>
+      </div>
 
       {loading ? (
-        <div className="grid place-items-center py-20 text-foreground/50"><Loader2 className="h-6 w-6 animate-spin" /></div>
+        <div className="grid place-items-center py-24 text-foreground/50"><Loader2 className="h-6 w-6 animate-spin" /></div>
       ) : (
         <>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {cards.map((c) => (
-              <div key={c.label} className="rounded-2xl border border-border bg-background p-5">
-                <div className="flex items-center justify-between">
-                  <p className="text-xs font-bold uppercase tracking-wide text-foreground/55">{c.label}</p>
-                  <c.icon className="h-5 w-5 text-secondary" />
+          {/* Row 1: stat cards */}
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {cards.map((c) => {
+              const up = c.trend >= 0;
+              return (
+                <div key={c.label} className={`relative overflow-hidden rounded-2xl ${c.bg} ${c.text} p-5 shadow-sm`}>
+                  <div className="flex items-start justify-between">
+                    <div className={`grid h-11 w-11 place-items-center rounded-xl ${c.iconWrap}`}>
+                      <c.icon className="h-5 w-5" />
+                    </div>
+                    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-bold ${up ? "bg-white/20" : "bg-white/15"}`}>
+                      {up ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
+                      {Math.abs(c.trend)}%
+                    </span>
+                  </div>
+                  <p className="mt-5 font-display text-3xl font-extrabold leading-none">{c.value}</p>
+                  <p className="mt-2 text-xs font-semibold opacity-80">{c.label}</p>
                 </div>
-                <p className="mt-3 font-display text-3xl font-extrabold text-forest">{c.value}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
-          <div className="mt-10 flex items-end justify-between gap-3">
-            <h2 className="font-display text-xl font-bold text-forest">Recent Enrollments</h2>
-            <Link to="/admin/enrollments" className="text-sm font-bold text-secondary">View all →</Link>
+          {/* Row 2: chart + activity */}
+          <div className="mt-6 grid gap-4 lg:grid-cols-5">
+            <div className="lg:col-span-3 rounded-2xl border border-border bg-white p-5 shadow-sm">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h2 className="font-display text-lg font-bold text-[#0A2E1A]">Enrollment & Revenue Trends</h2>
+                  <p className="text-xs text-foreground/55">Last 6 months · revenue in ₦ thousands</p>
+                </div>
+                <div className="inline-flex rounded-full border border-border p-1 text-xs font-semibold">
+                  {(["month", "year"] as const).map((r) => (
+                    <button
+                      key={r}
+                      onClick={() => setChartRange(r)}
+                      className={`rounded-full px-3 py-1.5 transition ${chartRange === r ? "bg-[#0A2E1A] text-[#00F5A0]" : "text-foreground/60 hover:text-foreground"}`}
+                    >
+                      {r === "month" ? "This Month" : "This Year"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="mt-4 h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={visibleChart} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                    <XAxis dataKey="month" stroke="#6B7280" fontSize={12} />
+                    <YAxis stroke="#6B7280" fontSize={12} />
+                    <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid #E5E7EB", fontSize: 12 }} />
+                    <Legend wrapperStyle={{ fontSize: 12 }} />
+                    <Line type="monotone" dataKey="enrollments" stroke="#1A8C4E" strokeWidth={2.5} dot={{ r: 3 }} activeDot={{ r: 5 }} />
+                    <Line type="monotone" dataKey="revenue" stroke="#00F5A0" strokeWidth={2.5} dot={{ r: 3 }} activeDot={{ r: 5 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            <div className="lg:col-span-2 rounded-2xl border border-border bg-white p-5 shadow-sm">
+              <div className="flex items-center justify-between">
+                <h2 className="font-display text-lg font-bold text-[#0A2E1A]">Recent Activity</h2>
+                <span className="text-xs text-foreground/55">Live</span>
+              </div>
+              <ul className="mt-4 space-y-4 max-h-72 overflow-y-auto pr-1">
+                {activity.length === 0 && <li className="text-sm text-foreground/50">No activity yet.</li>}
+                {activity.map((a) => (
+                  <li key={a.id} className="flex items-start gap-3">
+                    <ActivityIcon type={a.type} />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-[#0A2E1A] truncate">{a.title}</p>
+                      {a.meta && <p className="text-xs text-foreground/60 truncate">{a.meta}</p>}
+                      <p className="mt-0.5 text-[11px] text-foreground/45">{fmtRelative(a.at)}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-          <div className="mt-4">
-            <DataTable rows={recent} columns={columns} rowKey={(r) => r.id} pageSize={10}
-              emptyMessage="No enrollments yet." />
+
+          {/* Row 3: enrollments table + pending capstones */}
+          <div className="mt-6 grid gap-4 lg:grid-cols-5">
+            <div className="lg:col-span-3 rounded-2xl border border-border bg-white p-5 shadow-sm">
+              <div className="flex items-center justify-between">
+                <h2 className="font-display text-lg font-bold text-[#0A2E1A]">Recent Enrollments</h2>
+                <Link to="/admin/enrollments" className="text-sm font-bold text-[#1A8C4E] hover:text-[#0A2E1A]">View all →</Link>
+              </div>
+              <div className="mt-4 -mx-5 overflow-x-auto">
+                <table className="w-full min-w-[640px] text-sm">
+                  <thead>
+                    <tr className="text-left text-[11px] uppercase tracking-wide text-foreground/55 border-b border-border">
+                      <th className="py-2.5 px-5 font-semibold">Reg No</th>
+                      <th className="py-2.5 px-2 font-semibold">Student</th>
+                      <th className="py-2.5 px-2 font-semibold">Course</th>
+                      <th className="py-2.5 px-2 font-semibold">Cohort</th>
+                      <th className="py-2.5 px-2 font-semibold">Date</th>
+                      <th className="py-2.5 px-5 font-semibold">Payment</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {recent.length === 0 && (
+                      <tr><td colSpan={6} className="py-10 text-center text-foreground/50">No enrollments yet.</td></tr>
+                    )}
+                    {recent.map((r, i) => (
+                      <tr key={r.id} className={i % 2 ? "bg-[#F9FAFB]" : ""}>
+                        <td className="py-3 px-5 font-mono text-xs text-foreground/70">{r.reg_no}</td>
+                        <td className="py-3 px-2 font-semibold text-[#0A2E1A]">{r.student}</td>
+                        <td className="py-3 px-2 text-foreground/75">{r.course}</td>
+                        <td className="py-3 px-2 text-foreground/75">{r.cohort}</td>
+                        <td className="py-3 px-2 text-foreground/60">{new Date(r.enrolled_at).toLocaleDateString()}</td>
+                        <td className="py-3 px-5"><PaymentBadge status={r.payment_status} /></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div className="lg:col-span-2 rounded-2xl border border-border bg-white p-5 shadow-sm">
+              <div className="flex items-center justify-between">
+                <h2 className="font-display text-lg font-bold text-[#0A2E1A]">Pending Capstones</h2>
+                <Link to="/admin/capstones" className="text-sm font-bold text-[#1A8C4E] hover:text-[#0A2E1A]">View all →</Link>
+              </div>
+              <div className="mt-4 space-y-3">
+                {pendingCapstones.length === 0 && (
+                  <p className="text-sm text-foreground/50 py-6 text-center">No pending submissions. 🎉</p>
+                )}
+                {pendingCapstones.map((c) => (
+                  <div key={c.id} className="rounded-xl border border-border bg-[#F9FAFB] p-3.5 hover:border-[#00F5A0] transition">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="font-semibold text-sm text-[#0A2E1A] truncate">{c.student}</p>
+                        <p className="text-[11px] font-mono text-foreground/55">{c.reg_no}</p>
+                        <p className="text-xs text-foreground/65 mt-1 truncate">{c.course}</p>
+                        <p className="text-[11px] text-foreground/45 mt-1">{fmtRelative(c.submitted_at)}</p>
+                      </div>
+                      <Button asChild size="sm" className="bg-[#0A2E1A] text-[#00F5A0] hover:bg-[#0A2E1A]/90 shrink-0">
+                        <Link to="/admin/capstones">Review</Link>
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </>
       )}
@@ -118,11 +381,29 @@ function AdminOverview() {
   );
 }
 
+function ActivityIcon({ type }: { type: ActivityItem["type"] }) {
+  const map = {
+    student: { Icon: UserPlus, color: "bg-[#0A2E1A] text-[#00F5A0]", dot: "bg-[#00F5A0]" },
+    enrollment: { Icon: GraduationCap, color: "bg-[#00F5A0]/15 text-[#1A8C4E]", dot: "bg-[#1A8C4E]" },
+    capstone: { Icon: FileCheck2, color: "bg-amber-100 text-amber-700", dot: "bg-amber-500" },
+    certificate: { Icon: Award, color: "bg-blue-100 text-blue-700", dot: "bg-blue-500" },
+  } as const;
+  const { Icon, color, dot } = map[type];
+  return (
+    <div className="relative">
+      <div className={`grid h-9 w-9 place-items-center rounded-full ${color}`}>
+        <Icon className="h-4 w-4" />
+      </div>
+      <span className={`absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full ring-2 ring-white ${dot}`} />
+    </div>
+  );
+}
+
 export function PaymentBadge({ status }: { status: string }) {
   const map: Record<string, string> = {
-    paid: "bg-secondary/15 text-secondary",
-    pending: "bg-star/15 text-star",
-    failed: "bg-destructive/15 text-destructive",
+    paid: "bg-[#00F5A0]/20 text-[#1A8C4E]",
+    pending: "bg-amber-100 text-amber-700",
+    failed: "bg-red-100 text-red-700",
     refunded: "bg-foreground/10 text-foreground/70",
   };
   return (
