@@ -67,7 +67,7 @@ function ContactPage() {
       <div className="flex flex-col md:flex-row md:min-h-[calc(100vh-5rem)]">
         {/* LEFT PANEL */}
         <aside
-          className="relative overflow-hidden w-full md:w-[360px] lg:w-[480px] md:flex-shrink-0 px-6 pt-12 pb-10 md:px-9 md:py-12 lg:px-12 lg:py-[52px] flex flex-col justify-between gap-8"
+          className="relative overflow-hidden w-full md:w-[380px] lg:w-[480px] lg:min-w-[480px] md:flex-shrink-0 px-6 pt-12 pb-10 md:px-9 md:py-12 lg:px-12 lg:py-[52px] flex flex-col justify-between gap-8"
           style={{
             backgroundColor: FOREST,
             backgroundImage:
