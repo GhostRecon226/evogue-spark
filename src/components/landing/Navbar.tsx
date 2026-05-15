@@ -92,7 +92,7 @@ export function Navbar() {
               <Button asChild className="h-10 rounded-full bg-forest px-5 text-sm font-semibold text-white hover:bg-forest/90 hover:text-white">
                 <Link to="/login">Login</Link>
               </Button>
-            ))}
+            )}
           </div>
         </div>
 
