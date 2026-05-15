@@ -20,7 +20,9 @@ function ProfilePage() {
   const [pwLoading, setPwLoading] = useState(false);
   const [form, setForm] = useState({ full_name: "", email: "", whatsapp_number: "", avatar_url: "" });
   const [newPw, setNewPw] = useState("");
+  const [confirmPw, setConfirmPw] = useState("");
   const [enrolledCount, setEnrolledCount] = useState<number | null>(null);
+  const pwMismatch = confirmPw.length > 0 && newPw !== confirmPw;
 
   useEffect(() => {
     if (!user) return;
@@ -69,11 +71,13 @@ function ProfilePage() {
   const changePw = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPw.length < 8) { toast.error("Min 8 characters"); return; }
+    if (newPw !== confirmPw) { toast.error("Passwords do not match."); return; }
     setPwLoading(true);
     const { error } = await supabase.auth.updateUser({ password: newPw });
     setPwLoading(false);
     if (error) { toast.error(error.message); return; }
     setNewPw("");
+    setConfirmPw("");
     toast.success("Password updated");
   };
 
@@ -83,7 +87,7 @@ function ProfilePage() {
       <p className="mt-1 text-foreground/65">Manage your personal details and account security.</p>
 
       {/* Registration number — prominent read-only highlight */}
-      <div className="mt-6 max-w-2xl rounded-2xl border-2 border-mint bg-mint/15 p-5 flex items-center justify-between gap-4 flex-wrap">
+      <div className="mt-6 max-w-4xl rounded-2xl border-2 border-mint bg-mint/15 p-5 flex items-center justify-between gap-4 flex-wrap">
         <div>
           <p className="text-[11px] uppercase tracking-[0.18em] font-bold text-secondary">Registration Number</p>
           <p className="mt-1 font-mono text-2xl font-extrabold tracking-widest text-forest">
@@ -101,7 +105,7 @@ function ProfilePage() {
       </div>
 
       {/* Section 1 — Personal Details */}
-      <form onSubmit={save} className="mt-6 max-w-2xl rounded-2xl bg-background border border-border p-6 space-y-5">
+      <form onSubmit={save} className="mt-6 max-w-4xl rounded-2xl bg-background border border-border p-6 space-y-5">
         <div>
           <h2 className="font-display text-lg font-bold text-forest">Personal Details</h2>
           <p className="text-xs text-foreground/55 mt-0.5">Your name, contact info, and profile photo.</p>
@@ -131,13 +135,26 @@ function ProfilePage() {
       </form>
 
       {/* Section 2 — Security */}
-      <form onSubmit={changePw} className="mt-6 max-w-2xl rounded-2xl bg-background border border-border p-6 space-y-4">
+      <form onSubmit={changePw} className="mt-6 max-w-4xl rounded-2xl bg-background border border-border p-6 space-y-4">
         <div>
           <h2 className="font-display text-lg font-bold text-forest">Security</h2>
           <p className="text-xs text-foreground/55 mt-0.5">Change your password. Use at least 8 characters.</p>
         </div>
-        <div className="space-y-1.5"><Label>New password</Label><Input type="password" value={newPw} onChange={(e) => setNewPw(e.target.value)} /></div>
-        <Button type="submit" disabled={pwLoading} className="rounded-full bg-[#0A2E1A] text-mint hover:bg-[#0A2E1A]/90">
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div className="space-y-1.5"><Label>New password</Label><Input type="password" value={newPw} onChange={(e) => setNewPw(e.target.value)} /></div>
+          <div className="space-y-1.5">
+            <Label>Confirm new password</Label>
+            <Input
+              type="password"
+              value={confirmPw}
+              onChange={(e) => setConfirmPw(e.target.value)}
+              aria-invalid={pwMismatch || undefined}
+              className={pwMismatch ? "border-destructive focus-visible:ring-destructive" : ""}
+            />
+            {pwMismatch && <p className="text-xs text-destructive">Passwords do not match.</p>}
+          </div>
+        </div>
+        <Button type="submit" disabled={pwLoading || pwMismatch || newPw.length === 0 || confirmPw.length === 0} className="rounded-full bg-[#0A2E1A] text-mint hover:bg-[#0A2E1A]/90">
           {pwLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Update Password"}
         </Button>
       </form>
