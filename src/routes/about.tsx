@@ -59,7 +59,7 @@ function AboutPage() {
         </div>
       </section>
 
-      <section className="bg-mint-tint py-14 sm:py-20">
+      <section className="bg-mint-tint py-12 sm:py-16">
         <div className="mx-auto max-w-4xl px-4 text-center">
           <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-forest">Our Mission</h2>
           <p className="mt-5 text-foreground/75 text-base sm:text-lg leading-relaxed">
