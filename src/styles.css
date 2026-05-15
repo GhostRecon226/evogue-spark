@@ -162,3 +162,24 @@
 
 /* Load brand fonts */
 @import url("https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap");
+
+/* Hover-only scrollbar for the dashboard sidebar */
+.sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.2s ease;
+}
+.sidebar-scroll:hover {
+  scrollbar-color: color-mix(in oklab, var(--mint) 35%, transparent) transparent;
+}
+.sidebar-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 9999px;
+  transition: background-color 0.2s ease;
+}
+.sidebar-scroll:hover::-webkit-scrollbar-thumb {
+  background-color: color-mix(in oklab, var(--mint) 35%, transparent);
+}
