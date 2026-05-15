@@ -132,6 +132,16 @@ function AdminCapstones() {
             <SelectItem value="rejected">Rejected</SelectItem>
           </SelectContent>
         </Select>
+        {(courseFilter !== "all" || cohortFilter !== "all" || statusFilter !== "all") && (
+          <Button
+            type="button"
+            variant="outline"
+            className="rounded-full"
+            onClick={() => { setCourseFilter("all"); setCohortFilter("all"); setStatusFilter("all"); }}
+          >
+            <X className="h-3.5 w-3.5 mr-1" /> Reset filters
+          </Button>
+        )}
       </div>
 
       {loading ? (
