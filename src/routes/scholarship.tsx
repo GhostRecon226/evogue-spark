@@ -159,7 +159,7 @@ function ScholarshipPage() {
               <Sparkles className="h-3.5 w-3.5" />
               Limited Scholarship Opportunity
             </span>
-            <h1 className="mt-6 font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] text-forest">
+            <h1 className="mt-6 font-display font-extrabold leading-[1.1] text-forest" style={{ fontSize: "2.5rem" }}>
               Wherever You Are,{" "}
               <span style={{ color: "#1A8C4E" }}>You Belong Here.</span>
             </h1>
