@@ -68,12 +68,12 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
       className="h-full flex flex-col text-mint"
       style={{ background: "var(--gradient-forest)" }}
     >
-      <div className="px-6 py-6 border-b border-mint/15">
+      <div className="px-6 pt-6 pb-7 border-b border-mint/15">
         <Link to="/" onClick={() => setOpen(false)} aria-label="Evogue Academy home">
-          <Logo variant="light" />
+          <Logo variant="light" className="h-16 w-auto" />
         </Link>
         <div className="mt-4">
-          <p className="text-sm font-semibold text-white truncate">{displayName}</p>
+          <p className="text-[14px] font-semibold text-white truncate">{displayName}</p>
           <p className="text-[11px] uppercase tracking-[0.18em] font-bold text-mint mt-0.5">{roleLabel}</p>
         </div>
       </div>
