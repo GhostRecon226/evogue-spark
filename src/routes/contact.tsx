@@ -107,7 +107,7 @@ function ContactPage() {
           <ul className="relative">
             {[
               { Icon: Mail, label: "Email", value: "hello@evogueacademy.com", href: "mailto:hello@evogueacademy.com" },
-              { Icon: MessageCircle, label: "WhatsApp", value: "+234 800 000 0000", href: "https://wa.me/2348000000000" },
+              { Icon: MessageCircle, label: "WhatsApp", value: "+44 7404 331835", href: "https://wa.me/447404331835" },
               { Icon: MapPin, label: "Location", value: "Online — Worldwide", href: "#" },
             ].map(({ Icon, label, value, href }, i) => (
               <li
