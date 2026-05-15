@@ -133,7 +133,7 @@ function DashboardHome() {
       const latestCap = capstoneRows?.[0];
       const capStatus: typeof capstoneStatus = !latestCap
         ? "not_started"
-        : (latestCap.status as "submitted" | "approved" | "rejected") ?? "submitted";
+        : (latestCap.status as "pending" | "approved" | "rejected" | "recommended") ?? "pending";
 
       if (!cancelled) {
         setStats({
@@ -156,7 +156,8 @@ function DashboardHome() {
   if (isAdmin || isInstructor) return null;
 
   const capstoneLabel = capstoneStatus === "approved" ? "Approved"
-    : capstoneStatus === "submitted" ? "Submitted"
+    : capstoneStatus === "recommended" ? "Recommended"
+    : capstoneStatus === "pending" ? "Submitted"
     : capstoneStatus === "rejected" ? "Revise"
     : "Not Started";
 
