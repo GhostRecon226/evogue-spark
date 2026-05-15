@@ -190,7 +190,7 @@ function ContactPage() {
               No lengthy intake forms. No automated responses. Just tell us what's going on and we'll take it from there.
             </p>
 
-            <form onSubmit={onSubmit} className="mt-8 space-y-5">
+            <form onSubmit={onSubmit} className="mt-6 space-y-5">
               <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                 <div>
                   <label className="block text-[12px] font-semibold mb-1.5" style={{ color: FOREST }}>Full name</label>
