@@ -67,7 +67,7 @@ function ContactPage() {
       <div className="flex flex-col md:flex-row md:min-h-[calc(100vh-5rem)]">
         {/* LEFT PANEL */}
         <aside
-          className="relative overflow-hidden w-full md:w-[360px] lg:w-[480px] md:flex-shrink-0 px-6 pt-12 pb-10 md:px-9 md:py-12 lg:px-12 lg:py-[52px] flex flex-col justify-between gap-8"
+          className="relative overflow-hidden w-full md:w-[380px] lg:w-[480px] lg:min-w-[480px] md:flex-shrink-0 px-6 pt-12 pb-10 md:px-9 md:py-12 lg:px-12 lg:py-[52px] flex flex-col justify-between gap-8"
           style={{
             backgroundColor: FOREST,
             backgroundImage:
@@ -169,7 +169,7 @@ function ContactPage() {
 
         {/* RIGHT PANEL */}
         <section
-          className="flex-1 px-6 py-10 md:px-10 md:py-12 lg:px-[60px] lg:py-16 flex flex-col justify-center"
+          className="flex-1 px-6 py-12 md:px-10 lg:px-[60px] flex flex-col justify-center"
           style={{
             backgroundColor: MINT_BG,
             backgroundImage: "radial-gradient(rgba(10,46,26,0.06) 1px, transparent 1px)",
@@ -190,7 +190,7 @@ function ContactPage() {
               No lengthy intake forms. No automated responses. Just tell us what's going on and we'll take it from there.
             </p>
 
-            <form onSubmit={onSubmit} className="mt-8 space-y-5">
+            <form onSubmit={onSubmit} className="mt-6 space-y-5">
               <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                 <div>
                   <label className="block text-[12px] font-semibold mb-1.5" style={{ color: FOREST }}>Full name</label>

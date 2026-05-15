@@ -1,18 +1,33 @@
-## Scope
-Make navbar and footer inner rows span the full viewport width (logo far left, links/columns far right) while keeping page section content centered at 1280px.
 
-## Files
+Two surgical edits in `src/routes/contact.tsx`. No copy, color, field, or other-page changes.
 
-**`src/components/landing/Navbar.tsx`** — line 49
-- Replace `mx-auto flex h-20 md:h-24 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8`
-- With `flex h-20 md:h-24 w-full items-center justify-between px-4 sm:px-6 lg:px-8`
+## 1. Left panel width
 
-**`src/components/landing/Footer.tsx`** — line 29
-- Replace `mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16`
-- With `w-full px-4 sm:px-6 lg:px-8 py-16`
+Currently: `w-full md:w-[360px] lg:w-[480px]` with `md:flex-shrink-0`.
 
-## Not changed
-- `PublicShell` — already has no max-width on the wrapper or `<main>`.
-- Page sections (Home, About, Courses, Scholarship, Blog, Contact) — backgrounds already stretch full width; inner `mx-auto max-w-7xl` keeps text/cards centered at 1280px as requested.
-- Login page — centered card layout by design; no full-width section to fix.
-- No design, color, copy, or functional changes.
+Change to: `w-full md:w-[380px] lg:w-[480px]` and add `lg:min-w-[480px]` so flex never shrinks it below the spec.
+
+- Tablet (768–1023px): 380px (per request)
+- Desktop (≥1024px): 480px, locked
+- Mobile: full width (unchanged)
+
+This gives the headline room to breathe and removes the cramped 3-line break.
+
+## 2. Right panel vertical centering
+
+Current right `<section>` already uses `flex flex-col justify-center`, but vertical-padding is asymmetric in feel because:
+- the form's inner container has no top spacer, and
+- the eyebrow sits flush to the top of the form block, so when the row stretches to match the (taller) left panel, the form appears low.
+
+Fix:
+- Keep `justify-center` on the section.
+- Normalize vertical padding to `py-12` (48px) at every breakpoint instead of `lg:py-16`, matching the spec's `padding-top: 48px; padding-bottom: 48px`.
+- Remove the `mt-8` on the `<form>` and rely on consistent spacing from the header block, so the visual center matches the geometric center.
+
+After this the form's midpoint aligns with the panel's midpoint at 1180px (current viewport) and at all desktop sizes.
+
+## Files touched
+
+- `src/routes/contact.tsx` — two class-string edits on the `<aside>` and `<section>` plus removing one `mt-8`.
+
+Nothing else changes — no copy, no colors, no fields, no other routes, no global CSS.
