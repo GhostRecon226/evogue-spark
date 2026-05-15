@@ -71,7 +71,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Evogue Academy" },
-      { name: "description", content: "Africa's most visionary design & tech academy." },
+      { name: "description", content: "Built in Africa. Open to the world. A global design & tech academy." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
