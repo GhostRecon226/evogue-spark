@@ -46,7 +46,7 @@ export function Navbar() {
         scrolled ? "shadow-[0_2px_12px_rgba(0,0,0,0.08)]" : ""
       }`}
     >
-      <div className="mx-auto flex h-20 md:h-24 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="flex h-20 md:h-24 w-full items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link to="/" aria-label="Evogue Academy home">
           <Logo />
         </Link>
