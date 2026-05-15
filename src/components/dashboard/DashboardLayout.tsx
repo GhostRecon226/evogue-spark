@@ -77,7 +77,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
           <p className="text-[11px] uppercase tracking-[0.18em] font-bold text-mint mt-0.5">{roleLabel}</p>
         </div>
       </div>
-      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      <nav className="sidebar-scroll flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         {navItems.map((it) => {
           const active = exactMatch(it.to) ? path === it.to : path.startsWith(it.to);
           return (
@@ -144,9 +144,11 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
           </div>
 
           <div className="flex items-center gap-2">
-            <Button asChild variant="ghost" className="hidden sm:inline-flex rounded-full text-sm">
-              <Link to="/courses">Browse courses</Link>
-            </Button>
+            {!isAdmin && (
+              <Button asChild variant="ghost" className="hidden sm:inline-flex rounded-full text-sm">
+                <Link to="/courses">Browse courses</Link>
+              </Button>
+            )}
             <button
               type="button"
               aria-label="Notifications"
