@@ -40,7 +40,7 @@ function CoursesPage() {
               Find your <span className="text-secondary">next skill</span>
             </h1>
             <p className="mt-5 text-foreground/70 text-base sm:text-lg">
-              Search by topic or filter by category to find the right cohort for you.
+              Learn from anywhere. Build for everywhere. Find the track that fits your goals.
             </p>
           </div>
 

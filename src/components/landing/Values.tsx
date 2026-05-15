@@ -36,7 +36,7 @@ export function Values() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-3 max-w-5xl mx-auto text-center lg:text-left">
           <p className="text-base sm:text-lg text-foreground/75 leading-relaxed">
-            We believe Africa's brightest minds deserve world-class training.
+            We believe ambitious minds everywhere deserve world-class training.
             Evogue exists to close the gap between raw talent and global opportunity.
           </p>
           <p className="text-base sm:text-lg text-foreground/75 leading-relaxed">

@@ -9,7 +9,7 @@ export const Route = createFileRoute("/about")({
       { title: "About — Evogue Academy" },
       { name: "description", content: "Our founder story, mission and team behind Evogue Academy." },
       { property: "og:title", content: "About — Evogue Academy" },
-      { property: "og:description", content: "Building Africa's next generation of tech leaders." },
+      { property: "og:description", content: "Building the next generation of global tech leaders." },
     ],
   }),
   component: AboutPage,
@@ -36,17 +36,13 @@ function AboutPage() {
           <div>
             <span className="inline-block text-xs font-bold tracking-[0.2em] uppercase text-secondary">Our Story</span>
             <h1 className="mt-3 font-display text-4xl sm:text-5xl font-extrabold text-forest leading-tight">
-              Built by Africans, for <span className="text-secondary">global ambition</span>
+              Built in Africa. <span className="text-secondary">Open to the World.</span>
             </h1>
             <p className="mt-5 text-foreground/75 text-base sm:text-lg">
-              Evogue Academy started with a simple question: why can't African talent
-              learn the exact same skills, from the same caliber of mentors, as graduates
-              from the world's best schools? We built the academy to answer that — pairing
-              ambitious learners with world-class practitioners who've shipped real products.
+              Evogue Academy started with a simple question: why should where you grow up determine the quality of your education? We built the academy to close that gap. Pairing ambitious learners from everywhere with world-class practitioners who have shipped real products at top global companies.
             </p>
             <p className="mt-4 text-foreground/75 text-base sm:text-lg">
-              Today, our graduates are designing, engineering and shipping at top global
-              companies. We're just getting started.
+              Today our graduates are designing, engineering and shipping across four continents. We are just getting started.
             </p>
           </div>
           <div className="rounded-3xl overflow-hidden shadow-soft">
@@ -63,7 +59,7 @@ function AboutPage() {
         <div className="mx-auto max-w-4xl px-4 text-center">
           <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-forest">Our Mission</h2>
           <p className="mt-5 text-foreground/75 text-base sm:text-lg leading-relaxed">
-            To equip Africa's brightest minds with the skills, mentorship and
+            To equip ambitious minds everywhere with the skills, mentorship and
             confidence to compete and win on the global tech stage.
           </p>
         </div>

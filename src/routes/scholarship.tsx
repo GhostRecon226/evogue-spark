@@ -18,14 +18,14 @@ export const Route = createFileRoute("/scholarship")({
       { title: "Scholarship — Evogue Academy" },
       { name: "description", content: "Apply for an Evogue Academy scholarship to launch your tech career." },
       { property: "og:title", content: "Scholarship — Evogue Academy" },
-      { property: "og:description", content: "Full and partial scholarships available for ambitious African learners." },
+      { property: "og:description", content: "Full and partial scholarships available for ambitious learners worldwide." },
     ],
   }),
   component: ScholarshipPage,
 });
 
 const eligibility = [
-  "African resident, 18 years or older",
+  "18 years or older, based anywhere in the world",
   "Strong commitment to a 6–14 week cohort",
   "Reliable laptop and internet access",
   "Clear motivation to launch a tech career",
@@ -79,11 +79,10 @@ function ScholarshipPage() {
             <GraduationCap className="h-7 w-7" />
           </span>
           <h1 className="mt-5 font-display text-4xl sm:text-5xl font-extrabold text-forest leading-tight">
-            Evogue <span className="text-secondary">Scholarship</span>
+            Wherever You Are, <span className="text-secondary">You Belong Here.</span>
           </h1>
           <p className="mt-5 text-foreground/75 text-base sm:text-lg">
-            We award full and partial scholarships every cohort to learners with strong
-            potential who can't pay full tuition. Apply below — we review every application.
+            Every cohort we set aside full and partial scholarships for learners who have the drive but not the funds. From Lagos to Lusaka, Accra to Amsterdam. If that is you, we want to hear from you.
           </p>
         </div>
       </section>

@@ -13,7 +13,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Evogue Academy — Master a Tech Skill. Launch Your Career." },
-      { name: "description", content: "Africa's most visionary product design and tech academy. Hands-on cohorts in Product Design, Frontend, Backend, Data, Cyber Security and more." },
+      { name: "description", content: "Built in Africa, open to the world. Hands-on cohorts in Product Design, Frontend, Backend, Data, Cyber Security and more." },
       { property: "og:title", content: "Evogue Academy" },
       { property: "og:description", content: "Train with world-class mentors. Build a portfolio. Launch your tech career." },
       { property: "og:type", content: "website" },

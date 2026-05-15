@@ -100,7 +100,7 @@ function LoginPage() {
               Train. Build.<br />Launch Your Career.
             </h2>
             <p className="text-mint text-lg font-medium">
-              Africa's most visionary tech academy.
+              Built in Africa. Open to the world.
             </p>
 
             {/* Abstract illustration */}

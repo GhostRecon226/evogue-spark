@@ -6,9 +6,9 @@ export const Route = createFileRoute("/blog")({
   head: () => ({
     meta: [
       { title: "Blog — Evogue Academy" },
-      { name: "description", content: "Stories, guides and insights for African designers and engineers." },
+      { name: "description", content: "Insights, stories and lessons from our global community of builders and designers." },
       { property: "og:title", content: "Blog — Evogue Academy" },
-      { property: "og:description", content: "Stories, guides and insights for African designers and engineers." },
+      { property: "og:description", content: "Insights, stories and lessons from our global community of builders and designers." },
     ],
   }),
   component: BlogPage,
@@ -33,6 +33,9 @@ function BlogPage() {
             <h1 className="mt-3 font-display text-4xl sm:text-5xl font-extrabold text-forest leading-tight">
               Stories from the <span className="text-secondary">Evogue community</span>
             </h1>
+            <p className="mt-5 text-foreground/70 text-base sm:text-lg">
+              Insights, stories and lessons from our global community of builders and designers.
+            </p>
           </div>
 
           <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">

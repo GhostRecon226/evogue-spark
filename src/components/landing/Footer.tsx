@@ -31,8 +31,7 @@ export function Footer() {
           <div>
             <Logo variant="light" />
             <p className="mt-4 text-sm leading-relaxed text-mint/65 max-w-xs">
-              Africa's most visionary product design and tech academy.
-              Train. Build. Launch your career.
+              Built in Africa. Open to the world. Train. Build. Launch your career.
             </p>
           </div>
 
