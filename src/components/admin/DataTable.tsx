@@ -91,7 +91,7 @@ export function DataTable<T>({
             {slice.length === 0 ? (
               <tr>
                 <td colSpan={columns.length + (actions ? 1 : 0)} className="px-4 py-10 text-center text-foreground/55">
-                  {emptyMessage}
+                  {emptyState ?? emptyMessage}
                 </td>
               </tr>
             ) : (
