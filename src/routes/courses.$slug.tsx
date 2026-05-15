@@ -61,7 +61,18 @@ function CourseDetailPage() {
             </EnrollButton>
           </div>
           <div className="rounded-3xl overflow-hidden shadow-soft">
-            <img src={course.cover} alt={course.title} className="w-full aspect-[4/3] object-cover" />
+            <img
+              src={course.cover}
+              alt={course.title}
+              onError={(e) => {
+                const img = e.currentTarget;
+                if (!img.dataset.fallback) {
+                  img.dataset.fallback = "1";
+                  img.src = "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80";
+                }
+              }}
+              className="w-full aspect-[4/3] object-cover"
+            />
           </div>
         </div>
       </section>
