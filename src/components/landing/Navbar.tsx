@@ -24,6 +24,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const { user, loading, signOut } = useAuth();
+  const isAuthenticated = Boolean(user);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -65,7 +66,7 @@ export function Navbar() {
           </nav>
 
           <div className="flex items-center gap-3">
-            {!loading && (user ? (
+            {isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className="rounded-full ring-2 ring-transparent hover:ring-secondary/40 transition">
@@ -117,7 +118,7 @@ export function Navbar() {
                     {l.label}
                   </Link>
                 ))}
-                {!loading && user && (
+                {isAuthenticated && (
                   <>
                     <Link to="/dashboard" onClick={() => setOpen(false)} className="rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-accent data-[status=active]:bg-secondary/10 data-[status=active]:text-secondary">
                       Dashboard
@@ -131,7 +132,7 @@ export function Navbar() {
                   </>
                 )}
               </nav>
-              {!loading && !user && (
+              {!isAuthenticated && (
                 <Button asChild className="mt-6 h-11 w-full rounded-full bg-forest text-white hover:bg-forest/90 hover:text-white text-sm font-semibold">
                   <Link to="/login" onClick={() => setOpen(false)}>Login</Link>
                 </Button>
