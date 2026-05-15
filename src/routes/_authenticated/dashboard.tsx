@@ -221,10 +221,10 @@ function DashboardHome() {
   );
 }
 
-function Stat({ icon: Icon, label, value }: { icon: typeof BookOpen; label: string; value: string }) {
+function Stat({ icon: Icon, label, value, iconBg = "bg-mint/30", iconColor = "text-secondary" }: { icon: typeof BookOpen; label: string; value: string; iconBg?: string; iconColor?: string }) {
   return (
     <div className="rounded-2xl bg-background border border-border p-6 flex items-center gap-4">
-      <span className="grid h-12 w-12 place-items-center rounded-xl bg-mint/30 text-secondary"><Icon className="h-5 w-5" /></span>
+      <span className={`grid h-12 w-12 place-items-center rounded-xl ${iconBg} ${iconColor}`}><Icon className="h-5 w-5" /></span>
       <div>
         <p className="text-sm text-foreground/60">{label}</p>
         <p className="font-display text-2xl font-extrabold text-forest">{value}</p>
