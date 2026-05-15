@@ -77,9 +77,9 @@ function DashboardHome() {
             .in("cohort_id", cohortIds)
             .gte("lesson_date", new Date().toISOString())
             .order("lesson_date", { ascending: true }).limit(1),
-          supabase.from("capstone_projects")
-            .select("course_id, is_released")
-            .in("course_id", courseIds.length ? courseIds : ["00000000-0000-0000-0000-000000000000"]),
+          supabase.from("courses")
+            .select("id, capstone_released")
+            .in("id", courseIds.length ? courseIds : ["00000000-0000-0000-0000-000000000000"]),
         ]);
         annRows = (ann ?? []) as Announcement[];
         const u = up?.[0];
@@ -93,7 +93,7 @@ function DashboardHome() {
           };
         }
         for (const c of caps ?? []) {
-          if (c.is_released) capstoneByCourse.set(c.course_id, true);
+          if (c.capstone_released) capstoneByCourse.set(c.id, true);
         }
       }
 
