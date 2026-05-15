@@ -103,7 +103,7 @@ function AdminOverview() {
         .filter((e) => e.payment_status === "paid")
         .reduce((sum, e) => sum + parsePrice(courseMap.get(e.course_id)?.price ?? null), 0);
 
-      const pendingCount = capRows.filter((c) => c.status === "pending" || c.status === "submitted").length;
+      const pendingCount = capRows.filter((c) => c.status === "pending").length;
 
       setStats({
         students: profileRows.length,
