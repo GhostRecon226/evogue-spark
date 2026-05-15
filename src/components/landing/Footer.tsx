@@ -26,7 +26,7 @@ const cols = [
 export function Footer() {
   return (
     <footer className="bg-forest text-mint/85">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div>
             <Logo variant="light" />
