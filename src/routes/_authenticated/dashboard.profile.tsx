@@ -20,7 +20,9 @@ function ProfilePage() {
   const [pwLoading, setPwLoading] = useState(false);
   const [form, setForm] = useState({ full_name: "", email: "", whatsapp_number: "", avatar_url: "" });
   const [newPw, setNewPw] = useState("");
+  const [confirmPw, setConfirmPw] = useState("");
   const [enrolledCount, setEnrolledCount] = useState<number | null>(null);
+  const pwMismatch = confirmPw.length > 0 && newPw !== confirmPw;
 
   useEffect(() => {
     if (!user) return;
@@ -69,11 +71,13 @@ function ProfilePage() {
   const changePw = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPw.length < 8) { toast.error("Min 8 characters"); return; }
+    if (newPw !== confirmPw) { toast.error("Passwords do not match."); return; }
     setPwLoading(true);
     const { error } = await supabase.auth.updateUser({ password: newPw });
     setPwLoading(false);
     if (error) { toast.error(error.message); return; }
     setNewPw("");
+    setConfirmPw("");
     toast.success("Password updated");
   };
 

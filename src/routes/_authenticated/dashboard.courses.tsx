@@ -90,7 +90,7 @@ function MyCourses() {
           <BookOpen className="h-12 w-12 text-secondary mx-auto" />
           <p className="mt-4 font-display text-lg font-bold text-forest">No enrollments yet</p>
           <p className="mt-1 text-sm text-foreground/60">Browse the catalog and join the next cohort.</p>
-          <Button asChild className="mt-6 rounded-full bg-forest text-mint hover:bg-forest/90"><Link to="/courses">Browse courses</Link></Button>
+          <Button asChild className="mt-6 rounded-full bg-forest text-mint hover:bg-forest/90"><Link to="/courses">Explore Courses</Link></Button>
         </div>
       ) : (
         <div className="mt-8 grid gap-5 md:grid-cols-2">
