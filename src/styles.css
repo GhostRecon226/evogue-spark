@@ -207,3 +207,18 @@
 @media (prefers-reduced-motion: reduce) {
   .scholarship-hero-svg { animation: none; }
 }
+
+/* Contact page select - no default focus outline */
+.contact-select { outline: none; }
+.contact-select:focus,
+.contact-select:focus-visible {
+  outline: none;
+  border-color: #1A8C4E;
+  box-shadow: 0 0 0 3px rgba(26,140,78,0.08);
+}
+
+/* Contact page responsive headline */
+.contact-headline { font-size: 32px; }
+@media (min-width: 768px) { .contact-headline { font-size: 30px; } }
+@media (min-width: 1024px) { .contact-headline { font-size: 34px; } }
+@media (min-width: 1280px) { .contact-headline { font-size: 40px; } }

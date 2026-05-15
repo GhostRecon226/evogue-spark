@@ -67,7 +67,7 @@ function ContactPage() {
       <div className="flex flex-col md:flex-row md:min-h-[calc(100vh-5rem)]">
         {/* LEFT PANEL */}
         <aside
-          className="relative overflow-hidden md:w-[420px] md:flex-shrink-0 px-8 py-14 md:px-[52px] md:py-16 flex flex-col justify-between"
+          className="relative overflow-hidden w-full md:w-[360px] lg:w-[480px] md:flex-shrink-0 px-6 pt-12 pb-10 md:px-9 md:py-12 lg:px-12 lg:py-[52px] flex flex-col justify-between gap-8"
           style={{
             backgroundColor: FOREST,
             backgroundImage:
@@ -92,70 +92,69 @@ function ContactPage() {
               Get in touch
             </p>
             <h1
-              className="mt-5 font-display font-black leading-[1.1]"
-              style={{ fontSize: "40px", color: CREAM }}
+              className="contact-headline mt-5 font-display font-black leading-[1.1]"
+              style={{ color: CREAM }}
             >
               No bots.<br />
               No ticket queues.<br />
               <span className="italic" style={{ color: MINT }}>Just us.</span>
             </h1>
-            <p className="mt-5 text-sm" style={{ color: "rgba(237,247,240,0.6)", maxWidth: 300 }}>
+            <p className="mt-5 text-sm" style={{ color: "rgba(237,247,240,0.6)", maxWidth: "100%" }}>
               Got a question about a course, a scholarship, or just not sure where to start? We read every message and we reply to every one.
             </p>
-
-            <ul className="mt-12">
-              {[
-                { Icon: Mail, label: "Email", value: "hello@evogueacademy.com", href: "mailto:hello@evogueacademy.com" },
-                { Icon: MessageCircle, label: "WhatsApp", value: "+234 800 000 0000", href: "https://wa.me/2348000000000" },
-                { Icon: MapPin, label: "Location", value: "Lagos, Nigeria", href: "#" },
-              ].map(({ Icon, label, value, href }, i) => (
-                <li
-                  key={label}
-                  style={{
-                    borderTop: i === 0 ? "1px solid rgba(255,255,255,0.06)" : undefined,
-                    borderBottom: "1px solid rgba(255,255,255,0.06)",
-                  }}
-                >
-                  <a href={href} className="flex items-start gap-4 py-5 group">
-                    <span
-                      className="grid place-items-center shrink-0"
-                      style={{
-                        width: 38,
-                        height: 38,
-                        borderRadius: 10,
-                        background: "rgba(0,245,160,0.10)",
-                        border: "1px solid rgba(0,245,160,0.15)",
-                        color: MINT,
-                      }}
-                    >
-                      <Icon size={16} />
-                    </span>
-                    <span className="flex flex-col">
-                      <span
-                        className="text-[11px] uppercase font-semibold"
-                        style={{ letterSpacing: "0.12em", color: "rgba(237,247,240,0.4)" }}
-                      >
-                        {label}
-                      </span>
-                      <span className="mt-1 text-sm font-medium transition-colors group-hover:text-[#00F5A0]" style={{ color: CREAM }}>
-                        {value}
-                      </span>
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
           </div>
 
-          <div className="relative mt-12">
+          <ul className="relative">
+            {[
+              { Icon: Mail, label: "Email", value: "hello@evogueacademy.com", href: "mailto:hello@evogueacademy.com" },
+              { Icon: MessageCircle, label: "WhatsApp", value: "+234 800 000 0000", href: "https://wa.me/2348000000000" },
+              { Icon: MapPin, label: "Location", value: "Lagos, Nigeria", href: "#" },
+            ].map(({ Icon, label, value, href }, i) => (
+              <li
+                key={label}
+                style={{
+                  borderTop: i === 0 ? "1px solid rgba(255,255,255,0.06)" : undefined,
+                  borderBottom: "1px solid rgba(255,255,255,0.06)",
+                }}
+              >
+                <a href={href} className="flex items-start gap-4 py-[14px] md:py-5 group">
+                  <span
+                    className="grid place-items-center shrink-0"
+                    style={{
+                      width: 38,
+                      height: 38,
+                      borderRadius: 10,
+                      background: "rgba(0,245,160,0.10)",
+                      border: "1px solid rgba(0,245,160,0.15)",
+                      color: MINT,
+                    }}
+                  >
+                    <Icon size={16} />
+                  </span>
+                  <span className="flex flex-col">
+                    <span
+                      className="text-[11px] uppercase font-semibold"
+                      style={{ letterSpacing: "0.12em", color: "rgba(237,247,240,0.4)" }}
+                    >
+                      {label}
+                    </span>
+                    <span className="mt-1 text-sm font-medium transition-colors group-hover:text-[#00F5A0]" style={{ color: CREAM }}>
+                      {value}
+                    </span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <div className="relative">
             <div
-              className="flex items-center gap-3"
+              className="flex items-center gap-3 w-full"
               style={{
                 background: "rgba(0,245,160,0.07)",
                 border: "1px solid rgba(0,245,160,0.15)",
                 borderRadius: 10,
                 padding: "14px 16px",
-                marginBottom: 32,
               }}
             >
               <span className="shrink-0 rounded-full" style={{ width: 8, height: 8, background: MINT }} />
@@ -165,7 +164,7 @@ function ContactPage() {
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 mt-6">
               {[
                 { Icon: Instagram, label: "Instagram" },
                 { Icon: Twitter, label: "X" },
@@ -203,14 +202,14 @@ function ContactPage() {
 
         {/* RIGHT PANEL */}
         <section
-          className="flex-1 px-6 py-10 sm:px-10 sm:py-14 md:px-[60px] md:py-16 flex flex-col justify-center"
+          className="flex-1 px-6 py-10 md:px-10 md:py-12 lg:px-[60px] lg:py-16 flex flex-col justify-center"
           style={{
             backgroundColor: MINT_BG,
             backgroundImage: "radial-gradient(rgba(10,46,26,0.06) 1px, transparent 1px)",
             backgroundSize: "18px 18px",
           }}
         >
-          <div className="w-full max-w-[640px] mx-auto">
+          <div className="w-full md:max-w-full lg:max-w-[580px] mx-auto">
             <p
               className="text-[12px] font-semibold uppercase"
               style={{ letterSpacing: "0.14em", color: FOREST_MID }}
@@ -225,7 +224,7 @@ function ContactPage() {
             </p>
 
             <form onSubmit={onSubmit} className="mt-8 space-y-5">
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                 <div>
                   <label className="block text-[12px] font-semibold mb-1.5" style={{ color: FOREST }}>Full name</label>
                   <input
@@ -254,7 +253,7 @@ function ContactPage() {
               <div>
                 <label className="block text-[12px] font-semibold mb-1.5" style={{ color: FOREST }}>What's this about?</label>
                 <select
-                  className={inputCls}
+                  className={`${inputCls} contact-select`}
                   value={form.topic}
                   onChange={(e) => setForm({ ...form, topic: e.target.value })}
                   required
@@ -282,7 +281,7 @@ function ContactPage() {
                 />
               </div>
 
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-2">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between items-start gap-3 sm:gap-4 mt-2">
                 <p className="text-[12px] leading-snug" style={{ color: "rgba(10,46,26,0.4)" }}>
                   We never share your details.<br />
                   No marketing emails. No spam.
@@ -290,7 +289,7 @@ function ContactPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="inline-flex items-center gap-2 transition-all disabled:opacity-60"
+                  className="inline-flex items-center justify-center gap-2 transition-all disabled:opacity-60 w-full sm:w-auto"
                   style={{
                     background: FOREST,
                     color: "#fff",
@@ -315,7 +314,7 @@ function ContactPage() {
               </div>
 
               <div
-                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+                className="flex flex-col sm:flex-row sm:items-center sm:justify-between items-start gap-3 sm:gap-4"
                 style={{ marginTop: 28, paddingTop: 24, borderTop: "1px solid rgba(10,46,26,0.08)" }}
               >
                 <p className="text-[13px]" style={{ color: "#4a7a5a" }}>
@@ -326,7 +325,7 @@ function ContactPage() {
                   href="https://wa.me/2348000000000"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 shrink-0 transition-colors"
+                  className="inline-flex items-center justify-center gap-2 shrink-0 transition-colors w-full sm:w-auto"
                   style={{
                     background: "rgba(0,245,160,0.10)",
                     border: "1.5px solid rgba(0,245,160,0.30)",
