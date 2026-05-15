@@ -140,8 +140,21 @@ function ProfilePage() {
           <h2 className="font-display text-lg font-bold text-forest">Security</h2>
           <p className="text-xs text-foreground/55 mt-0.5">Change your password. Use at least 8 characters.</p>
         </div>
-        <div className="space-y-1.5"><Label>New password</Label><Input type="password" value={newPw} onChange={(e) => setNewPw(e.target.value)} /></div>
-        <Button type="submit" disabled={pwLoading} className="rounded-full bg-[#0A2E1A] text-mint hover:bg-[#0A2E1A]/90">
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div className="space-y-1.5"><Label>New password</Label><Input type="password" value={newPw} onChange={(e) => setNewPw(e.target.value)} /></div>
+          <div className="space-y-1.5">
+            <Label>Confirm new password</Label>
+            <Input
+              type="password"
+              value={confirmPw}
+              onChange={(e) => setConfirmPw(e.target.value)}
+              aria-invalid={pwMismatch || undefined}
+              className={pwMismatch ? "border-destructive focus-visible:ring-destructive" : ""}
+            />
+            {pwMismatch && <p className="text-xs text-destructive">Passwords do not match.</p>}
+          </div>
+        </div>
+        <Button type="submit" disabled={pwLoading || pwMismatch || newPw.length === 0 || confirmPw.length === 0} className="rounded-full bg-[#0A2E1A] text-mint hover:bg-[#0A2E1A]/90">
           {pwLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Update Password"}
         </Button>
       </form>
