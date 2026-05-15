@@ -41,7 +41,7 @@ function DashboardHome() {
   const [upcoming, setUpcoming] = useState<UpcomingLesson | null>(null);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || isAdmin || isInstructor) return;
     let cancelled = false;
     (async () => {
       setLoading(true);
