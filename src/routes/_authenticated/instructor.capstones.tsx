@@ -89,7 +89,7 @@ function InstructorCapstones() {
       <p className="mt-2 text-foreground/65">Review submissions for the courses you teach. Final approval sits with admin.</p>
 
       <div className="mt-6 max-w-md">
-        <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search by student, reg # or course…" className="rounded-full" />
+        <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search by student, Student ID or course…" className="rounded-full" />
       </div>
 
       {loading ? (

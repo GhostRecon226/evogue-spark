@@ -117,7 +117,7 @@ function InstructorStudents() {
   };
 
   const columns: Column<Row>[] = [
-    { key: "registration_number", header: "Reg #", accessor: (r) => r.registration_number, sortable: true },
+    { key: "registration_number", header: "Student ID", accessor: (r) => r.registration_number, sortable: true },
     { key: "full_name", header: "Name", accessor: (r) => r.full_name, sortable: true,
       cell: (r) => <button className="text-left text-forest font-semibold hover:text-secondary" onClick={() => openBreakdown(r)}>{r.full_name}</button> },
     { key: "email", header: "Email", accessor: (r) => r.email },
@@ -146,7 +146,7 @@ function InstructorStudents() {
 
       <div className="mt-6 relative max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/45" />
-        <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search by name, email or reg #…" className="pl-9 rounded-full" />
+        <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search by name, email or Student ID…" className="pl-9 rounded-full" />
       </div>
 
       <div className="mt-6">

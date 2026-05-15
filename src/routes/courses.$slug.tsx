@@ -123,7 +123,7 @@ function CourseDetailPage() {
                   "Fill out the enrollment inquiry form on the contact page.",
                   "Our team contacts you within 24 hours to discuss your goals.",
                   "Confirm payment to secure your spot in the next cohort.",
-                  "Receive your login credentials and registration number via email.",
+                  "Receive your login credentials and Student ID via email.",
                   "Log in to your dashboard and access your cohort, lessons and live classes.",
                 ].map((step, i) => (
                   <li key={i} className="flex items-start gap-4 rounded-2xl border border-border bg-background p-5">

@@ -128,7 +128,7 @@ function StudentsPage() {
       <div className="mt-6 relative max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/45" />
         <Input value={q} onChange={(e) => setQ(e.target.value)}
-          placeholder="Search by name, email, or registration number…" className="pl-9 rounded-full" />
+          placeholder="Search by name, email, or Student ID…" className="pl-9 rounded-full" />
       </div>
 
       <div className="mt-6">
@@ -196,7 +196,7 @@ function NewStudentDialog({ onCreated, createFn }: { onCreated: () => void; crea
         <div><Label>Temporary password</Label>
           <Input required type="text" minLength={8} value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="Min 8 characters" /></div>
-        <p className="text-xs text-foreground/55">A registration number is generated automatically. Share these credentials with the student.</p>
+        <p className="text-xs text-foreground/55">A Student ID is generated automatically. Share these credentials with the student.</p>
         <DialogFooter>
           <Button type="submit" disabled={busy} className="rounded-full bg-forest text-mint hover:bg-forest/90">
             {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create student"}
@@ -235,7 +235,7 @@ function StudentProfileDialog({ studentId, onClose }: { studentId: string | null
           <div className="space-y-5 mt-2 text-sm">
             <div className="grid sm:grid-cols-2 gap-3 rounded-2xl border border-border bg-mint-tint/40 p-4">
               <Field label="Full name" value={data.profile?.full_name} />
-              <Field label="Registration No" value={data.profile?.registration_number} mono />
+              <Field label="Student ID" value={data.profile?.registration_number} mono />
               <Field label="Email" value={data.profile?.email} />
               <Field label="WhatsApp" value={data.profile?.whatsapp_number} />
               <Field label="Status" value={data.profile?.is_active ? "Active" : "Suspended"} />

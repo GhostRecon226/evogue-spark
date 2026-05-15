@@ -86,17 +86,17 @@ function ProfilePage() {
       <h1 className="font-display text-3xl font-extrabold text-forest">Profile</h1>
       <p className="mt-1 text-foreground/65">Manage your personal details and account security.</p>
 
-      {/* Registration number — prominent read-only highlight */}
+      {/* Student ID — prominent read-only highlight */}
       <div className="mt-6 max-w-4xl rounded-2xl border-2 border-mint bg-mint/15 p-5 flex items-center justify-between gap-4 flex-wrap">
         <div>
-          <p className="text-[11px] uppercase tracking-[0.18em] font-bold text-secondary">Registration Number</p>
+          <p className="text-[11px] uppercase tracking-[0.18em] font-bold text-secondary">Student ID</p>
           <p className="mt-1 font-mono text-2xl font-extrabold tracking-widest text-forest">
             {profile?.registration_number ?? "—"}
           </p>
         </div>
         {accountCreated && (
           <p className="text-xs text-foreground/60">
-            Member since{" "}
+            Student since{" "}
             <span className="font-semibold text-forest">
               {new Date(accountCreated).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
             </span>
