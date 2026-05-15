@@ -160,7 +160,7 @@ function AdminOverview() {
 
       setPendingCapstones(
         capRows
-          .filter((c) => c.status === "pending" || c.status === "submitted")
+          .filter((c) => c.status === "pending")
           .slice(0, 4)
           .map((c) => ({
             id: c.id,
