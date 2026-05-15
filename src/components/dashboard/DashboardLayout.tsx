@@ -144,9 +144,11 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
           </div>
 
           <div className="flex items-center gap-2">
-            <Button asChild variant="ghost" className="hidden sm:inline-flex rounded-full text-sm">
-              <Link to="/courses">Browse courses</Link>
-            </Button>
+            {!isAdmin && (
+              <Button asChild variant="ghost" className="hidden sm:inline-flex rounded-full text-sm">
+                <Link to="/courses">Browse courses</Link>
+              </Button>
+            )}
             <button
               type="button"
               aria-label="Notifications"
