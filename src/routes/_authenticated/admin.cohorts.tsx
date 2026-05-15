@@ -58,6 +58,7 @@ function AdminCohortsPage() {
   const [form, setForm] = useState<Form>(empty);
   const [saving, setSaving] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [q, setQ] = useState("");
 
   const load = async () => {
     setLoading(true);
