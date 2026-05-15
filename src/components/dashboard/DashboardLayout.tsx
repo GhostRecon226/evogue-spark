@@ -206,9 +206,14 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
             <div className="lg:hidden min-w-0">
               <Link to="/" aria-label="Evogue Academy home"><Logo /></Link>
             </div>
-            <h1 className="hidden lg:block font-display text-lg font-bold text-forest truncate">
-              {current?.label ?? "Dashboard"}
-            </h1>
+            <div className="hidden lg:flex flex-col min-w-0">
+              <h1 className="font-display text-lg font-bold text-forest truncate leading-tight">
+                {current?.label ?? "Dashboard"}
+              </h1>
+              {isStudent && (
+                <p className="text-[11px] text-foreground/55 truncate">{todayStr}</p>
+              )}
+            </div>
           </div>
 
           <div className="flex items-center gap-2">
