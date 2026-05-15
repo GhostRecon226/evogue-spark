@@ -119,7 +119,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-mint-tint flex">
-      <aside className="hidden lg:block w-64 shrink-0 sticky top-0 h-screen">{Sidebar}</aside>
+      <aside className="hidden lg:block w-[260px] shrink-0 sticky top-0 h-screen">{Sidebar}</aside>
 
       <div className="flex-1 flex flex-col min-w-0">
         <header className="sticky top-0 z-30 flex items-center justify-between gap-3 bg-background/85 backdrop-blur-md border-b border-border px-4 sm:px-6 lg:px-8 h-16">
