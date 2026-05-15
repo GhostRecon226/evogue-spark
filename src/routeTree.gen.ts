@@ -23,6 +23,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedInstructorIndexRouteImport } from './routes/_authenticated/instructor.index'
+import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedInstructorUploadRouteImport } from './routes/_authenticated/instructor.upload'
 import { Route as AuthenticatedInstructorStudentsRouteImport } from './routes/_authenticated/instructor.students'
@@ -113,6 +114,12 @@ const AuthenticatedInstructorIndexRoute =
     id: '/instructor/',
     path: '/instructor/',
     getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedDashboardIndexRoute =
+  AuthenticatedDashboardIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/admin/',
@@ -266,6 +273,7 @@ export interface FileRoutesByFullPath {
   '/instructor/students': typeof AuthenticatedInstructorStudentsRoute
   '/instructor/upload': typeof AuthenticatedInstructorUploadRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/instructor/': typeof AuthenticatedInstructorIndexRoute
   '/dashboard/courses/$slug': typeof AuthenticatedDashboardCoursesSlugRoute
 }
@@ -280,7 +288,6 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/scholarship': typeof ScholarshipRoute
-  '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/courses/$slug': typeof CoursesSlugRoute
   '/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
   '/admin/capstones': typeof AuthenticatedAdminCapstonesRoute
@@ -301,6 +308,7 @@ export interface FileRoutesByTo {
   '/instructor/students': typeof AuthenticatedInstructorStudentsRoute
   '/instructor/upload': typeof AuthenticatedInstructorUploadRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/instructor': typeof AuthenticatedInstructorIndexRoute
   '/dashboard/courses/$slug': typeof AuthenticatedDashboardCoursesSlugRoute
 }
@@ -338,6 +346,7 @@ export interface FileRoutesById {
   '/_authenticated/instructor/students': typeof AuthenticatedInstructorStudentsRoute
   '/_authenticated/instructor/upload': typeof AuthenticatedInstructorUploadRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/instructor/': typeof AuthenticatedInstructorIndexRoute
   '/_authenticated/dashboard/courses/$slug': typeof AuthenticatedDashboardCoursesSlugRoute
 }
@@ -375,6 +384,7 @@ export interface FileRouteTypes {
     | '/instructor/students'
     | '/instructor/upload'
     | '/admin/'
+    | '/dashboard/'
     | '/instructor/'
     | '/dashboard/courses/$slug'
   fileRoutesByTo: FileRoutesByTo
@@ -389,7 +399,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/scholarship'
-    | '/dashboard'
     | '/courses/$slug'
     | '/admin/announcements'
     | '/admin/capstones'
@@ -410,6 +419,7 @@ export interface FileRouteTypes {
     | '/instructor/students'
     | '/instructor/upload'
     | '/admin'
+    | '/dashboard'
     | '/instructor'
     | '/dashboard/courses/$slug'
   id:
@@ -446,6 +456,7 @@ export interface FileRouteTypes {
     | '/_authenticated/instructor/students'
     | '/_authenticated/instructor/upload'
     | '/_authenticated/admin/'
+    | '/_authenticated/dashboard/'
     | '/_authenticated/instructor/'
     | '/_authenticated/dashboard/courses/$slug'
   fileRoutesById: FileRoutesById
@@ -563,6 +574,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/instructor/'
       preLoaderRoute: typeof AuthenticatedInstructorIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/dashboard/': {
+      id: '/_authenticated/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
@@ -726,6 +744,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardCertificatesRoute: typeof AuthenticatedDashboardCertificatesRoute
   AuthenticatedDashboardCoursesRoute: typeof AuthenticatedDashboardCoursesRouteWithChildren
   AuthenticatedDashboardProfileRoute: typeof AuthenticatedDashboardProfileRoute
+  AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
 }
 
 const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
@@ -735,6 +754,7 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardCoursesRoute:
       AuthenticatedDashboardCoursesRouteWithChildren,
     AuthenticatedDashboardProfileRoute: AuthenticatedDashboardProfileRoute,
+    AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
   }
 
 const AuthenticatedDashboardRouteWithChildren =
