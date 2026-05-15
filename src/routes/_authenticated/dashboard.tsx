@@ -122,7 +122,10 @@ function DashboardHome() {
       }
     })();
     return () => { cancelled = true; };
-  }, [user]);
+  }, [user, isAdmin, isInstructor]);
+
+  // While redirecting non-students away, render nothing to avoid flashing student UI.
+  if (isAdmin || isInstructor) return null;
 
   return (
     <DashboardLayout>
