@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Mail, MessageCircle, MapPin, ArrowRight, Instagram, Twitter, Linkedin, Youtube, Loader2 } from "lucide-react";
+import { Mail, MessageCircle, MapPin, ArrowRight, Loader2 } from "lucide-react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { PublicShell } from "@/components/PublicShell";
@@ -99,7 +99,7 @@ function ContactPage() {
               No ticket queues.<br />
               <span className="italic" style={{ color: MINT }}>Just us.</span>
             </h1>
-            <p className="mt-5 text-sm" style={{ color: "rgba(237,247,240,0.6)", maxWidth: "100%" }}>
+            <p className="mt-5 text-sm" style={{ color: "rgba(237,247,240,0.6)", maxWidth: 300 }}>
               Got a question about a course, a scholarship, or just not sure where to start? We read every message and we reply to every one.
             </p>
           </div>
@@ -164,39 +164,6 @@ function ContactPage() {
               </p>
             </div>
 
-            <div className="flex items-center gap-2 mt-6">
-              {[
-                { Icon: Instagram, label: "Instagram" },
-                { Icon: Twitter, label: "X" },
-                { Icon: Linkedin, label: "LinkedIn" },
-                { Icon: Youtube, label: "YouTube" },
-              ].map(({ Icon, label }) => (
-                <a
-                  key={label}
-                  href="#"
-                  aria-label={label}
-                  className="grid place-items-center transition-colors"
-                  style={{
-                    width: 38,
-                    height: 38,
-                    borderRadius: 9,
-                    background: "rgba(255,255,255,0.05)",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    color: CREAM,
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "rgba(0,245,160,0.10)";
-                    e.currentTarget.style.borderColor = "rgba(0,245,160,0.20)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "rgba(255,255,255,0.05)";
-                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
-                  }}
-                >
-                  <Icon size={16} />
-                </a>
-              ))}
-            </div>
           </div>
         </aside>
 
