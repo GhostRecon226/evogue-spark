@@ -87,7 +87,7 @@ function ProfilePage() {
       <p className="mt-1 text-foreground/65">Manage your personal details and account security.</p>
 
       {/* Registration number — prominent read-only highlight */}
-      <div className="mt-6 max-w-2xl rounded-2xl border-2 border-mint bg-mint/15 p-5 flex items-center justify-between gap-4 flex-wrap">
+      <div className="mt-6 max-w-4xl rounded-2xl border-2 border-mint bg-mint/15 p-5 flex items-center justify-between gap-4 flex-wrap">
         <div>
           <p className="text-[11px] uppercase tracking-[0.18em] font-bold text-secondary">Registration Number</p>
           <p className="mt-1 font-mono text-2xl font-extrabold tracking-widest text-forest">
@@ -105,7 +105,7 @@ function ProfilePage() {
       </div>
 
       {/* Section 1 — Personal Details */}
-      <form onSubmit={save} className="mt-6 max-w-2xl rounded-2xl bg-background border border-border p-6 space-y-5">
+      <form onSubmit={save} className="mt-6 max-w-4xl rounded-2xl bg-background border border-border p-6 space-y-5">
         <div>
           <h2 className="font-display text-lg font-bold text-forest">Personal Details</h2>
           <p className="text-xs text-foreground/55 mt-0.5">Your name, contact info, and profile photo.</p>
@@ -135,7 +135,7 @@ function ProfilePage() {
       </form>
 
       {/* Section 2 — Security */}
-      <form onSubmit={changePw} className="mt-6 max-w-2xl rounded-2xl bg-background border border-border p-6 space-y-4">
+      <form onSubmit={changePw} className="mt-6 max-w-4xl rounded-2xl bg-background border border-border p-6 space-y-4">
         <div>
           <h2 className="font-display text-lg font-bold text-forest">Security</h2>
           <p className="text-xs text-foreground/55 mt-0.5">Change your password. Use at least 8 characters.</p>
