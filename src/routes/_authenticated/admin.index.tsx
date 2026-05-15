@@ -91,7 +91,13 @@ function AdminOverview() {
       const courseMap = new Map(courseRows.map((c) => [c.id, c]));
       const enrolRows = enrolRes.data ?? [];
       const profileRows = studentsRes.data ?? [];
-      const capRows = capRes.data ?? [];
+      const capRows = (capRes.data ?? []) as unknown as Array<{
+        id: string;
+        status: string;
+        submitted_at: string;
+        student: { full_name: string | null; email: string | null; registration_number: string | null } | null;
+        course: { title: string | null } | null;
+      }>;
 
       const revenue = enrolRows
         .filter((e) => e.payment_status === "paid")
