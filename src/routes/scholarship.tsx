@@ -149,31 +149,152 @@ function ScholarshipPage() {
   return (
     <PublicShell>
       {/* Section 1: Hero */}
-      <section style={{ backgroundColor: "#F0FDF6" }} className="py-20">
-        <div className="mx-auto max-w-4xl px-4 text-center">
-          <span
-            className="inline-flex items-center gap-2 rounded-full border-2 px-4 py-1.5 text-xs font-bold uppercase tracking-wide"
-            style={{ backgroundColor: "#FFFFFF", borderColor: "#0A2E1A", color: "#0A2E1A" }}
-          >
-            <Sparkles className="h-3.5 w-3.5" />
-            Limited Scholarship Opportunity
-          </span>
-          <h1 className="mt-6 font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] text-forest">
-            Wherever You Are,{" "}
-            <span style={{ color: "#1A8C4E" }}>You Belong Here.</span>
-          </h1>
-          <p className="mt-6 text-foreground/75 text-base sm:text-lg leading-relaxed max-w-3xl mx-auto">
-            Every cohort we set aside full and partial scholarships for learners who have the drive but not the funds. From Lagos to London, Nairobi to New York. If that is you, we want to hear from you.
-          </p>
-          <div className="mt-7 flex flex-wrap justify-center gap-3">
-            <span className="inline-flex items-center gap-2 rounded-full bg-background px-4 py-2 text-sm font-semibold text-forest shadow-soft">
-              <Calendar className="h-4 w-4" style={{ color: "#1A8C4E" }} />
-              Applications open now
+      <section style={{ backgroundColor: "#F0FDF6" }} className="py-20 px-4 sm:px-8 lg:px-16">
+        <div className="mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div className="max-w-[520px] text-left">
+            <span
+              className="inline-flex items-center gap-2 rounded-full border-2 px-4 py-1.5 text-xs font-bold uppercase tracking-wide"
+              style={{ backgroundColor: "#FFFFFF", borderColor: "#0A2E1A", color: "#0A2E1A" }}
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              Limited Scholarship Opportunity
             </span>
-            <span className="inline-flex items-center gap-2 rounded-full bg-background px-4 py-2 text-sm font-semibold text-forest shadow-soft">
-              <Users className="h-4 w-4" style={{ color: "#1A8C4E" }} />
-              Limited spots per cohort
-            </span>
+            <h1 className="mt-6 font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] text-forest">
+              Wherever You Are,{" "}
+              <span style={{ color: "#1A8C4E" }}>You Belong Here.</span>
+            </h1>
+            <p className="mt-6 text-foreground/75 text-base sm:text-lg leading-relaxed">
+              Every cohort we set aside full and partial scholarships for learners who have the drive but not the funds. From Lagos to London, Nairobi to New York. If that is you, we want to hear from you.
+            </p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <span className="inline-flex items-center gap-2 rounded-full bg-background px-4 py-2 text-sm font-semibold text-forest shadow-soft">
+                <Calendar className="h-4 w-4" style={{ color: "#1A8C4E" }} />
+                Applications open now
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-full bg-background px-4 py-2 text-sm font-semibold text-forest shadow-soft">
+                <Users className="h-4 w-4" style={{ color: "#1A8C4E" }} />
+                Limited spots per cohort
+              </span>
+            </div>
+          </div>
+          <div className="w-full">
+            <svg width="100%" viewBox="0 0 680 480" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs>
+                <filter id="soft" x="-5%" y="-5%" width="110%" height="115%">
+                  <feDropShadow dx="0" dy="12" stdDeviation="20" floodColor="#020e06" floodOpacity="0.45" />
+                </filter>
+                <linearGradient id="card-surface" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#0d3a1f" /><stop offset="100%" stopColor="#081a0e" />
+                </linearGradient>
+                <linearGradient id="card-mid" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#0f4424" /><stop offset="100%" stopColor="#0a2413" />
+                </linearGradient>
+                <linearGradient id="card-front" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#11512a" /><stop offset="100%" stopColor="#0c3018" />
+                </linearGradient>
+                <linearGradient id="mint-glow" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#00F5A0" stopOpacity="0" />
+                  <stop offset="30%" stopColor="#00F5A0" stopOpacity="1" />
+                  <stop offset="70%" stopColor="#00F5A0" stopOpacity="1" />
+                  <stop offset="100%" stopColor="#00F5A0" stopOpacity="0" />
+                </linearGradient>
+                <radialGradient id="orb-glow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#00F5A0" stopOpacity="0.25" />
+                  <stop offset="100%" stopColor="#00F5A0" stopOpacity="0" />
+                </radialGradient>
+              </defs>
+              <ellipse cx="420" cy="240" rx="220" ry="180" fill="url(#orb-glow)" />
+              <g filter="url(#soft)" transform="rotate(-14, 340, 240) translate(-30, 20)">
+                <rect x="200" y="80" width="320" height="230" rx="14" fill="url(#card-surface)" />
+                <rect x="214" y="110" width="292" height="170" rx="8" fill="#071510" />
+                <circle cx="228" cy="98" r="4" fill="#1A8C4E" opacity="0.5" />
+                <circle cx="242" cy="98" r="4" fill="#1A8C4E" opacity="0.3" />
+                <circle cx="256" cy="98" r="4" fill="#1A8C4E" opacity="0.2" />
+                <rect x="228" y="128" width="100" height="7" rx="3.5" fill="#1A8C4E" opacity="0.4" />
+                <rect x="228" y="143" width="180" height="5" rx="2.5" fill="#1A8C4E" opacity="0.2" />
+                <rect x="228" y="156" width="150" height="5" rx="2.5" fill="#1A8C4E" opacity="0.2" />
+                <rect x="228" y="169" width="165" height="5" rx="2.5" fill="#1A8C4E" opacity="0.15" />
+                <circle cx="460" cy="158" r="34" fill="#0A2E1A" opacity="0.7" />
+                <circle cx="460" cy="158" r="22" fill="#1A8C4E" opacity="0.25" />
+                <rect x="228" y="254" width="90" height="5" rx="2.5" fill="url(#mint-glow)" opacity="0.5" />
+              </g>
+              <g filter="url(#soft)" transform="rotate(-5, 340, 240) translate(10, 10)">
+                <rect x="200" y="70" width="320" height="240" rx="14" fill="url(#card-mid)" />
+                <rect x="214" y="102" width="292" height="176" rx="8" fill="#071510" />
+                <rect x="200" y="70" width="320" height="14" rx="14" fill="#0a2010" />
+                <rect x="200" y="84" width="320" height="18" rx="0" fill="#0a2010" />
+                <circle cx="228" cy="87" r="4" fill="#1A8C4E" opacity="0.6" />
+                <circle cx="242" cy="87" r="4" fill="#1A8C4E" opacity="0.35" />
+                <circle cx="256" cy="87" r="4" fill="#1A8C4E" opacity="0.2" />
+                <rect x="290" y="83" width="120" height="6" rx="3" fill="#1A8C4E" opacity="0.25" />
+                <rect x="228" y="118" width="264" height="136" rx="8" fill="#0A2E1A" opacity="0.6" />
+                <polygon points="310,138 313,148 324,148 315,154 318,164 310,158 302,164 305,154 296,148 307,148" fill="#00F5A0" opacity="0.85" />
+                <rect x="332" y="136" width="110" height="7" rx="3.5" fill="#EDF7F0" opacity="0.5" />
+                <rect x="332" y="150" width="80" height="5" rx="2.5" fill="#EDF7F0" opacity="0.25" />
+                <rect x="228" y="178" width="264" height="1" fill="#1A8C4E" opacity="0.2" />
+                <rect x="240" y="188" width="70" height="5" rx="2.5" fill="#1A8C4E" opacity="0.3" />
+                <rect x="380" y="188" width="90" height="5" rx="2.5" fill="#EDF7F0" opacity="0.3" />
+                <rect x="240" y="200" width="70" height="5" rx="2.5" fill="#1A8C4E" opacity="0.3" />
+                <rect x="380" y="200" width="70" height="5" rx="2.5" fill="#EDF7F0" opacity="0.3" />
+                <rect x="240" y="212" width="70" height="5" rx="2.5" fill="#1A8C4E" opacity="0.3" />
+                <rect x="380" y="212" width="100" height="5" rx="2.5" fill="#00F5A0" opacity="0.7" />
+                <rect x="228" y="272" width="140" height="6" rx="3" fill="url(#mint-glow)" opacity="0.8" />
+              </g>
+              <g filter="url(#soft)" transform="rotate(5, 340, 240) translate(44, -4)">
+                <rect x="200" y="60" width="320" height="250" rx="14" fill="url(#card-front)" />
+                <rect x="200" y="60" width="320" height="42" rx="14" fill="#0A2E1A" />
+                <rect x="200" y="88" width="320" height="14" rx="0" fill="#0A2E1A" />
+                <circle cx="218" cy="81" r="4.5" fill="#1A8C4E" opacity="0.7" />
+                <circle cx="233" cy="81" r="4.5" fill="#1A8C4E" opacity="0.4" />
+                <circle cx="248" cy="81" r="4.5" fill="#1A8C4E" opacity="0.25" />
+                <rect x="278" y="77" width="90" height="6" rx="3" fill="#EDF7F0" opacity="0.2" />
+                <rect x="214" y="102" width="292" height="176" rx="8" fill="#07180d" />
+                <circle cx="246" cy="132" r="18" fill="#0A2E1A" opacity="0.8" />
+                <circle cx="246" cy="132" r="11" fill="#1A8C4E" opacity="0.4" />
+                <polygon points="246,123 254,127 246,131 238,127" fill="#00F5A0" opacity="0.9" />
+                <rect x="272" y="124" width="90" height="7" rx="3.5" fill="#EDF7F0" opacity="0.55" />
+                <rect x="272" y="137" width="60" height="5" rx="2.5" fill="#1A8C4E" opacity="0.4" />
+                <rect x="214" y="158" width="292" height="1" fill="#1A8C4E" opacity="0.2" />
+                <rect x="228" y="168" width="264" height="90" rx="8" fill="#0A2E1A" opacity="0.5" />
+                <rect x="234" y="174" width="252" height="78" rx="5" fill="none" stroke="#1A8C4E" strokeWidth="0.75" strokeOpacity="0.3" />
+                <rect x="300" y="182" width="120" height="7" rx="3.5" fill="#EDF7F0" opacity="0.4" />
+                <rect x="316" y="194" width="88" height="5" rx="2.5" fill="#EDF7F0" opacity="0.2" />
+                <circle cx="263" cy="210" r="16" fill="#0A2E1A" opacity="0.8" />
+                <circle cx="263" cy="210" r="10" fill="#00F5A0" opacity="0.15" />
+                <circle cx="263" cy="210" r="6" fill="#00F5A0" opacity="0.4" />
+                <rect x="295" y="208" width="130" height="5" rx="2.5" fill="#EDF7F0" opacity="0.18" />
+                <rect x="295" y="220" width="100" height="4" rx="2" fill="#EDF7F0" opacity="0.12" />
+                <rect x="234" y="238" width="60" height="4" rx="2" fill="#00F5A0" opacity="0.6" />
+                <rect x="300" y="239" width="40" height="3" rx="1.5" fill="#1A8C4E" opacity="0.3" />
+                <rect x="346" y="239" width="50" height="3" rx="1.5" fill="#1A8C4E" opacity="0.3" />
+                <rect x="214" y="266" width="200" height="7" rx="3.5" fill="url(#mint-glow)" />
+              </g>
+              <g>
+                <rect x="76" y="188" width="108" height="36" rx="18" fill="#0A2E1A" />
+                <rect x="78" y="190" width="104" height="32" rx="16" fill="#0d3320" stroke="#1A8C4E" strokeWidth="0.75" strokeOpacity="0.4" />
+                <circle cx="99" cy="206" r="5" fill="#00F5A0" opacity="0.9" />
+                <rect x="112" y="201" width="52" height="6" rx="3" fill="#EDF7F0" opacity="0.6" />
+                <rect x="112" y="212" width="38" height="4" rx="2" fill="#EDF7F0" opacity="0.3" />
+              </g>
+              <g>
+                <rect x="490" y="120" width="128" height="36" rx="18" fill="#0A2E1A" />
+                <rect x="492" y="122" width="124" height="32" rx="16" fill="#0d3320" stroke="#00F5A0" strokeWidth="0.75" strokeOpacity="0.5" />
+                <circle cx="510" cy="138" r="5" fill="#00F5A0" opacity="0.9" />
+                <rect x="522" y="133" width="68" height="6" rx="3" fill="#EDF7F0" opacity="0.55" />
+                <rect x="522" y="144" width="50" height="4" rx="2" fill="#1A8C4E" opacity="0.4" />
+              </g>
+              <g>
+                <rect x="500" y="300" width="100" height="36" rx="18" fill="#0A2E1A" />
+                <rect x="502" y="302" width="96" height="32" rx="16" fill="#0d3320" stroke="#1A8C4E" strokeWidth="0.75" strokeOpacity="0.35" />
+                <polygon points="520,316 522.5,323 530,323 524,327 526.5,334 520,330 513.5,334 516,327 510,323 517.5,323" fill="#00F5A0" opacity="0.8" />
+                <rect x="535" y="315" width="48" height="5" rx="2.5" fill="#EDF7F0" opacity="0.5" />
+                <rect x="535" y="325" width="36" height="4" rx="2" fill="#EDF7F0" opacity="0.25" />
+              </g>
+              <circle cx="168" cy="140" r="4" fill="#00F5A0" opacity="0.4" />
+              <circle cx="148" cy="280" r="2.5" fill="#1A8C4E" opacity="0.5" />
+              <circle cx="620" cy="200" r="3.5" fill="#00F5A0" opacity="0.35" />
+              <circle cx="600" cy="360" r="2.5" fill="#1A8C4E" opacity="0.4" />
+            </svg>
           </div>
         </div>
       </section>
