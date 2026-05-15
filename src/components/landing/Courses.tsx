@@ -20,7 +20,7 @@ export function Courses() {
         </div>
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2">
-          {courses.map((c) => (
+          {courses.slice(0, 4).map((c) => (
             <CourseCard key={c.slug} course={c} />
           ))}
         </div>

@@ -1,3 +1,6 @@
+import { Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+
 const aboutImg =
   "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1600&q=80";
 
@@ -16,6 +19,11 @@ export function About() {
           <p className="mt-5 text-base sm:text-lg text-foreground/70">
             Evogue Academy equips ambitious Africans with the design, engineering and product skills they need to compete on the global stage. Taught by practitioners who have shipped at the world's best companies. Every cohort is intentionally small so students get direct feedback, dedicated mentors, and a curriculum built around real industry briefs. Our mission is simple: produce graduates who are job-ready, confident, and globally competitive from day one.
           </p>
+          <div className="mt-7">
+            <Button asChild variant="outline" className="rounded-full">
+              <Link to="/about">Learn more about us</Link>
+            </Button>
+          </div>
         </div>
 
         <div className="mt-8 overflow-hidden rounded-3xl shadow-[var(--shadow-soft)]">
