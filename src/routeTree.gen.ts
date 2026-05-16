@@ -20,6 +20,7 @@ import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CoursesScrumMasterRouteImport } from './routes/courses.scrum-master'
 import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedInstructorIndexRouteImport } from './routes/_authenticated/instructor.index'
@@ -98,6 +99,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const CoursesScrumMasterRoute = CoursesScrumMasterRouteImport.update({
+  id: '/scrum-master',
+  path: '/scrum-master',
+  getParentRoute: () => CoursesRoute,
 } as any)
 const CoursesSlugRoute = CoursesSlugRouteImport.update({
   id: '/$slug',
@@ -254,6 +260,7 @@ export interface FileRoutesByFullPath {
   '/scholarship': typeof ScholarshipRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/courses/$slug': typeof CoursesSlugRoute
+  '/courses/scrum-master': typeof CoursesScrumMasterRoute
   '/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
   '/admin/capstones': typeof AuthenticatedAdminCapstonesRoute
   '/admin/certificates': typeof AuthenticatedAdminCertificatesRoute
@@ -289,6 +296,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/scholarship': typeof ScholarshipRoute
   '/courses/$slug': typeof CoursesSlugRoute
+  '/courses/scrum-master': typeof CoursesScrumMasterRoute
   '/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
   '/admin/capstones': typeof AuthenticatedAdminCapstonesRoute
   '/admin/certificates': typeof AuthenticatedAdminCertificatesRoute
@@ -327,6 +335,7 @@ export interface FileRoutesById {
   '/scholarship': typeof ScholarshipRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/courses/$slug': typeof CoursesSlugRoute
+  '/courses/scrum-master': typeof CoursesScrumMasterRoute
   '/_authenticated/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
   '/_authenticated/admin/capstones': typeof AuthenticatedAdminCapstonesRoute
   '/_authenticated/admin/certificates': typeof AuthenticatedAdminCertificatesRoute
@@ -365,6 +374,7 @@ export interface FileRouteTypes {
     | '/scholarship'
     | '/dashboard'
     | '/courses/$slug'
+    | '/courses/scrum-master'
     | '/admin/announcements'
     | '/admin/capstones'
     | '/admin/certificates'
@@ -400,6 +410,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/scholarship'
     | '/courses/$slug'
+    | '/courses/scrum-master'
     | '/admin/announcements'
     | '/admin/capstones'
     | '/admin/certificates'
@@ -437,6 +448,7 @@ export interface FileRouteTypes {
     | '/scholarship'
     | '/_authenticated/dashboard'
     | '/courses/$slug'
+    | '/courses/scrum-master'
     | '/_authenticated/admin/announcements'
     | '/_authenticated/admin/capstones'
     | '/_authenticated/admin/certificates'
@@ -553,6 +565,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/courses/scrum-master': {
+      id: '/courses/scrum-master'
+      path: '/scrum-master'
+      fullPath: '/courses/scrum-master'
+      preLoaderRoute: typeof CoursesScrumMasterRouteImport
+      parentRoute: typeof CoursesRoute
     }
     '/courses/$slug': {
       id: '/courses/$slug'
@@ -810,10 +829,12 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 
 interface CoursesRouteChildren {
   CoursesSlugRoute: typeof CoursesSlugRoute
+  CoursesScrumMasterRoute: typeof CoursesScrumMasterRoute
 }
 
 const CoursesRouteChildren: CoursesRouteChildren = {
   CoursesSlugRoute: CoursesSlugRoute,
+  CoursesScrumMasterRoute: CoursesScrumMasterRoute,
 }
 
 const CoursesRouteWithChildren =

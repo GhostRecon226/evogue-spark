@@ -1,0 +1,385 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState, type CSSProperties } from "react";
+import {
+  ChevronRight,
+  ChevronDown,
+  Clock,
+  BarChart3,
+  Users,
+  Award,
+  Check,
+  ArrowRight,
+  ClipboardList,
+  FileCheck2,
+} from "lucide-react";
+import { PublicShell } from "@/components/PublicShell";
+import scrumImg from "@/assets/courses/scrum-master.jpg";
+
+export const Route = createFileRoute("/courses/scrum-master")({
+  head: () => ({
+    meta: [
+      { title: "Scrum Master — Evogue Academy" },
+      {
+        name: "description",
+        content:
+          "Lead agile teams, run effective sprints and prepare for PSM I certification with Evogue Academy's Scrum Master programme.",
+      },
+      { property: "og:title", content: "Scrum Master — Evogue Academy" },
+      {
+        property: "og:description",
+        content:
+          "A 3-week live cohort that prepares you to lead agile teams with confidence.",
+      },
+    ],
+  }),
+  component: ScrumMasterPage,
+});
+
+const OUTCOMES = [
+  "Facilitate sprint planning, reviews and retrospectives",
+  "Remove blockers and protect the team from distractions",
+  "Coach teams on agile values and Scrum principles",
+  "Track velocity and improve team delivery metrics",
+  "Work with product owners to prioritise the backlog",
+  "Prepare for PSM I certification",
+];
+
+const STEPS = [
+  {
+    title: "Enrol and join your cohort",
+    desc: "Choose your course, complete enrolment and get access to your cohort community.",
+  },
+  {
+    title: "Attend weekly live classes",
+    desc: "Join live sessions each week with your instructor and cohort. Sessions are recorded.",
+  },
+  {
+    title: "Complete assignments",
+    desc: "Apply what you learn through weekly practicals and real-world exercises.",
+  },
+  {
+    title: "Submit your capstone",
+    desc: "Complete your capstone project, get it reviewed and receive your certificate.",
+  },
+];
+
+const FAQS = [
+  {
+    q: "Do I need prior experience?",
+    a: "This programme is built for intermediate learners. You should have some familiarity with working in a team environment, but no formal agile or project management experience is required.",
+  },
+  {
+    q: "How are classes delivered?",
+    a: "All classes are live online via Zoom. Sessions are recorded and shared with enrolled students so you never miss anything.",
+  },
+  {
+    q: "What do I need to enrol?",
+    a: "A reliable laptop, a stable internet connection and the commitment to show up every week. That's it.",
+  },
+  {
+    q: "How does the certificate work?",
+    a: "Your certificate is issued after your capstone project is reviewed and approved by the Evogue Academy team. Every graduate receives the same certificate regardless of scholarship status.",
+  },
+  {
+    q: "Is there a payment plan?",
+    a: "Yes. Reach out to us at hello@evogueacademy.com and we'll work something out based on your situation.",
+  },
+];
+
+const pageBg: CSSProperties = {
+  background: "#EDF7F0",
+  backgroundImage:
+    "radial-gradient(circle, rgba(10,46,26,0.055) 1px, transparent 1px)",
+  backgroundSize: "22px 22px",
+};
+
+function ScrumMasterPage() {
+  const [openFaq, setOpenFaq] = useState<number>(0);
+
+  return (
+    <PublicShell>
+      <style>{`
+        .sm-hero { display:grid; grid-template-columns:1fr 420px; gap:48px; padding:64px 48px; align-items:center; }
+        .sm-title { font-family: var(--font-display, Georgia, serif); font-size:44px; font-weight:900; color:#0A2E1A; line-height:1.08; letter-spacing:-0.02em; margin:0 0 16px; }
+        .sm-display { font-family: var(--font-display, Georgia, serif); }
+        .sm-outcomes { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+        .sm-capstone-cards { display:flex; gap:16px; }
+        .sm-steps { display:flex; gap:0; position:relative; }
+        .sm-step { flex:1; text-align:center; position:relative; }
+        .sm-step:not(:last-child)::after { content:""; position:absolute; top:20px; left:50%; right:-50%; height:1px; background:rgba(10,46,26,0.1); z-index:0; }
+        .sm-cta-strip { background:#0A2E1A; padding:40px 48px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
+        .sm-enrol-btn:hover { background:#1A8C4E !important; }
+
+        @media (max-width: 1023px) {
+          .sm-hero { grid-template-columns:1fr; padding:48px 32px; }
+          .sm-outcomes { grid-template-columns:1fr; }
+          .sm-steps { display:grid; grid-template-columns:1fr 1fr; gap:32px 16px; }
+          .sm-step:not(:last-child)::after { display:none; }
+          .sm-section { padding:48px 32px !important; }
+        }
+        @media (max-width: 767px) {
+          .sm-hero { padding:40px 20px; }
+          .sm-title { font-size:32px !important; }
+          .sm-cta-row { flex-direction:column; align-items:stretch !important; gap:12px !important; }
+          .sm-cta-row > * { width:100%; text-align:center; }
+          .sm-section { padding:40px 20px !important; }
+          .sm-capstone-cards { flex-direction:column; }
+          .sm-steps { grid-template-columns:1fr; gap:24px; }
+          .sm-cta-strip { padding:32px 20px; flex-direction:column; align-items:flex-start; }
+        }
+      `}</style>
+
+      <div style={pageBg}>
+        {/* HERO */}
+        <section className="sm-hero">
+          <div>
+            {/* Breadcrumb */}
+            <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#1A8C4E", marginBottom: 16 }}>
+              <Link to="/courses" style={{ color: "#1A8C4E", textDecoration: "none" }}>Courses</Link>
+              <ChevronRight size={12} />
+              <span>Scrum Master</span>
+            </div>
+
+            {/* Category badge */}
+            <div style={{
+              display: "inline-flex", alignItems: "center", gap: 6,
+              border: "1px solid rgba(10,46,26,0.18)", borderRadius: 50,
+              padding: "4px 13px", fontSize: 10, fontWeight: 600,
+              letterSpacing: "0.1em", color: "#1A8C4E", textTransform: "uppercase",
+              background: "rgba(255,255,255,0.6)", marginBottom: 16,
+            }}>
+              Management
+            </div>
+
+            <h1 className="sm-title">Scrum Master</h1>
+
+            <p style={{ fontSize: 15, color: "#3d6b4f", lineHeight: 1.7, maxWidth: 520, marginBottom: 28 }}>
+              Lead agile teams, run effective sprints and help organisations deliver better products, faster. This programme gives you the frameworks, tools and confidence to become the kind of Scrum Master teams actually want.
+            </p>
+
+            {/* Stat pills */}
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 32 }}>
+              {[
+                { icon: <Clock size={14} color="#1A8C4E" />, text: "3 weeks" },
+                { icon: <BarChart3 size={14} color="#1A8C4E" />, text: "Intermediate" },
+                { icon: <Users size={14} color="#1A8C4E" />, text: "Live cohort" },
+                { icon: <Award size={14} color="#1A8C4E" />, text: "Certificate included" },
+              ].map((p) => (
+                <span key={p.text} style={{
+                  display: "inline-flex", alignItems: "center", gap: 6,
+                  background: "#fff", border: "1.5px solid rgba(10,46,26,0.1)",
+                  borderRadius: 50, padding: "7px 16px", fontSize: 13,
+                  color: "#0A2E1A", fontWeight: 500,
+                }}>
+                  {p.icon}{p.text}
+                </span>
+              ))}
+            </div>
+
+            {/* CTA row */}
+            <div className="sm-cta-row" style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              <Link to="/contact" className="sm-enrol-btn" style={{
+                background: "#0A2E1A", color: "#fff", padding: "14px 32px",
+                borderRadius: 8, fontSize: 14, fontWeight: 600, border: "none",
+                cursor: "pointer", transition: "background 0.2s", textDecoration: "none",
+                display: "inline-flex", alignItems: "center", gap: 8,
+              }}>
+                Enrol Now <ArrowRight size={16} />
+              </Link>
+              <Link to="/scholarship" style={{
+                fontSize: 14, color: "#1A8C4E", fontWeight: 500,
+                textDecoration: "underline", textUnderlineOffset: 3,
+              }}>
+                Apply for a Scholarship →
+              </Link>
+            </div>
+          </div>
+
+          {/* Right column */}
+          <div>
+            <img
+              src={scrumImg}
+              alt="Scrum Master programme"
+              style={{
+                width: "100%", aspectRatio: "4 / 3", borderRadius: 16,
+                objectFit: "cover", marginBottom: 16,
+                background: "linear-gradient(135deg, #0d3d2a, #1a7a50, #0a2e1a)",
+              }}
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+              }}
+            />
+            <div style={{
+              background: "#fff", borderRadius: 12,
+              border: "1px solid rgba(10,46,26,0.08)", padding: "22px 24px",
+            }}>
+              <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.12em", color: "rgba(10,46,26,0.4)" }}>
+                Programme Fee
+              </div>
+              <div className="sm-display" style={{ fontSize: 22, fontWeight: 700, color: "#0A2E1A", margin: "6px 0" }}>
+                Contact us for pricing
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#1A8C4E", fontWeight: 500 }}>
+                <Check size={14} /> Scholarship available — up to 100% tuition coverage
+              </div>
+              <div style={{ borderTop: "1px solid rgba(10,46,26,0.06)", margin: "14px 0" }} />
+              <div style={{ fontSize: 12, color: "#4a7a5a" }}>
+                Flexible payment plans available.{" "}
+                <Link to="/contact" style={{ color: "#1A8C4E", fontWeight: 600 }}>Talk to us</Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* WHAT YOU'LL LEARN */}
+        <section className="sm-section" style={{ padding: "64px 48px", background: "#fff" }}>
+          <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.14em", color: "#1A8C4E", fontWeight: 600, marginBottom: 10 }}>
+            PROGRAMME OUTCOMES
+          </div>
+          <h2 className="sm-display" style={{ fontSize: 28, fontWeight: 700, color: "#0A2E1A", marginBottom: 8 }}>
+            What you'll learn
+          </h2>
+          <p style={{ fontSize: 14, color: "#4a7a5a", marginBottom: 36 }}>
+            Every session is designed around practical skills you can apply immediately.
+          </p>
+          <div className="sm-outcomes">
+            {OUTCOMES.map((o) => (
+              <div key={o} style={{
+                display: "flex", alignItems: "flex-start", gap: 12,
+                padding: "16px 18px", background: "#EDF7F0",
+                borderRadius: 10, border: "1px solid rgba(10,46,26,0.06)",
+              }}>
+                <Check size={18} color="#00F5A0" style={{ flexShrink: 0, marginTop: 2 }} />
+                <span style={{ fontSize: 14, color: "#0A2E1A", fontWeight: 500, lineHeight: 1.5 }}>{o}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* CAPSTONE */}
+        <section className="sm-section" style={{
+          background: "#0A2E1A",
+          backgroundImage: "radial-gradient(circle at 20% 50%, rgba(0,245,160,0.06) 0%, transparent 50%)",
+          padding: "64px 48px",
+        }}>
+          <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.14em", color: "#00F5A0", fontWeight: 600, marginBottom: 10 }}>
+            CAPSTONE PROJECT
+          </div>
+          <h2 className="sm-display" style={{ fontSize: 28, fontWeight: 700, color: "#EDF7F0", marginBottom: 16 }}>
+            Your capstone project
+          </h2>
+          <p style={{ fontSize: 15, color: "rgba(237,247,240,0.65)", lineHeight: 1.7, maxWidth: 620, marginBottom: 28 }}>
+            Lead a simulated 2-sprint agile project from kickoff to retrospective, including backlog grooming, sprint planning and velocity tracking.
+          </p>
+          <div className="sm-capstone-cards">
+            {[
+              { icon: <ClipboardList size={22} color="#00F5A0" />, title: "Real-world brief", text: "You'll work on a realistic project scenario, not a toy exercise." },
+              { icon: <Users size={22} color="#00F5A0" />, title: "Instructor reviewed", text: "Your submission is reviewed by the Evogue Academy team before approval." },
+              { icon: <FileCheck2 size={22} color="#00F5A0" />, title: "Certificate gated", text: "Your certificate is only issued once your capstone is approved." },
+            ].map((c) => (
+              <div key={c.title} style={{
+                background: "rgba(255,255,255,0.05)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                borderRadius: 12, padding: "22px 20px", flex: 1,
+              }}>
+                <div style={{ marginBottom: 10 }}>{c.icon}</div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: "#EDF7F0", marginBottom: 6 }}>{c.title}</div>
+                <div style={{ fontSize: 12, color: "rgba(237,247,240,0.55)", lineHeight: 1.6 }}>{c.text}</div>
+              </div>
+            ))}
+          </div>
+          <p style={{ fontStyle: "italic", fontSize: 13, color: "rgba(237,247,240,0.4)", marginTop: 24 }}>
+            Your certificate is issued only after your capstone project is reviewed and approved by the Evogue Academy team.
+          </p>
+        </section>
+
+        {/* HOW IT WORKS */}
+        <section className="sm-section" style={{ padding: "64px 48px", background: "#EDF7F0" }}>
+          <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.14em", color: "#1A8C4E", fontWeight: 600, marginBottom: 10 }}>
+            THE PROCESS
+          </div>
+          <h2 className="sm-display" style={{ fontSize: 28, fontWeight: 700, color: "#0A2E1A", marginBottom: 40 }}>
+            How the programme works
+          </h2>
+          <div className="sm-steps">
+            {STEPS.map((s, i) => (
+              <div key={s.title} className="sm-step">
+                <div style={{
+                  width: 40, height: 40, borderRadius: "50%", background: "#0A2E1A",
+                  color: "#fff", fontSize: 14, fontWeight: 700,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  margin: "0 auto 14px", position: "relative", zIndex: 1,
+                }}>
+                  {i + 1}
+                </div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: "#0A2E1A", marginBottom: 6 }}>{s.title}</div>
+                <div style={{ fontSize: 12, color: "#4a7a5a", lineHeight: 1.6, maxWidth: 160, margin: "0 auto" }}>{s.desc}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="sm-section" style={{ padding: "64px 48px", background: "#fff" }}>
+          <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.14em", color: "#1A8C4E", fontWeight: 600, marginBottom: 10 }}>
+            FAQ
+          </div>
+          <h2 className="sm-display" style={{ fontSize: 28, fontWeight: 700, color: "#0A2E1A", marginBottom: 32 }}>
+            Common questions
+          </h2>
+          <div>
+            {FAQS.map((f, i) => {
+              const open = openFaq === i;
+              return (
+                <div key={f.q} style={{ borderBottom: "1px solid rgba(10,46,26,0.08)", padding: "18px 0", cursor: "pointer" }}
+                  onClick={() => setOpenFaq(open ? -1 : i)}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
+                    <span style={{ fontSize: 15, fontWeight: 600, color: "#0A2E1A" }}>{f.q}</span>
+                    <ChevronDown size={18} color="#0A2E1A" style={{ transition: "transform 0.2s", transform: open ? "rotate(180deg)" : "rotate(0deg)" }} />
+                  </div>
+                  <div style={{
+                    display: "grid",
+                    gridTemplateRows: open ? "1fr" : "0fr",
+                    transition: "grid-template-rows 0.25s ease",
+                  }}>
+                    <div style={{ overflow: "hidden" }}>
+                      <p style={{ fontSize: 14, color: "#4a7a5a", lineHeight: 1.7, paddingTop: 10, margin: 0 }}>{f.a}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      </div>
+
+      {/* BOTTOM CTA STRIP */}
+      <section className="sm-cta-strip">
+        <div>
+          <div className="sm-display" style={{ fontSize: 22, fontWeight: 700, color: "#EDF7F0" }}>
+            Ready to get started?
+          </div>
+          <div style={{ fontSize: 13, color: "rgba(237,247,240,0.55)", marginTop: 4 }}>
+            Enrol now and join the next cohort. Limited spots available.
+          </div>
+        </div>
+        <div style={{ display: "flex", gap: 12 }}>
+          <Link to="/contact" style={{
+            background: "#00F5A0", color: "#0A2E1A", fontWeight: 600,
+            padding: "12px 24px", borderRadius: 8, fontSize: 14, textDecoration: "none",
+          }}>
+            Enrol Now
+          </Link>
+          <Link to="/scholarship" style={{
+            background: "transparent", border: "1.5px solid rgba(255,255,255,0.2)",
+            color: "#EDF7F0", padding: "12px 24px", borderRadius: 8, fontSize: 14,
+            fontWeight: 600, textDecoration: "none",
+          }}>
+            Apply for a Scholarship
+          </Link>
+        </div>
+      </section>
+    </PublicShell>
+  );
+}
