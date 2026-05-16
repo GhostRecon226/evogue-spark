@@ -8,7 +8,13 @@ export const Route = createFileRoute("/courses/project-management-business-analy
       { name: "description", content: "Our flagship 6-week elite programme covering both disciplines in depth, with a dual certificate." },
       { property: "og:title", content: "Project Management & Business Analysis — Evogue Academy" },
       { property: "og:description", content: "Study PM and BA in depth, then choose the path that fits you best." },
+      { property: "og:type", content: "article" },
+      { property: "og:url", content: "https://evogue-spark.lovable.app/courses/project-management-business-analysis" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Project Management & Business Analysis — Evogue Academy" },
+      { name: "twitter:description", content: "Study PM and BA in depth, then choose the path that fits you best." },
     ],
+    links: [{ rel: "canonical", href: "https://evogue-spark.lovable.app/courses/project-management-business-analysis" }],
   }),
   component: () => (
     <CourseDetailTemplate

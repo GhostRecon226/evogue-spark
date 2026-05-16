@@ -9,7 +9,13 @@ export const Route = createFileRoute("/courses/digital-marketing")({
       { name: "description", content: "Run campaigns that convert. Paid ads, organic content, copywriting and analytics across every channel." },
       { property: "og:title", content: "Digital Marketing — Evogue Academy" },
       { property: "og:description", content: "A 3-week live cohort that teaches modern digital marketing end-to-end." },
+      { property: "og:type", content: "article" },
+      { property: "og:url", content: "https://evogue-spark.lovable.app/courses/digital-marketing" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Digital Marketing — Evogue Academy" },
+      { name: "twitter:description", content: "A 3-week live cohort that teaches modern digital marketing end-to-end." },
     ],
+    links: [{ rel: "canonical", href: "https://evogue-spark.lovable.app/courses/digital-marketing" }],
   }),
   component: () => (
     <CourseDetailTemplate

@@ -9,7 +9,13 @@ export const Route = createFileRoute("/courses/cybersecurity")({
       { name: "description", content: "Defend systems, audit networks and respond to real threats. Join the waitlist." },
       { property: "og:title", content: "Cybersecurity — Evogue Academy" },
       { property: "og:description", content: "A 4-week live cohort that builds modern cybersecurity skills. Coming soon." },
+      { property: "og:type", content: "article" },
+      { property: "og:url", content: "https://evogue-spark.lovable.app/courses/cybersecurity" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Cybersecurity — Evogue Academy" },
+      { name: "twitter:description", content: "A 4-week live cohort that builds modern cybersecurity skills. Coming soon." },
     ],
+    links: [{ rel: "canonical", href: "https://evogue-spark.lovable.app/courses/cybersecurity" }],
   }),
   component: () => (
     <CourseDetailTemplate
