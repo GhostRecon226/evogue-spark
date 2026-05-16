@@ -9,7 +9,13 @@ export const Route = createFileRoute("/courses/virtual-assistant-programme")({
       { name: "description", content: "Build the skills to work remotely for global clients. Join the waitlist." },
       { property: "og:title", content: "Virtual Assistant Programme — Evogue Academy" },
       { property: "og:description", content: "A 4-week live cohort. Coming soon — join the waitlist." },
+      { property: "og:type", content: "article" },
+      { property: "og:url", content: "https://evogue-spark.lovable.app/courses/virtual-assistant-programme" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Virtual Assistant Programme — Evogue Academy" },
+      { name: "twitter:description", content: "A 4-week live cohort. Coming soon — join the waitlist." },
     ],
+    links: [{ rel: "canonical", href: "https://evogue-spark.lovable.app/courses/virtual-assistant-programme" }],
   }),
   component: () => (
     <CourseDetailTemplate

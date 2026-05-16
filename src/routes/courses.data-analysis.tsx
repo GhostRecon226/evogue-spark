@@ -9,7 +9,13 @@ export const Route = createFileRoute("/courses/data-analysis")({
       { name: "description", content: "Turn messy data into clear insights with Excel, SQL and modern BI tools." },
       { property: "og:title", content: "Data Analysis — Evogue Academy" },
       { property: "og:description", content: "A 4-week live cohort that builds practical data analysis skills from scratch." },
+      { property: "og:type", content: "article" },
+      { property: "og:url", content: "https://evogue-spark.lovable.app/courses/data-analysis" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Data Analysis — Evogue Academy" },
+      { name: "twitter:description", content: "A 4-week live cohort that builds practical data analysis skills from scratch." },
     ],
+    links: [{ rel: "canonical", href: "https://evogue-spark.lovable.app/courses/data-analysis" }],
   }),
   component: () => (
     <CourseDetailTemplate

@@ -9,7 +9,13 @@ export const Route = createFileRoute("/courses/product-management")({
       { name: "description", content: "Define strategy, own the roadmap and ship products users want. A 4-week live cohort programme." },
       { property: "og:title", content: "Product Management — Evogue Academy" },
       { property: "og:description", content: "Learn to think like a PM, work cross-functionally and deliver with confidence." },
+      { property: "og:type", content: "article" },
+      { property: "og:url", content: "https://evogue-spark.lovable.app/courses/product-management" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Product Management — Evogue Academy" },
+      { name: "twitter:description", content: "Learn to think like a PM, work cross-functionally and deliver with confidence." },
     ],
+    links: [{ rel: "canonical", href: "https://evogue-spark.lovable.app/courses/product-management" }],
   }),
   component: () => (
     <CourseDetailTemplate

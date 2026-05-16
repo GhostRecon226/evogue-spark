@@ -9,7 +9,13 @@ export const Route = createFileRoute("/courses/ai-for-professionals")({
       { name: "description", content: "Use AI tools to work smarter and automate repetitive tasks. No coding required." },
       { property: "og:title", content: "AI for Professionals — Evogue Academy" },
       { property: "og:description", content: "Practical, non-technical AI skills you can apply from week one." },
+      { property: "og:type", content: "article" },
+      { property: "og:url", content: "https://evogue-spark.lovable.app/courses/ai-for-professionals" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "AI for Professionals — Evogue Academy" },
+      { name: "twitter:description", content: "Practical, non-technical AI skills you can apply from week one." },
     ],
+    links: [{ rel: "canonical", href: "https://evogue-spark.lovable.app/courses/ai-for-professionals" }],
   }),
   component: () => (
     <CourseDetailTemplate

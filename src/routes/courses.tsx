@@ -39,8 +39,8 @@ const COURSE_CARDS: CourseCard[] = [
   { slug: "product-management", title: "Product Management", category: "Management", duration: "4 weeks", level: "Intermediate", status: "live", href: "/courses/product-management", description: "Ship products users love. Strategy, roadmaps and stakeholder alignment.", image: pmImg },
   { slug: "ai-for-professionals", title: "AI for Professionals", category: "Technology", duration: "3 weeks", level: "Beginner", status: "live", href: "/courses/ai-for-professionals", description: "Apply AI tools to real work. Prompting, automation and practical workflows.", image: aiImg },
   { slug: "data-analysis", title: "Data Analysis", category: "Data", duration: "4 weeks", level: "Beginner", status: "live", href: "/courses/data-analysis", description: "Turn raw data into decisions with SQL, spreadsheets and visualisation.", image: dataImg },
-  { slug: "cybersecurity", title: "Cybersecurity", category: "Security", duration: "4 weeks", level: "Intermediate", status: "soon", href: "/contact", description: "Defend systems and data. Threats, controls and modern security practice.", image: cyberImg },
-  { slug: "virtual-assistant", title: "Virtual Assistant Programme", category: "Management", duration: "4 weeks", level: "Beginner", status: "soon", href: "/contact", description: "Launch a remote VA career with the tools, workflows and client skills that pay.", image: vaImg },
+  { slug: "cybersecurity", title: "Cybersecurity", category: "Security", duration: "4 weeks", level: "Intermediate", status: "soon", href: "/courses/cybersecurity", description: "Defend systems and data. Threats, controls and modern security practice.", image: cyberImg },
+  { slug: "virtual-assistant-programme", title: "Virtual Assistant Programme", category: "Management", duration: "4 weeks", level: "Beginner", status: "soon", href: "/courses/virtual-assistant-programme", description: "Launch a remote VA career with the tools, workflows and client skills that pay.", image: vaImg },
 ];
 
 export const Route = createFileRoute("/courses")({
@@ -205,7 +205,7 @@ function CoursesPage() {
                   View Details <ArrowRight size={13} />
                 </Link>
               ) : (
-                <Link to="/contact" className="cc-cta cc-cta-soon">
+                <Link to="/courses/$slug" params={{ slug: c.slug }} className="cc-cta cc-cta-soon">
                   <Bell size={13} /> Join Waitlist
                 </Link>
               )}
