@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Search,
   Crown,
@@ -10,8 +10,38 @@ import {
   Check,
   ArrowRight,
   Heart,
+  Bell,
 } from "lucide-react";
 import { PublicShell } from "@/components/PublicShell";
+import scrumImg from "@/assets/courses/scrum-master.jpg";
+import marketingImg from "@/assets/courses/digital-marketing.jpg";
+import pmImg from "@/assets/courses/product-management.jpg";
+import aiImg from "@/assets/courses/ai-for-professionals.jpg";
+import dataImg from "@/assets/courses/data-analysis.jpg";
+import cyberImg from "@/assets/courses/cybersecurity.jpg";
+import vaImg from "@/assets/courses/virtual-assistant.jpg";
+
+type CourseCard = {
+  slug: string;
+  title: string;
+  category: "Management" | "Marketing" | "Technology" | "Data" | "Security";
+  duration: string;
+  level: string;
+  status: "live" | "soon";
+  href: string;
+  description: string;
+  image: string;
+};
+
+const COURSE_CARDS: CourseCard[] = [
+  { slug: "scrum-master", title: "Scrum Master", category: "Management", duration: "3 weeks", level: "Intermediate", status: "live", href: "/courses/scrum-master", description: "Lead agile teams with confidence. Master sprints, ceremonies and servant leadership.", image: scrumImg },
+  { slug: "digital-marketing", title: "Digital Marketing", category: "Marketing", duration: "3 weeks", level: "Beginner", status: "live", href: "/courses/digital-marketing", description: "Run campaigns that convert across social, search and email channels.", image: marketingImg },
+  { slug: "product-management", title: "Product Management", category: "Management", duration: "4 weeks", level: "Intermediate", status: "live", href: "/courses/product-management", description: "Ship products users love. Strategy, roadmaps and stakeholder alignment.", image: pmImg },
+  { slug: "ai-for-professionals", title: "AI for Professionals", category: "Technology", duration: "3 weeks", level: "Beginner", status: "live", href: "/courses/ai-for-professionals", description: "Apply AI tools to real work. Prompting, automation and practical workflows.", image: aiImg },
+  { slug: "data-analysis", title: "Data Analysis", category: "Data", duration: "4 weeks", level: "Beginner", status: "live", href: "/courses/data-analysis", description: "Turn raw data into decisions with SQL, spreadsheets and visualisation.", image: dataImg },
+  { slug: "cybersecurity", title: "Cybersecurity", category: "Security", duration: "4 weeks", level: "Intermediate", status: "soon", href: "/contact", description: "Defend systems and data. Threats, controls and modern security practice.", image: cyberImg },
+  { slug: "virtual-assistant", title: "Virtual Assistant Programme", category: "Management", duration: "4 weeks", level: "Beginner", status: "soon", href: "/contact", description: "Launch a remote VA career with the tools, workflows and client skills that pay.", image: vaImg },
+];
 
 export const Route = createFileRoute("/courses")({
   head: () => ({
@@ -46,6 +76,14 @@ const CHECKLIST = [
 function CoursesPage() {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<(typeof FILTERS)[number]>("All");
+
+  const filteredCards = useMemo(() => {
+    return COURSE_CARDS.filter((c) => {
+      const matchesCat = cat === "All" || c.category === cat;
+      const matchesQ = !q || (c.title + " " + c.description).toLowerCase().includes(q.toLowerCase());
+      return matchesCat && matchesQ;
+    });
+  }, [q, cat]);
 
   return (
     <PublicShell>
@@ -136,6 +174,44 @@ function CoursesPage() {
             View Full Details <ArrowRight size={13} />
           </Link>
         </aside>
+      </div>
+
+      {/* COURSE GRID */}
+      <div className="cc-section-label">ALL COURSES</div>
+      <div className="cc-grid">
+        {filteredCards.map((c) => (
+          <article key={c.slug} className="cc-card">
+            <div className="cc-card-image">
+              <img src={c.image} alt={c.title} loading="lazy" width={768} height={512} />
+              {c.status === "live" && <span className="cc-live-badge">Now Enrolling</span>}
+              {c.status === "soon" && (
+                <div className="cc-soon-overlay">
+                  <span className="cc-soon-pill">Coming Soon</span>
+                </div>
+              )}
+            </div>
+            <div className="cc-card-body">
+              <div className="cc-cat">{c.category}</div>
+              <h3 className="cc-title">{c.title}</h3>
+              <p className="cc-desc">{c.description}</p>
+              <div className="cc-divider" />
+              <div className="cc-meta">
+                <span><Clock size={13} /> {c.duration}</span>
+                <span><BarChart3 size={13} /> {c.level}</span>
+              </div>
+              <div className="cc-capstone"><Check size={13} /> Includes capstone project</div>
+              {c.status === "live" ? (
+                <Link to="/courses/$slug" params={{ slug: c.slug }} className="cc-cta cc-cta-live">
+                  View Details <ArrowRight size={13} />
+                </Link>
+              ) : (
+                <Link to="/contact" className="cc-cta cc-cta-soon">
+                  <Bell size={13} /> Join Waitlist
+                </Link>
+              )}
+            </div>
+          </article>
+        ))}
       </div>
 
       {/* SCHOLARSHIP CTA STRIP */}
