@@ -201,11 +201,11 @@ function CoursesPage() {
               </div>
               <div className="cc-capstone"><Check size={13} /> Includes capstone project</div>
               {c.status === "live" ? (
-                <Link to={c.href} className="cc-cta cc-cta-live">
+                <Link to={c.href as string} className="cc-cta cc-cta-live">
                   View Details <ArrowRight size={13} />
                 </Link>
               ) : (
-                <Link to={c.href} className="cc-cta cc-cta-soon">
+                <Link to={c.href as string} className="cc-cta cc-cta-soon">
                   <Bell size={13} /> Join Waitlist
                 </Link>
               )}
