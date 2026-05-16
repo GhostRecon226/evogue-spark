@@ -20,7 +20,14 @@ import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CoursesVirtualAssistantProgrammeRouteImport } from './routes/courses.virtual-assistant-programme'
 import { Route as CoursesScrumMasterRouteImport } from './routes/courses.scrum-master'
+import { Route as CoursesProjectManagementBusinessAnalysisRouteImport } from './routes/courses.project-management-business-analysis'
+import { Route as CoursesProductManagementRouteImport } from './routes/courses.product-management'
+import { Route as CoursesDigitalMarketingRouteImport } from './routes/courses.digital-marketing'
+import { Route as CoursesDataAnalysisRouteImport } from './routes/courses.data-analysis'
+import { Route as CoursesCybersecurityRouteImport } from './routes/courses.cybersecurity'
+import { Route as CoursesAiForProfessionalsRouteImport } from './routes/courses.ai-for-professionals'
 import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedInstructorIndexRouteImport } from './routes/_authenticated/instructor.index'
@@ -100,11 +107,50 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CoursesVirtualAssistantProgrammeRoute =
+  CoursesVirtualAssistantProgrammeRouteImport.update({
+    id: '/virtual-assistant-programme',
+    path: '/virtual-assistant-programme',
+    getParentRoute: () => CoursesRoute,
+  } as any)
 const CoursesScrumMasterRoute = CoursesScrumMasterRouteImport.update({
   id: '/scrum-master',
   path: '/scrum-master',
   getParentRoute: () => CoursesRoute,
 } as any)
+const CoursesProjectManagementBusinessAnalysisRoute =
+  CoursesProjectManagementBusinessAnalysisRouteImport.update({
+    id: '/project-management-business-analysis',
+    path: '/project-management-business-analysis',
+    getParentRoute: () => CoursesRoute,
+  } as any)
+const CoursesProductManagementRoute =
+  CoursesProductManagementRouteImport.update({
+    id: '/product-management',
+    path: '/product-management',
+    getParentRoute: () => CoursesRoute,
+  } as any)
+const CoursesDigitalMarketingRoute = CoursesDigitalMarketingRouteImport.update({
+  id: '/digital-marketing',
+  path: '/digital-marketing',
+  getParentRoute: () => CoursesRoute,
+} as any)
+const CoursesDataAnalysisRoute = CoursesDataAnalysisRouteImport.update({
+  id: '/data-analysis',
+  path: '/data-analysis',
+  getParentRoute: () => CoursesRoute,
+} as any)
+const CoursesCybersecurityRoute = CoursesCybersecurityRouteImport.update({
+  id: '/cybersecurity',
+  path: '/cybersecurity',
+  getParentRoute: () => CoursesRoute,
+} as any)
+const CoursesAiForProfessionalsRoute =
+  CoursesAiForProfessionalsRouteImport.update({
+    id: '/ai-for-professionals',
+    path: '/ai-for-professionals',
+    getParentRoute: () => CoursesRoute,
+  } as any)
 const CoursesSlugRoute = CoursesSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -260,7 +306,14 @@ export interface FileRoutesByFullPath {
   '/scholarship': typeof ScholarshipRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/courses/$slug': typeof CoursesSlugRoute
+  '/courses/ai-for-professionals': typeof CoursesAiForProfessionalsRoute
+  '/courses/cybersecurity': typeof CoursesCybersecurityRoute
+  '/courses/data-analysis': typeof CoursesDataAnalysisRoute
+  '/courses/digital-marketing': typeof CoursesDigitalMarketingRoute
+  '/courses/product-management': typeof CoursesProductManagementRoute
+  '/courses/project-management-business-analysis': typeof CoursesProjectManagementBusinessAnalysisRoute
   '/courses/scrum-master': typeof CoursesScrumMasterRoute
+  '/courses/virtual-assistant-programme': typeof CoursesVirtualAssistantProgrammeRoute
   '/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
   '/admin/capstones': typeof AuthenticatedAdminCapstonesRoute
   '/admin/certificates': typeof AuthenticatedAdminCertificatesRoute
@@ -296,7 +349,14 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/scholarship': typeof ScholarshipRoute
   '/courses/$slug': typeof CoursesSlugRoute
+  '/courses/ai-for-professionals': typeof CoursesAiForProfessionalsRoute
+  '/courses/cybersecurity': typeof CoursesCybersecurityRoute
+  '/courses/data-analysis': typeof CoursesDataAnalysisRoute
+  '/courses/digital-marketing': typeof CoursesDigitalMarketingRoute
+  '/courses/product-management': typeof CoursesProductManagementRoute
+  '/courses/project-management-business-analysis': typeof CoursesProjectManagementBusinessAnalysisRoute
   '/courses/scrum-master': typeof CoursesScrumMasterRoute
+  '/courses/virtual-assistant-programme': typeof CoursesVirtualAssistantProgrammeRoute
   '/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
   '/admin/capstones': typeof AuthenticatedAdminCapstonesRoute
   '/admin/certificates': typeof AuthenticatedAdminCertificatesRoute
@@ -335,7 +395,14 @@ export interface FileRoutesById {
   '/scholarship': typeof ScholarshipRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/courses/$slug': typeof CoursesSlugRoute
+  '/courses/ai-for-professionals': typeof CoursesAiForProfessionalsRoute
+  '/courses/cybersecurity': typeof CoursesCybersecurityRoute
+  '/courses/data-analysis': typeof CoursesDataAnalysisRoute
+  '/courses/digital-marketing': typeof CoursesDigitalMarketingRoute
+  '/courses/product-management': typeof CoursesProductManagementRoute
+  '/courses/project-management-business-analysis': typeof CoursesProjectManagementBusinessAnalysisRoute
   '/courses/scrum-master': typeof CoursesScrumMasterRoute
+  '/courses/virtual-assistant-programme': typeof CoursesVirtualAssistantProgrammeRoute
   '/_authenticated/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
   '/_authenticated/admin/capstones': typeof AuthenticatedAdminCapstonesRoute
   '/_authenticated/admin/certificates': typeof AuthenticatedAdminCertificatesRoute
@@ -374,7 +441,14 @@ export interface FileRouteTypes {
     | '/scholarship'
     | '/dashboard'
     | '/courses/$slug'
+    | '/courses/ai-for-professionals'
+    | '/courses/cybersecurity'
+    | '/courses/data-analysis'
+    | '/courses/digital-marketing'
+    | '/courses/product-management'
+    | '/courses/project-management-business-analysis'
     | '/courses/scrum-master'
+    | '/courses/virtual-assistant-programme'
     | '/admin/announcements'
     | '/admin/capstones'
     | '/admin/certificates'
@@ -410,7 +484,14 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/scholarship'
     | '/courses/$slug'
+    | '/courses/ai-for-professionals'
+    | '/courses/cybersecurity'
+    | '/courses/data-analysis'
+    | '/courses/digital-marketing'
+    | '/courses/product-management'
+    | '/courses/project-management-business-analysis'
     | '/courses/scrum-master'
+    | '/courses/virtual-assistant-programme'
     | '/admin/announcements'
     | '/admin/capstones'
     | '/admin/certificates'
@@ -448,7 +529,14 @@ export interface FileRouteTypes {
     | '/scholarship'
     | '/_authenticated/dashboard'
     | '/courses/$slug'
+    | '/courses/ai-for-professionals'
+    | '/courses/cybersecurity'
+    | '/courses/data-analysis'
+    | '/courses/digital-marketing'
+    | '/courses/product-management'
+    | '/courses/project-management-business-analysis'
     | '/courses/scrum-master'
+    | '/courses/virtual-assistant-programme'
     | '/_authenticated/admin/announcements'
     | '/_authenticated/admin/capstones'
     | '/_authenticated/admin/certificates'
@@ -566,11 +654,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/courses/virtual-assistant-programme': {
+      id: '/courses/virtual-assistant-programme'
+      path: '/virtual-assistant-programme'
+      fullPath: '/courses/virtual-assistant-programme'
+      preLoaderRoute: typeof CoursesVirtualAssistantProgrammeRouteImport
+      parentRoute: typeof CoursesRoute
+    }
     '/courses/scrum-master': {
       id: '/courses/scrum-master'
       path: '/scrum-master'
       fullPath: '/courses/scrum-master'
       preLoaderRoute: typeof CoursesScrumMasterRouteImport
+      parentRoute: typeof CoursesRoute
+    }
+    '/courses/project-management-business-analysis': {
+      id: '/courses/project-management-business-analysis'
+      path: '/project-management-business-analysis'
+      fullPath: '/courses/project-management-business-analysis'
+      preLoaderRoute: typeof CoursesProjectManagementBusinessAnalysisRouteImport
+      parentRoute: typeof CoursesRoute
+    }
+    '/courses/product-management': {
+      id: '/courses/product-management'
+      path: '/product-management'
+      fullPath: '/courses/product-management'
+      preLoaderRoute: typeof CoursesProductManagementRouteImport
+      parentRoute: typeof CoursesRoute
+    }
+    '/courses/digital-marketing': {
+      id: '/courses/digital-marketing'
+      path: '/digital-marketing'
+      fullPath: '/courses/digital-marketing'
+      preLoaderRoute: typeof CoursesDigitalMarketingRouteImport
+      parentRoute: typeof CoursesRoute
+    }
+    '/courses/data-analysis': {
+      id: '/courses/data-analysis'
+      path: '/data-analysis'
+      fullPath: '/courses/data-analysis'
+      preLoaderRoute: typeof CoursesDataAnalysisRouteImport
+      parentRoute: typeof CoursesRoute
+    }
+    '/courses/cybersecurity': {
+      id: '/courses/cybersecurity'
+      path: '/cybersecurity'
+      fullPath: '/courses/cybersecurity'
+      preLoaderRoute: typeof CoursesCybersecurityRouteImport
+      parentRoute: typeof CoursesRoute
+    }
+    '/courses/ai-for-professionals': {
+      id: '/courses/ai-for-professionals'
+      path: '/ai-for-professionals'
+      fullPath: '/courses/ai-for-professionals'
+      preLoaderRoute: typeof CoursesAiForProfessionalsRouteImport
       parentRoute: typeof CoursesRoute
     }
     '/courses/$slug': {
@@ -829,12 +966,27 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 
 interface CoursesRouteChildren {
   CoursesSlugRoute: typeof CoursesSlugRoute
+  CoursesAiForProfessionalsRoute: typeof CoursesAiForProfessionalsRoute
+  CoursesCybersecurityRoute: typeof CoursesCybersecurityRoute
+  CoursesDataAnalysisRoute: typeof CoursesDataAnalysisRoute
+  CoursesDigitalMarketingRoute: typeof CoursesDigitalMarketingRoute
+  CoursesProductManagementRoute: typeof CoursesProductManagementRoute
+  CoursesProjectManagementBusinessAnalysisRoute: typeof CoursesProjectManagementBusinessAnalysisRoute
   CoursesScrumMasterRoute: typeof CoursesScrumMasterRoute
+  CoursesVirtualAssistantProgrammeRoute: typeof CoursesVirtualAssistantProgrammeRoute
 }
 
 const CoursesRouteChildren: CoursesRouteChildren = {
   CoursesSlugRoute: CoursesSlugRoute,
+  CoursesAiForProfessionalsRoute: CoursesAiForProfessionalsRoute,
+  CoursesCybersecurityRoute: CoursesCybersecurityRoute,
+  CoursesDataAnalysisRoute: CoursesDataAnalysisRoute,
+  CoursesDigitalMarketingRoute: CoursesDigitalMarketingRoute,
+  CoursesProductManagementRoute: CoursesProductManagementRoute,
+  CoursesProjectManagementBusinessAnalysisRoute:
+    CoursesProjectManagementBusinessAnalysisRoute,
   CoursesScrumMasterRoute: CoursesScrumMasterRoute,
+  CoursesVirtualAssistantProgrammeRoute: CoursesVirtualAssistantProgrammeRoute,
 }
 
 const CoursesRouteWithChildren =
