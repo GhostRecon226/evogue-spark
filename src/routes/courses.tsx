@@ -77,6 +77,14 @@ function CoursesPage() {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<(typeof FILTERS)[number]>("All");
 
+  const filteredCards = useMemo(() => {
+    return COURSE_CARDS.filter((c) => {
+      const matchesCat = cat === "All" || c.category === cat;
+      const matchesQ = !q || (c.title + " " + c.description).toLowerCase().includes(q.toLowerCase());
+      return matchesCat && matchesQ;
+    });
+  }, [q, cat]);
+
   return (
     <PublicShell>
       {/* HERO */}
