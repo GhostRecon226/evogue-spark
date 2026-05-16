@@ -39,8 +39,8 @@ const COURSE_CARDS: CourseCard[] = [
   { slug: "product-management", title: "Product Management", category: "Management", duration: "4 weeks", level: "Intermediate", status: "live", href: "/courses/product-management", description: "Ship products users love. Strategy, roadmaps and stakeholder alignment.", image: pmImg },
   { slug: "ai-for-professionals", title: "AI for Professionals", category: "Technology", duration: "3 weeks", level: "Beginner", status: "live", href: "/courses/ai-for-professionals", description: "Apply AI tools to real work. Prompting, automation and practical workflows.", image: aiImg },
   { slug: "data-analysis", title: "Data Analysis", category: "Data", duration: "4 weeks", level: "Beginner", status: "live", href: "/courses/data-analysis", description: "Turn raw data into decisions with SQL, spreadsheets and visualisation.", image: dataImg },
-  { slug: "cybersecurity", title: "Cybersecurity", category: "Security", duration: "4 weeks", level: "Intermediate", status: "soon", href: "/courses/cybersecurity", description: "Defend systems and data. Threats, controls and modern security practice.", image: cyberImg },
-  { slug: "virtual-assistant-programme", title: "Virtual Assistant Programme", category: "Management", duration: "4 weeks", level: "Beginner", status: "soon", href: "/courses/virtual-assistant-programme", description: "Launch a remote VA career with the tools, workflows and client skills that pay.", image: vaImg },
+  { slug: "cybersecurity", title: "Cybersecurity", category: "Security", duration: "4 weeks", level: "Intermediate", status: "soon", href: "/contact", description: "Defend systems and data. Threats, controls and modern security practice.", image: cyberImg },
+  { slug: "virtual-assistant-programme", title: "Virtual Assistant Programme", category: "Management", duration: "4 weeks", level: "Beginner", status: "soon", href: "/contact", description: "Launch a remote VA career with the tools, workflows and client skills that pay.", image: vaImg },
 ];
 
 export const Route = createFileRoute("/courses")({
@@ -152,7 +152,7 @@ function CoursesPage() {
             <span className="elite-meta-item"><Award size={14} /> Dual certificate</span>
             <span className="elite-meta-item"><Code2 size={14} /> Capstone project included</span>
           </div>
-          <Link to="/courses/$slug" params={{ slug: "project-management-business-analysis" }} className="elite-cta">
+          <Link to="/courses/project-management-business-analysis" className="elite-cta">
             View Programme Details <ArrowRight size={14} />
           </Link>
         </div>
@@ -170,7 +170,7 @@ function CoursesPage() {
             <div><div className="elite-stat-num">6</div><div className="elite-stat-label">Weeks</div></div>
             <div><div className="elite-stat-num">1</div><div className="elite-stat-label">Certificate</div></div>
           </div>
-          <Link to="/courses/$slug" params={{ slug: "project-management-business-analysis" }} className="elite-ghost-cta">
+          <Link to="/courses/project-management-business-analysis" className="elite-ghost-cta">
             View Full Details <ArrowRight size={13} />
           </Link>
         </aside>
@@ -201,11 +201,11 @@ function CoursesPage() {
               </div>
               <div className="cc-capstone"><Check size={13} /> Includes capstone project</div>
               {c.status === "live" ? (
-                <Link to="/courses/$slug" params={{ slug: c.slug }} className="cc-cta cc-cta-live">
+                <Link to={c.href as string} className="cc-cta cc-cta-live">
                   View Details <ArrowRight size={13} />
                 </Link>
               ) : (
-                <Link to="/courses/$slug" params={{ slug: c.slug }} className="cc-cta cc-cta-soon">
+                <Link to={c.href as string} className="cc-cta cc-cta-soon">
                   <Bell size={13} /> Join Waitlist
                 </Link>
               )}
