@@ -1,33 +1,41 @@
+## What's actually happening
 
-Two surgical edits in `src/routes/contact.tsx`. No copy, color, field, or other-page changes.
+Navigation IS working. The session replay confirms the URL and page metadata change to `/courses/digital-marketing` immediately after the click. The reason it *looks* like nothing happened:
 
-## 1. Left panel width
+- The user clicks "View Details" while scrolled partway down the `/courses` grid.
+- TanStack's scroll restoration leaves the scroll Y position unchanged for the new route.
+- At that scroll offset on the detail page, the user lands somewhere mid-FAQ or near the bottom dark CTA strip — visually similar enough to the courses page bottom that it reads as "same page."
 
-Currently: `w-full md:w-[360px] lg:w-[480px]` with `md:flex-shrink-0`.
+Scroll restoration is enabled globally in `src/router.tsx`, but it doesn't auto-scroll-to-top on forward navigation between sibling routes the way users expect.
 
-Change to: `w-full md:w-[380px] lg:w-[480px]` and add `lg:min-w-[480px]` so flex never shrinks it below the spec.
+## Fix
 
-- Tablet (768–1023px): 380px (per request)
-- Desktop (≥1024px): 480px, locked
-- Mobile: full width (unchanged)
+Add a small scroll-to-top effect on route change so every forward navigation lands at the top of the new page. Two options:
 
-This gives the headline room to breathe and removes the cramped 3-line break.
+1. **Global, one-liner (recommended).** In `src/routes/__root.tsx`, subscribe to router location changes via `useRouterState` and call `window.scrollTo(0, 0)` whenever the pathname changes (skip when the user is navigating back/forward, which should keep restored scroll).
 
-## 2. Right panel vertical centering
+2. **Per-page.** Add a `useEffect(() => window.scrollTo(0,0), [])` inside `CourseDetailTemplate` and `courses.$slug.tsx`'s component. Smaller blast radius but easier to forget on new pages.
 
-Current right `<section>` already uses `flex flex-col justify-center`, but vertical-padding is asymmetric in feel because:
-- the form's inner container has no top spacer, and
-- the eyebrow sits flush to the top of the form block, so when the row stretches to match the (taller) left panel, the form appears low.
+I'll go with option 1 so it applies to every route (about, scholarship, blog, etc.) and is impossible to forget.
 
-Fix:
-- Keep `justify-center` on the section.
-- Normalize vertical padding to `py-12` (48px) at every breakpoint instead of `lg:py-16`, matching the spec's `padding-top: 48px; padding-bottom: 48px`.
-- Remove the `mt-8` on the `<form>` and rely on consistent spacing from the header block, so the visual center matches the geometric center.
+## Technical detail
 
-After this the form's midpoint aligns with the panel's midpoint at 1180px (current viewport) and at all desktop sizes.
+```tsx
+// src/routes/__root.tsx
+import { useRouterState } from "@tanstack/react-router";
+import { useEffect } from "react";
 
-## Files touched
+function ScrollToTop() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  useEffect(() => { window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior }); }, [pathname]);
+  return null;
+}
+```
 
-- `src/routes/contact.tsx` — two class-string edits on the `<aside>` and `<section>` plus removing one `mt-8`.
+Mount `<ScrollToTop />` inside the root component (alongside the existing `<Outlet />`).
 
-Nothing else changes — no copy, no colors, no fields, no other routes, no global CSS.
+## Out of scope
+
+- No changes to the courses page links — those are already correct `<Link>` components pointing at real routes.
+- No changes to detail page content, styling, or routing config.
+- Nav, footer, and other pages untouched.
