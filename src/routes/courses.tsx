@@ -152,7 +152,7 @@ function CoursesPage() {
             <span className="elite-meta-item"><Award size={14} /> Dual certificate</span>
             <span className="elite-meta-item"><Code2 size={14} /> Capstone project included</span>
           </div>
-          <Link to="/courses/$slug" params={{ slug: "project-management-business-analysis" }} className="elite-cta">
+          <Link to="/courses/project-management-business-analysis" className="elite-cta">
             View Programme Details <ArrowRight size={14} />
           </Link>
         </div>
@@ -170,7 +170,7 @@ function CoursesPage() {
             <div><div className="elite-stat-num">6</div><div className="elite-stat-label">Weeks</div></div>
             <div><div className="elite-stat-num">1</div><div className="elite-stat-label">Certificate</div></div>
           </div>
-          <Link to="/courses/$slug" params={{ slug: "project-management-business-analysis" }} className="elite-ghost-cta">
+          <Link to="/courses/project-management-business-analysis" className="elite-ghost-cta">
             View Full Details <ArrowRight size={13} />
           </Link>
         </aside>
@@ -201,11 +201,11 @@ function CoursesPage() {
               </div>
               <div className="cc-capstone"><Check size={13} /> Includes capstone project</div>
               {c.status === "live" ? (
-                <Link to="/courses/$slug" params={{ slug: c.slug }} className="cc-cta cc-cta-live">
+                <Link to={c.href} className="cc-cta cc-cta-live">
                   View Details <ArrowRight size={13} />
                 </Link>
               ) : (
-                <Link to="/courses/$slug" params={{ slug: c.slug }} className="cc-cta cc-cta-soon">
+                <Link to={c.href} className="cc-cta cc-cta-soon">
                   <Bell size={13} /> Join Waitlist
                 </Link>
               )}
