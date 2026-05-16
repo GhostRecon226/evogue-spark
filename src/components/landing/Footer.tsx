@@ -59,7 +59,7 @@ export function Footer() {
               <li>
                 <a href="tel:+447404331835" className="hover:text-mint">+44 7404 331835</a>
               </li>
-              <li className="text-mint/60">Lagos, Nigeria</li>
+              <li className="text-mint/60">Online — Worldwide</li>
             </ul>
             <div className="mt-5 flex gap-2">
               {[Instagram, Twitter, Linkedin, Youtube].map((Icon, i) => (
