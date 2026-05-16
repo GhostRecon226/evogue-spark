@@ -176,6 +176,44 @@ function CoursesPage() {
         </aside>
       </div>
 
+      {/* COURSE GRID */}
+      <div className="cc-section-label">ALL COURSES</div>
+      <div className="cc-grid">
+        {filteredCards.map((c) => (
+          <article key={c.slug} className="cc-card">
+            <div className="cc-card-image">
+              <img src={c.image} alt={c.title} loading="lazy" width={768} height={512} />
+              {c.status === "live" && <span className="cc-live-badge">Now Enrolling</span>}
+              {c.status === "soon" && (
+                <div className="cc-soon-overlay">
+                  <span className="cc-soon-pill">Coming Soon</span>
+                </div>
+              )}
+            </div>
+            <div className="cc-card-body">
+              <div className="cc-cat">{c.category}</div>
+              <h3 className="cc-title">{c.title}</h3>
+              <p className="cc-desc">{c.description}</p>
+              <div className="cc-divider" />
+              <div className="cc-meta">
+                <span><Clock size={13} /> {c.duration}</span>
+                <span><BarChart3 size={13} /> {c.level}</span>
+              </div>
+              <div className="cc-capstone"><Check size={13} /> Includes capstone project</div>
+              {c.status === "live" ? (
+                <Link to="/courses/$slug" params={{ slug: c.slug }} className="cc-cta cc-cta-live">
+                  View Details <ArrowRight size={13} />
+                </Link>
+              ) : (
+                <Link to="/contact" className="cc-cta cc-cta-soon">
+                  <Bell size={13} /> Join Waitlist
+                </Link>
+              )}
+            </div>
+          </article>
+        ))}
+      </div>
+
       {/* SCHOLARSHIP CTA STRIP */}
       <div className="scholarship-strip">
         <div className="scholarship-glow" />
