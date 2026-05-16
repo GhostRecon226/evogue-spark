@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Search,
   Crown,
@@ -10,8 +10,38 @@ import {
   Check,
   ArrowRight,
   Heart,
+  Bell,
 } from "lucide-react";
 import { PublicShell } from "@/components/PublicShell";
+import scrumImg from "@/assets/courses/scrum-master.jpg";
+import marketingImg from "@/assets/courses/digital-marketing.jpg";
+import pmImg from "@/assets/courses/product-management.jpg";
+import aiImg from "@/assets/courses/ai-for-professionals.jpg";
+import dataImg from "@/assets/courses/data-analysis.jpg";
+import cyberImg from "@/assets/courses/cybersecurity.jpg";
+import vaImg from "@/assets/courses/virtual-assistant.jpg";
+
+type CourseCard = {
+  slug: string;
+  title: string;
+  category: "Management" | "Marketing" | "Technology" | "Data" | "Security";
+  duration: string;
+  level: string;
+  status: "live" | "soon";
+  href: string;
+  description: string;
+  image: string;
+};
+
+const COURSE_CARDS: CourseCard[] = [
+  { slug: "scrum-master", title: "Scrum Master", category: "Management", duration: "3 weeks", level: "Intermediate", status: "live", href: "/courses/scrum-master", description: "Lead agile teams with confidence. Master sprints, ceremonies and servant leadership.", image: scrumImg },
+  { slug: "digital-marketing", title: "Digital Marketing", category: "Marketing", duration: "3 weeks", level: "Beginner", status: "live", href: "/courses/digital-marketing", description: "Run campaigns that convert across social, search and email channels.", image: marketingImg },
+  { slug: "product-management", title: "Product Management", category: "Management", duration: "4 weeks", level: "Intermediate", status: "live", href: "/courses/product-management", description: "Ship products users love. Strategy, roadmaps and stakeholder alignment.", image: pmImg },
+  { slug: "ai-for-professionals", title: "AI for Professionals", category: "Technology", duration: "3 weeks", level: "Beginner", status: "live", href: "/courses/ai-for-professionals", description: "Apply AI tools to real work. Prompting, automation and practical workflows.", image: aiImg },
+  { slug: "data-analysis", title: "Data Analysis", category: "Data", duration: "4 weeks", level: "Beginner", status: "live", href: "/courses/data-analysis", description: "Turn raw data into decisions with SQL, spreadsheets and visualisation.", image: dataImg },
+  { slug: "cybersecurity", title: "Cybersecurity", category: "Security", duration: "4 weeks", level: "Intermediate", status: "soon", href: "/contact", description: "Defend systems and data. Threats, controls and modern security practice.", image: cyberImg },
+  { slug: "virtual-assistant", title: "Virtual Assistant Programme", category: "Management", duration: "4 weeks", level: "Beginner", status: "soon", href: "/contact", description: "Launch a remote VA career with the tools, workflows and client skills that pay.", image: vaImg },
+];
 
 export const Route = createFileRoute("/courses")({
   head: () => ({
