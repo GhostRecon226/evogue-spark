@@ -49,21 +49,6 @@ const FEATURED_COURSES: Course[] = [
     curriculum: [],
     instructor: { name: "", title: "", bio: "", avatar: "" },
   } as unknown as Course,
-  {
-    slug: "ai-for-professionals",
-    title: "AI for Professionals",
-    description: "Boost productivity with AI. Learn prompting, automation and practical AI workflows for any profession.",
-    longDescription: "",
-    duration: "3 weeks",
-    level: "Beginner",
-    price: "",
-    category: "Development",
-    cover: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&q=80",
-    active: true,
-    whatYouLearn: [],
-    curriculum: [],
-    instructor: { name: "", title: "", bio: "", avatar: "" },
-  } as unknown as Course,
 ];
 
 export function Courses() {
