@@ -2,22 +2,22 @@ import { Quote, Star } from "lucide-react";
 
 const items = [
   {
-    name: "Chioma Nwosu",
-    role: "Product Designer · Lagos",
+    name: "Amara Osei",
+    role: "Digital Marketer · Accra, Ghana",
     quote:
-      "Evogue gave me the portfolio and the confidence to land my first design role at a global startup. The mentors were unreal.",
+      "I had no background in tech at all. Three weeks into the Digital Marketing programme and I was already running live campaigns. The mentors don't let you stay stuck.",
   },
   {
-    name: "Adebayo Williams",
-    role: "Frontend Engineer · Abuja",
+    name: "Daniel Mwangi",
+    role: "Product Manager · Nairobi, Kenya",
     quote:
-      "I tried bootcamps before — Evogue is on another level. Real projects, sharp feedback, and a community that actually shows up.",
+      "The PM & BA programme is unlike anything I've seen. You're not just learning theory — you're solving real problems from week one. Worth every penny.",
   },
   {
-    name: "Fatima Ibrahim",
-    role: "Data Analyst · Kano",
+    name: "Priya Nair",
+    role: "Data Analyst · London, UK",
     quote:
-      "From zero to hired in five months. The curriculum is no-fluff, and the career support carried me to the finish line.",
+      "I was working a 9-to-5 and studying on evenings. The cohort structure made it manageable. Got my certificate and a new role within two months of graduating.",
   },
 ];
 
