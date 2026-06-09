@@ -36,6 +36,13 @@ export type CourseDetailConfig = {
     subtext: string;
     modules: { title: string; bullets: string[] }[];
   };
+  // target audience
+  targetAudience?: {
+    eyebrow: string;
+    headline: string;
+    subtext: string;
+    items: string[];
+  };
   // variants
   mode?: "default" | "waitlist" | "elite";
   // price card
@@ -114,6 +121,8 @@ export function CourseDetailTemplate(cfg: CourseDetailConfig) {
         .sm-display { font-family: var(--font-display, Georgia, serif); }
         .sm-outcomes { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
         .sm-capstone-cards { display:flex; gap:16px; }
+        .sm-target-grid { display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:flex-start; }
+        .sm-target-item { display:flex; align-items:flex-start; gap:12px; padding:14px 0; border-bottom:1px solid rgba(10,46,26,0.07); }
         .sm-steps { display:flex; gap:0; position:relative; }
         .sm-step { flex:1; text-align:center; position:relative; }
         .sm-step:not(:last-child)::after { content:""; position:absolute; top:20px; left:50%; right:-50%; height:1px; background:rgba(10,46,26,0.1); z-index:0; }
@@ -123,6 +132,7 @@ export function CourseDetailTemplate(cfg: CourseDetailConfig) {
         @media (max-width: 1023px) {
           .sm-hero { grid-template-columns:1fr; padding:48px 32px; }
           .sm-outcomes { grid-template-columns:1fr; }
+          .sm-target-grid { grid-template-columns:1fr; }
           .sm-steps { display:grid; grid-template-columns:1fr 1fr; gap:32px 16px; }
           .sm-step:not(:last-child)::after { display:none; }
           .sm-section { padding:48px 32px !important; }
@@ -284,6 +294,11 @@ export function CourseDetailTemplate(cfg: CourseDetailConfig) {
         {/* COURSE CURRICULUM */}
         {cfg.curriculum && (
           <CurriculumSection curriculum={cfg.curriculum} />
+        )}
+
+        {/* WHO THIS IS FOR */}
+        {cfg.targetAudience && (
+          <TargetAudienceSection audience={cfg.targetAudience} />
         )}
 
         {/* CAPSTONE */}
@@ -669,6 +684,67 @@ function CurriculumSection({ curriculum }: CurriculumProps) {
             </div>
           );
         })}
+      </div>
+    </section>
+  );
+}
+
+function TargetAudienceSection({ audience }: { audience: NonNullable<CourseDetailConfig["targetAudience"]> }) {
+  return (
+    <section
+      className="sm-section"
+      style={{
+        padding: "64px 48px",
+        background: "#EDF7F0",
+        backgroundImage:
+          "radial-gradient(circle, rgba(10,46,26,0.055) 1px, transparent 1px)",
+        backgroundSize: "22px 22px",
+      }}
+    >
+      <div className="sm-target-grid">
+        <div>
+          <div
+            style={{
+              fontSize: 11,
+              textTransform: "uppercase",
+              letterSpacing: "0.14em",
+              color: "#1A8C4E",
+              fontWeight: 600,
+              marginBottom: 10,
+            }}
+          >
+            {audience.eyebrow}
+          </div>
+          <h2
+            className="sm-display"
+            style={{
+              fontSize: 26,
+              fontWeight: 700,
+              color: "#0A2E1A",
+              marginBottom: 12,
+            }}
+          >
+            {audience.headline}
+          </h2>
+          <p style={{ fontSize: 14, color: "#4a7a5a", lineHeight: 1.7 }}>
+            {audience.subtext}
+          </p>
+        </div>
+
+        <div>
+          {audience.items.map((item) => (
+            <div key={item} className="sm-target-item">
+              <Check
+                size={18}
+                color="#00F5A0"
+                style={{ flexShrink: 0, marginTop: 2 }}
+              />
+              <span style={{ fontSize: 14, color: "#0A2E1A", lineHeight: 1.5 }}>
+                {item}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
