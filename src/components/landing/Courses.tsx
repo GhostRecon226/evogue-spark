@@ -42,13 +42,28 @@ const FEATURED_COURSES: Course[] = [
     duration: "3 weeks",
     level: "Beginner",
     price: "",
-    category: "Marketing",
+    category: "Management",
+    cover: "https://images.unsplash.com/photo-1531545514256-b1400bc00f31?w=1200&q=80",
+    active: true,
+    whatYouLearn: [],
+    curriculum: [],
+    instructor: { name: "", title: "", bio: "", avatar: "" },
+  } as unknown as Course,
+  {
+    slug: "digital-marketing",
+    title: "Digital Marketing",
+    description: "Build brands that grow. Master SEO, social media, content strategy and paid advertising across channels.",
+    longDescription: "",
+    duration: "3 weeks",
+    level: "Beginner",
+    price: "",
+    category: "Data",
     cover: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&q=80",
     active: true,
     whatYouLearn: [],
     curriculum: [],
     instructor: { name: "", title: "", bio: "", avatar: "" },
-  } as Course,
+  } as unknown as Course,
   {
     slug: "ai-for-professionals",
     title: "AI for Professionals",
@@ -57,13 +72,13 @@ const FEATURED_COURSES: Course[] = [
     duration: "3 weeks",
     level: "Beginner",
     price: "",
-    category: "Technology",
+    category: "Development",
     cover: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&q=80",
     active: true,
     whatYouLearn: [],
     curriculum: [],
     instructor: { name: "", title: "", bio: "", avatar: "" },
-  } as Course,
+  } as unknown as Course,
 ];
 
 export function Courses() {
@@ -83,7 +98,7 @@ export function Courses() {
         </div>
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2">
-          {courses.slice(0, 4).map((c) => (
+          {FEATURED_COURSES.map((c) => (
             <CourseCard key={c.slug} course={c} />
           ))}
         </div>
