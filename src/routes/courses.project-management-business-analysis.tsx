@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CourseDetailTemplate } from "@/components/courses/CourseDetailTemplate";
+import img from "@/assets/courses/project-management-business-analysis.jpg";
 
 const CURRICULUM_MODULES = [
   "Foundations of Project Management",
@@ -67,6 +68,7 @@ export const Route = createFileRoute("/courses/project-management-business-analy
       pills={{ weeks: "10 weeks", level: "Beginner – Intermediate" }}
       certificateLabel="Dual certificate"
       imageGradient="linear-gradient(135deg, #0a2e1a, #1a6b3a, #0d3a20)"
+      imageSrc={img}
       mode="elite"
       priceBannerText="Our flagship programme. Covers two full disciplines."
       outcomes={[
