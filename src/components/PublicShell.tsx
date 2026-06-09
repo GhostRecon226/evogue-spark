@@ -5,11 +5,13 @@ import { Toaster } from "@/components/ui/sonner";
 
 export function PublicShell({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
-    <div className="bg-background text-foreground min-h-screen flex flex-col">
-      <Navbar />
-      <main className={`flex-1 pt-20 md:pt-24 ${className}`}>{children}</main>
-      <Footer />
+    <>
+      <div className="bg-background text-foreground flex flex-col min-h-screen">
+        <Navbar />
+        <main className={`flex-1 pt-20 md:pt-24 ${className}`}>{children}</main>
+        <Footer />
+      </div>
       <Toaster richColors position="top-center" />
-    </div>
+    </>
   );
 }
