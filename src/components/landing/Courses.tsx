@@ -2,6 +2,8 @@ import { ArrowRight, Clock, Signal } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { type Course } from "@/lib/courses-data";
+import { CourseLink } from "@/components/courses/CourseLink";
+
 
 const FEATURED_COURSES: Course[] = [
   {
@@ -91,7 +93,7 @@ export function CourseCard({ course }: { course: Course }) {
         inactive ? "opacity-80" : "hover:-translate-y-1"
       }`}
     >
-      <Link to="/courses/$slug" params={{ slug: course.slug }} className="block">
+      <CourseLink slug={course.slug} className="block">
         <div className="relative h-[160px] overflow-hidden">
           <img
             src={course.cover}
@@ -119,7 +121,7 @@ export function CourseCard({ course }: { course: Course }) {
             </span>
           )}
         </div>
-      </Link>
+      </CourseLink>
       <div className="py-4 px-[18px]">
         <h3 className="font-display text-[15px] font-bold text-forest">{course.title}</h3>
         <p className="mt-2 text-xs text-foreground/70 leading-relaxed">{course.description}</p>
@@ -133,9 +135,9 @@ export function CourseCard({ course }: { course: Course }) {
         </div>
         <div className="mt-6">
           <Button asChild className="w-full sm:w-auto rounded-full bg-forest text-mint hover:bg-forest/90 py-2 px-3.5 text-xs">
-            <Link to="/courses/$slug" params={{ slug: course.slug }}>
+            <CourseLink slug={course.slug}>
               View Details <ArrowRight className="ml-1 h-4 w-4" />
-            </Link>
+            </CourseLink>
           </Button>
         </div>
       </div>
