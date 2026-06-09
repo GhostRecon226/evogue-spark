@@ -133,7 +133,7 @@ export function CourseCard({ course }: { course: Course }) {
         </div>
         <div className="mt-6">
           <Button asChild className="w-full sm:w-auto rounded-full bg-forest text-mint hover:bg-forest/90 py-2 px-3.5 text-xs">
-            <Link to="/courses/$slug" params={{ slug: course.slug }}>
+            <Link to={`/courses/${course.slug}`}>
               View Details <ArrowRight className="ml-1 h-4 w-4" />
             </Link>
           </Button>
