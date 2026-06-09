@@ -82,7 +82,7 @@ export function Courses() {
           </p>
         </div>
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-2">
+        <div className="mt-10 grid gap-4 sm:grid-cols-3">
           {FEATURED_COURSES.map((c) => (
             <CourseCard key={c.slug} course={c} />
           ))}
