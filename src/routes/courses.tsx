@@ -147,7 +147,7 @@ function CoursesPage() {
             ))}
           </div>
           <div className="elite-meta">
-            <span className="elite-meta-item"><Clock size={14} /> 6 weeks · Live</span>
+            <span className="elite-meta-item"><Clock size={14} /> 10 weeks · Live</span>
             <span className="elite-meta-item"><BarChart3 size={14} /> Beginner – Intermediate</span>
             <span className="elite-meta-item"><Award size={14} /> Dual certificate</span>
             <span className="elite-meta-item"><Code2 size={14} /> Capstone project included</span>
