@@ -29,6 +29,13 @@ export type CourseDetailConfig = {
   capstone: string;
   faqs: { q: string; a: string }[];
   certificateLabel?: string; // default "Certificate included"
+  // curriculum modules
+  curriculum?: {
+    eyebrow: string;
+    headline: string;
+    subtext: string;
+    modules: { title: string; bullets: string[] }[];
+  };
   // variants
   mode?: "default" | "waitlist" | "elite";
   // price card
