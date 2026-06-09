@@ -31,7 +31,6 @@ function Index() {
       <Courses />
       <Testimonials />
       <EnrollCta />
-      <Contact />
     </PublicShell>
   );
 }
