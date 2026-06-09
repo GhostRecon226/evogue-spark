@@ -73,6 +73,31 @@ const CHECKLIST = [
   "Career placement support",
 ];
 
+function CardCta({ card }: { card: CourseCard }) {
+  const className = card.status === "live" ? "cc-cta cc-cta-live" : "cc-cta cc-cta-soon";
+  const label = card.status === "live"
+    ? (<>View Details <ArrowRight size={13} /></>)
+    : (<><Bell size={13} /> Join Waitlist</>);
+
+  if (card.status === "soon") {
+    return <Link to="/contact" className={className}>{label}</Link>;
+  }
+  switch (card.slug) {
+    case "scrum-master":
+      return <Link to="/courses/scrum-master" className={className}>{label}</Link>;
+    case "digital-marketing":
+      return <Link to="/courses/digital-marketing" className={className}>{label}</Link>;
+    case "product-management":
+      return <Link to="/courses/product-management" className={className}>{label}</Link>;
+    case "ai-for-professionals":
+      return <Link to="/courses/ai-for-professionals" className={className}>{label}</Link>;
+    case "data-analysis":
+      return <Link to="/courses/data-analysis" className={className}>{label}</Link>;
+    default:
+      return <Link to="/courses" className={className}>{label}</Link>;
+  }
+}
+
 function CoursesPage() {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<(typeof FILTERS)[number]>("All");
@@ -200,15 +225,8 @@ function CoursesPage() {
                 <span><BarChart3 size={13} /> {c.level}</span>
               </div>
               <div className="cc-capstone"><Check size={13} /> Includes capstone project</div>
-              {c.status === "live" ? (
-                <Link to={c.href as string} className="cc-cta cc-cta-live">
-                  View Details <ArrowRight size={13} />
-                </Link>
-              ) : (
-                <Link to={c.href as string} className="cc-cta cc-cta-soon">
-                  <Bell size={13} /> Join Waitlist
-                </Link>
-              )}
+              <CardCta card={c} />
+
             </div>
           </article>
         ))}
