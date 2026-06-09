@@ -426,3 +426,154 @@ export function CourseDetailTemplate(cfg: CourseDetailConfig) {
     </PublicShell>
   );
 }
+
+function slugify(s: string): string {
+  return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+}
+
+type CurriculumProps = {
+  curriculum: NonNullable<CourseDetailConfig["curriculum"]>;
+};
+
+function CurriculumSection({ curriculum }: CurriculumProps) {
+  const moduleSlugs = curriculum.modules.map((m) => slugify(m.title));
+  const [openModules, setOpenModules] = useState<Record<string, boolean>>(() =>
+    Object.fromEntries(moduleSlugs.map((s) => [s, true])),
+  );
+
+  const toggle = (slug: string) =>
+    setOpenModules((prev) => ({ ...prev, [slug]: !prev[slug] }));
+
+  const handleTocClick = (e: React.MouseEvent<HTMLAnchorElement>, slug: string) => {
+    e.preventDefault();
+    setOpenModules((prev) => ({ ...prev, [slug]: true }));
+    requestAnimationFrame(() => {
+      const el = document.getElementById(`module-${slug}`);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (typeof history !== "undefined") {
+          history.replaceState(null, "", `#module-${slug}`);
+        }
+      }
+    });
+  };
+
+  return (
+    <section className="sm-section" style={{ padding: "64px 48px", background: "#fff" }}>
+      <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.14em", color: "#1A8C4E", fontWeight: 600, marginBottom: 10 }}>
+        {curriculum.eyebrow}
+      </div>
+      <h2 className="sm-display" style={{ fontSize: 28, fontWeight: 700, color: "#0A2E1A", marginBottom: 8 }}>
+        {curriculum.headline}
+      </h2>
+      <p style={{ fontSize: 14, color: "#4a7a5a", lineHeight: 1.6, marginBottom: 28 }}>
+        {curriculum.subtext}
+      </p>
+
+      <nav
+        aria-label="Curriculum modules"
+        style={{
+          background: "#EDF7F0",
+          border: "1px solid rgba(10,46,26,0.08)",
+          borderRadius: 12,
+          padding: "18px 22px",
+          marginBottom: 28,
+        }}
+      >
+        <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", color: "#1A8C4E", fontWeight: 600, marginBottom: 12 }}>
+          On this page
+        </div>
+        <ol style={{ margin: 0, padding: 0, listStyle: "none", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "8px 16px" }}>
+          {curriculum.modules.map((m, i) => {
+            const slug = moduleSlugs[i];
+            return (
+              <li key={slug}>
+                <a
+                  href={`#module-${slug}`}
+                  onClick={(e) => handleTocClick(e, slug)}
+                  style={{
+                    display: "block",
+                    fontSize: 13,
+                    color: "#0A2E1A",
+                    textDecoration: "none",
+                    fontWeight: 500,
+                    padding: "6px 0",
+                  }}
+                >
+                  {m.title}
+                </a>
+              </li>
+            );
+          })}
+        </ol>
+      </nav>
+
+      <div>
+        {curriculum.modules.map((m, i) => {
+          const slug = moduleSlugs[i];
+          const isOpen = openModules[slug];
+          const panelId = `module-panel-${slug}`;
+          return (
+            <div
+              key={m.title}
+              id={`module-${slug}`}
+              style={{
+                border: "1px solid rgba(10,46,26,0.08)",
+                borderLeft: "3px solid #1A8C4E",
+                borderRadius: "0 12px 12px 0",
+                marginBottom: 12,
+                background: "#fff",
+                scrollMarginTop: 24,
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => toggle(slug)}
+                aria-expanded={isOpen}
+                aria-controls={panelId}
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 12,
+                  background: "transparent",
+                  border: "none",
+                  padding: "18px 24px",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  fontSize: 15,
+                  fontWeight: 600,
+                  color: "#0A2E1A",
+                  fontFamily: "inherit",
+                }}
+              >
+                <span>{m.title}</span>
+                <ChevronDown
+                  size={18}
+                  color="#1A8C4E"
+                  style={{
+                    transition: "transform 0.2s",
+                    transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+                    flexShrink: 0,
+                  }}
+                />
+              </button>
+              {isOpen && (
+                <div id={panelId} style={{ padding: "0 24px 20px" }}>
+                  <ul style={{ margin: 0, paddingLeft: 16, listStyle: "disc" }}>
+                    {m.bullets.map((b) => (
+                      <li key={b} style={{ fontSize: 13, color: "#4a7a5a", lineHeight: 1.8 }}>
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
