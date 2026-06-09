@@ -1,54 +1,46 @@
-## Problem
+## What I found
+- I could not find any remaining hardcoded singular `/course` links in the current source.
+- The current preview and the published site both route the visible `/courses` CTAs correctly to dedicated URLs such as:
+  - `/courses/scrum-master`
+  - `/courses/digital-marketing`
+  - `/courses/product-management`
+- Dedicated static route files already exist for the course pages under `src/routes/`.
 
-On `/courses`, clicking "View Details" (or "Join Waitlist") on any of the 7 course cards navigates back to `/courses` instead of the dedicated detail page (e.g. `/courses/scrum-master`, `/courses/digital-marketing`).
+## Likely root cause
+The app currently has **two parallel course-detail systems**:
+1. **Dedicated static course pages** like `src/routes/courses.scrum-master.tsx`, `src/routes/courses.digital-marketing.tsx`, etc.
+2. A **generic dynamic fallback page** at `src/routes/courses.$slug.tsx`, fed by `src/lib/courses-data.ts`.
 
-Cause: in `src/routes/courses.tsx` lines 204 and 208, the card CTA renders:
+That duplication is the deeper issue. Different parts of the app can still point into different routing/data systems, which makes course navigation inconsistent and can make the app behave like it is using a generic course page instead of the intended dedicated page.
 
-```tsx
-<Link to={c.href as string} ...>View Details</Link>
-```
+## Implementation plan
+1. **Audit every course entry point**
+   - Check homepage featured-course cards, `/courses`, dashboard course links, and any other CTA that leads into course details.
+   - Build a single map of which slug each entry point should open.
 
-TanStack Router's `<Link to>` is type-safe and resolved against the registered route tree. A dynamic, casted string variable does not match a known route literal at runtime, so the link falls back to the current route (`/courses`).
+2. **Unify routing around dedicated pages**
+   - Point all live-course CTAs to the dedicated static course routes.
+   - Keep waitlist courses pointing to `/contact` only where intended.
+   - Remove or narrow generic fallback behavior so it does not compete with dedicated course pages.
 
-This is the same bug pattern fixed earlier on the home page's `Courses` component. All dedicated route files exist (`courses.scrum-master.tsx`, `courses.digital-marketing.tsx`, `courses.product-management.tsx`, `courses.ai-for-professionals.tsx`, `courses.data-analysis.tsx`, plus `/contact` for the "Coming Soon" cards) — they just aren't being reached through these cards.
+3. **Resolve slug/data mismatches**
+   - Compare `src/lib/courses-data.ts` slugs with the dedicated route filenames.
+   - Fix mismatches and outdated course definitions so all navigation sources agree.
 
-## Fix
+4. **Expand regression tests**
+   - Keep the existing `/courses` CTA tests.
+   - Add tests for other entry points, especially the homepage featured cards and any dashboard course links that should land on dedicated course pages.
 
-In `src/routes/courses.tsx`, replace the single dynamic `<Link>` with a small render helper that switches on the card's slug and returns a `<Link>` with a **literal** `to` path for each course. "Coming Soon" cards keep their `<Link to="/contact">`.
+5. **Re-verify in both environments**
+   - Validate the fixed routes in preview and published output on desktop and mobile.
 
-Shape:
+## Technical notes
+Relevant files to align:
+- `src/routes/courses.tsx`
+- `src/components/courses/CardCta.tsx`
+- `src/components/landing/Courses.tsx`
+- `src/routes/courses.$slug.tsx`
+- `src/lib/courses-data.ts`
+- Dedicated route files under `src/routes/courses.*.tsx`
 
-```tsx
-function CardCta({ card }: { card: CourseCard }) {
-  const className = card.status === "live" ? "cc-cta cc-cta-live" : "cc-cta cc-cta-soon";
-  const label = card.status === "live"
-    ? (<>View Details <ArrowRight size={13} /></>)
-    : (<><Bell size={13} /> Join Waitlist</>);
-
-  if (card.status === "soon") {
-    return <Link to="/contact" className={className}>{label}</Link>;
-  }
-  switch (card.slug) {
-    case "scrum-master":
-      return <Link to="/courses/scrum-master" className={className}>{label}</Link>;
-    case "digital-marketing":
-      return <Link to="/courses/digital-marketing" className={className}>{label}</Link>;
-    case "product-management":
-      return <Link to="/courses/product-management" className={className}>{label}</Link>;
-    case "ai-for-professionals":
-      return <Link to="/courses/ai-for-professionals" className={className}>{label}</Link>;
-    case "data-analysis":
-      return <Link to="/courses/data-analysis" className={className}>{label}</Link>;
-    default:
-      return <Link to="/courses" className={className}>{label}</Link>;
-  }
-}
-```
-
-Then in the grid, replace the existing inline `<Link>` block with `<CardCta card={c} />`.
-
-Nothing else changes — no styling, no copy, no other pages touched. The home page card fix from the previous turn already uses the correct `to="/courses/$slug" params={{ slug }}` shape and continues to work.
-
-## Verification
-
-After the edit, click each "View Details" on `/courses` and confirm the URL changes to the dedicated page (e.g. `/courses/digital-marketing`) and the dedicated page content renders.
+This plan focuses on eliminating the duplicate routing paths that are most likely causing the persistent inconsistency.
