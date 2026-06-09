@@ -12,6 +12,7 @@ import {
   ClipboardList,
   FileCheck2,
   Crown,
+  Briefcase,
 } from "lucide-react";
 import { PublicShell } from "@/components/PublicShell";
 
