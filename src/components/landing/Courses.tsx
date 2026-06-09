@@ -9,7 +9,7 @@ const FEATURED_COURSES: Course[] = [
     title: "Project Management & Business Analysis",
     description: "Lead projects end-to-end, analyze business requirements and deliver value with modern PM & BA frameworks.",
     longDescription: "",
-    duration: "6 weeks",
+    duration: "10 weeks",
     level: "Beginner – Intermediate",
     price: "",
     category: "Management",

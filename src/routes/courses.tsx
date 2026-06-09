@@ -147,7 +147,7 @@ function CoursesPage() {
             ))}
           </div>
           <div className="elite-meta">
-            <span className="elite-meta-item"><Clock size={14} /> 6 weeks · Live</span>
+            <span className="elite-meta-item"><Clock size={14} /> 10 weeks · Live</span>
             <span className="elite-meta-item"><BarChart3 size={14} /> Beginner – Intermediate</span>
             <span className="elite-meta-item"><Award size={14} /> Dual certificate</span>
             <span className="elite-meta-item"><Code2 size={14} /> Capstone project included</span>
@@ -167,7 +167,7 @@ function CoursesPage() {
           <div className="elite-divider" />
           <div className="elite-stats">
             <div><div className="elite-stat-num">2</div><div className="elite-stat-label">Disciplines</div></div>
-            <div><div className="elite-stat-num">6</div><div className="elite-stat-label">Weeks</div></div>
+            <div><div className="elite-stat-num">10</div><div className="elite-stat-label">Weeks</div></div>
             <div><div className="elite-stat-num">1</div><div className="elite-stat-label">Certificate</div></div>
           </div>
           <Link to="/courses/project-management-business-analysis" className="elite-ghost-cta">
