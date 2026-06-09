@@ -160,8 +160,8 @@
   }
 }
 
-/* Load brand fonts */
-@import url("https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap");
+/* Brand fonts are loaded via <link> in src/routes/__root.tsx */
+
 
 /* Hover-only scrollbar for the dashboard sidebar */
 .sidebar-scroll {
