@@ -28,16 +28,15 @@ type Props = {
   className?: string;
   style?: CSSProperties;
   children: ReactNode;
-  /** Where to send unknown slugs. Defaults to the courses index. */
-  fallbackTo?: "/courses" | "/contact";
 };
 
 /**
  * Type-safe Link to a course's dedicated page. Using literal `to` paths
- * guarantees TanStack Router resolves the static route, never the dynamic
- * fallback or the parent `/courses` route.
+ * guarantees TanStack Router resolves the static route. Unknown slugs
+ * render a plain anchor to `/courses/<slug>` so the router's 404
+ * boundary handles them — we never silently redirect to `/courses`.
  */
-export function CourseLink({ slug, className, style, children, fallbackTo = "/courses" }: Props) {
+export function CourseLink({ slug, className, style, children }: Props) {
   switch (slug) {
     case "scrum-master":
       return <Link to="/courses/scrum-master" className={className} style={style}>{children}</Link>;
@@ -56,6 +55,6 @@ export function CourseLink({ slug, className, style, children, fallbackTo = "/co
     case "project-management-business-analysis":
       return <Link to="/courses/project-management-business-analysis" className={className} style={style}>{children}</Link>;
     default:
-      return <Link to={fallbackTo} className={className} style={style}>{children}</Link>;
+      return <a href={`/courses/${slug}`} className={className} style={style}>{children}</a>;
   }
 }
