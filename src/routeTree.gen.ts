@@ -108,47 +108,47 @@ const CoursesIndexRoute = CoursesIndexRouteImport.update({
 } as any)
 const CoursesVirtualAssistantProgrammeRoute =
   CoursesVirtualAssistantProgrammeRouteImport.update({
-    id: '/virtual-assistant-programme',
-    path: '/virtual-assistant-programme',
-    getParentRoute: () => CoursesRoute,
+    id: '/courses/virtual-assistant-programme',
+    path: '/courses/virtual-assistant-programme',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const CoursesScrumMasterRoute = CoursesScrumMasterRouteImport.update({
-  id: '/scrum-master',
-  path: '/scrum-master',
-  getParentRoute: () => CoursesRoute,
+  id: '/courses/scrum-master',
+  path: '/courses/scrum-master',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const CoursesProjectManagementBusinessAnalysisRoute =
   CoursesProjectManagementBusinessAnalysisRouteImport.update({
-    id: '/project-management-business-analysis',
-    path: '/project-management-business-analysis',
-    getParentRoute: () => CoursesRoute,
+    id: '/courses/project-management-business-analysis',
+    path: '/courses/project-management-business-analysis',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const CoursesProductManagementRoute =
   CoursesProductManagementRouteImport.update({
-    id: '/product-management',
-    path: '/product-management',
-    getParentRoute: () => CoursesRoute,
+    id: '/courses/product-management',
+    path: '/courses/product-management',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const CoursesDigitalMarketingRoute = CoursesDigitalMarketingRouteImport.update({
-  id: '/digital-marketing',
-  path: '/digital-marketing',
-  getParentRoute: () => CoursesRoute,
+  id: '/courses/digital-marketing',
+  path: '/courses/digital-marketing',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const CoursesDataAnalysisRoute = CoursesDataAnalysisRouteImport.update({
-  id: '/data-analysis',
-  path: '/data-analysis',
-  getParentRoute: () => CoursesRoute,
+  id: '/courses/data-analysis',
+  path: '/courses/data-analysis',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const CoursesCybersecurityRoute = CoursesCybersecurityRouteImport.update({
-  id: '/cybersecurity',
-  path: '/cybersecurity',
-  getParentRoute: () => CoursesRoute,
+  id: '/courses/cybersecurity',
+  path: '/courses/cybersecurity',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const CoursesAiForProfessionalsRoute =
   CoursesAiForProfessionalsRouteImport.update({
-    id: '/ai-for-professionals',
-    path: '/ai-for-professionals',
-    getParentRoute: () => CoursesRoute,
+    id: '/courses/ai-for-professionals',
+    path: '/courses/ai-for-professionals',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
@@ -560,6 +560,14 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ScholarshipRoute: typeof ScholarshipRoute
+  CoursesAiForProfessionalsRoute: typeof CoursesAiForProfessionalsRoute
+  CoursesCybersecurityRoute: typeof CoursesCybersecurityRoute
+  CoursesDataAnalysisRoute: typeof CoursesDataAnalysisRoute
+  CoursesDigitalMarketingRoute: typeof CoursesDigitalMarketingRoute
+  CoursesProductManagementRoute: typeof CoursesProductManagementRoute
+  CoursesProjectManagementBusinessAnalysisRoute: typeof CoursesProjectManagementBusinessAnalysisRoute
+  CoursesScrumMasterRoute: typeof CoursesScrumMasterRoute
+  CoursesVirtualAssistantProgrammeRoute: typeof CoursesVirtualAssistantProgrammeRoute
   CoursesIndexRoute: typeof CoursesIndexRoute
 }
 
@@ -644,59 +652,59 @@ declare module '@tanstack/react-router' {
     }
     '/courses/virtual-assistant-programme': {
       id: '/courses/virtual-assistant-programme'
-      path: '/virtual-assistant-programme'
+      path: '/courses/virtual-assistant-programme'
       fullPath: '/courses/virtual-assistant-programme'
       preLoaderRoute: typeof CoursesVirtualAssistantProgrammeRouteImport
-      parentRoute: typeof CoursesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/courses/scrum-master': {
       id: '/courses/scrum-master'
-      path: '/scrum-master'
+      path: '/courses/scrum-master'
       fullPath: '/courses/scrum-master'
       preLoaderRoute: typeof CoursesScrumMasterRouteImport
-      parentRoute: typeof CoursesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/courses/project-management-business-analysis': {
       id: '/courses/project-management-business-analysis'
-      path: '/project-management-business-analysis'
+      path: '/courses/project-management-business-analysis'
       fullPath: '/courses/project-management-business-analysis'
       preLoaderRoute: typeof CoursesProjectManagementBusinessAnalysisRouteImport
-      parentRoute: typeof CoursesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/courses/product-management': {
       id: '/courses/product-management'
-      path: '/product-management'
+      path: '/courses/product-management'
       fullPath: '/courses/product-management'
       preLoaderRoute: typeof CoursesProductManagementRouteImport
-      parentRoute: typeof CoursesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/courses/digital-marketing': {
       id: '/courses/digital-marketing'
-      path: '/digital-marketing'
+      path: '/courses/digital-marketing'
       fullPath: '/courses/digital-marketing'
       preLoaderRoute: typeof CoursesDigitalMarketingRouteImport
-      parentRoute: typeof CoursesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/courses/data-analysis': {
       id: '/courses/data-analysis'
-      path: '/data-analysis'
+      path: '/courses/data-analysis'
       fullPath: '/courses/data-analysis'
       preLoaderRoute: typeof CoursesDataAnalysisRouteImport
-      parentRoute: typeof CoursesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/courses/cybersecurity': {
       id: '/courses/cybersecurity'
-      path: '/cybersecurity'
+      path: '/courses/cybersecurity'
       fullPath: '/courses/cybersecurity'
       preLoaderRoute: typeof CoursesCybersecurityRouteImport
-      parentRoute: typeof CoursesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/courses/ai-for-professionals': {
       id: '/courses/ai-for-professionals'
-      path: '/ai-for-professionals'
+      path: '/courses/ai-for-professionals'
       fullPath: '/courses/ai-for-professionals'
       preLoaderRoute: typeof CoursesAiForProfessionalsRouteImport
-      parentRoute: typeof CoursesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
@@ -956,18 +964,17 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ScholarshipRoute: ScholarshipRoute,
+  CoursesAiForProfessionalsRoute: CoursesAiForProfessionalsRoute,
+  CoursesCybersecurityRoute: CoursesCybersecurityRoute,
+  CoursesDataAnalysisRoute: CoursesDataAnalysisRoute,
+  CoursesDigitalMarketingRoute: CoursesDigitalMarketingRoute,
+  CoursesProductManagementRoute: CoursesProductManagementRoute,
+  CoursesProjectManagementBusinessAnalysisRoute:
+    CoursesProjectManagementBusinessAnalysisRoute,
+  CoursesScrumMasterRoute: CoursesScrumMasterRoute,
+  CoursesVirtualAssistantProgrammeRoute: CoursesVirtualAssistantProgrammeRoute,
   CoursesIndexRoute: CoursesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
