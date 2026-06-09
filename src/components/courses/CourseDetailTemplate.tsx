@@ -36,6 +36,13 @@ export type CourseDetailConfig = {
     subtext: string;
     modules: { title: string; bullets: string[] }[];
   };
+  // target audience
+  targetAudience?: {
+    eyebrow: string;
+    headline: string;
+    subtext: string;
+    items: string[];
+  };
   // variants
   mode?: "default" | "waitlist" | "elite";
   // price card
