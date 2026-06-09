@@ -150,6 +150,22 @@ export const Route = createFileRoute("/courses/project-management-business-analy
           "Anyone who wants a globally recognised dual certificate in PM and BA",
         ],
       }}
+      careerOutcomes={{
+        eyebrow: "CAREER OUTCOMES",
+        headline: "Roles you'll be ready for",
+        subtext: "Graduates of this programme are qualified to step into a range of high-demand roles across industries and geographies.",
+        roles: [
+          "Project Manager",
+          "Business Analyst",
+          "Project Coordinator",
+          "PMO Analyst",
+          "Business Systems Analyst",
+          "Process Analyst",
+          "Agile Project Lead",
+          "Operations Manager",
+        ],
+        note: "You'll graduate with the confidence and credentials to pursue roles that require expertise in both project delivery and business analysis.",
+      }}
       faqs={[
         { q: "Do I need prior experience?", a: "No prior experience in project management or business analysis is required. We start from first principles and build up. A basic comfort with professional workplace environments is all you need." },
         { q: "How are classes delivered?", a: "All classes are live online via Zoom. Sessions are recorded and shared with enrolled students so you never miss anything." },

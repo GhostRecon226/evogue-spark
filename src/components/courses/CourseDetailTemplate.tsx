@@ -12,6 +12,7 @@ import {
   ClipboardList,
   FileCheck2,
   Crown,
+  Briefcase,
 } from "lucide-react";
 import { PublicShell } from "@/components/PublicShell";
 
@@ -42,6 +43,14 @@ export type CourseDetailConfig = {
     headline: string;
     subtext: string;
     items: string[];
+  };
+  // career outcomes
+  careerOutcomes?: {
+    eyebrow: string;
+    headline: string;
+    subtext: string;
+    roles: string[];
+    note: string;
   };
   // variants
   mode?: "default" | "waitlist" | "elite";
@@ -123,6 +132,8 @@ export function CourseDetailTemplate(cfg: CourseDetailConfig) {
         .sm-capstone-cards { display:flex; gap:16px; }
         .sm-target-grid { display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:flex-start; }
         .sm-target-item { display:flex; align-items:flex-start; gap:12px; padding:14px 0; border-bottom:1px solid rgba(10,46,26,0.07); }
+        .sm-career-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; }
+        .sm-career-card { background:#EDF7F0; border:1px solid rgba(10,46,26,0.08); border-radius:10px; padding:18px 16px; text-align:center; }
         .sm-steps { display:flex; gap:0; position:relative; }
         .sm-step { flex:1; text-align:center; position:relative; }
         .sm-step:not(:last-child)::after { content:""; position:absolute; top:20px; left:50%; right:-50%; height:1px; background:rgba(10,46,26,0.1); z-index:0; }
@@ -133,6 +144,7 @@ export function CourseDetailTemplate(cfg: CourseDetailConfig) {
           .sm-hero { grid-template-columns:1fr; padding:48px 32px; }
           .sm-outcomes { grid-template-columns:1fr; }
           .sm-target-grid { grid-template-columns:1fr; }
+          .sm-career-grid { grid-template-columns:repeat(2, 1fr); }
           .sm-steps { display:grid; grid-template-columns:1fr 1fr; gap:32px 16px; }
           .sm-step:not(:last-child)::after { display:none; }
           .sm-section { padding:48px 32px !important; }
@@ -299,6 +311,11 @@ export function CourseDetailTemplate(cfg: CourseDetailConfig) {
         {/* WHO THIS IS FOR */}
         {cfg.targetAudience && (
           <TargetAudienceSection audience={cfg.targetAudience} />
+        )}
+
+        {/* CAREER OUTCOMES */}
+        {cfg.careerOutcomes && (
+          <CareerOutcomesSection outcomes={cfg.careerOutcomes} />
         )}
 
         {/* CAPSTONE */}
@@ -746,6 +763,64 @@ function TargetAudienceSection({ audience }: { audience: NonNullable<CourseDetai
           ))}
         </div>
       </div>
+    </section>
+  );
+}
+
+function CareerOutcomesSection({ outcomes }: { outcomes: NonNullable<CourseDetailConfig["careerOutcomes"]> }) {
+  return (
+    <section className="sm-section" style={{ padding: "64px 48px", background: "#fff" }}>
+      <div
+        style={{
+          fontSize: 11,
+          textTransform: "uppercase",
+          letterSpacing: "0.14em",
+          color: "#1A8C4E",
+          fontWeight: 600,
+          marginBottom: 10,
+        }}
+      >
+        {outcomes.eyebrow}
+      </div>
+      <h2
+        className="sm-display"
+        style={{
+          fontSize: 26,
+          fontWeight: 700,
+          color: "#0A2E1A",
+          marginBottom: 8,
+        }}
+      >
+        {outcomes.headline}
+      </h2>
+      <p style={{ fontSize: 14, color: "#4a7a5a", marginBottom: 32 }}>
+        {outcomes.subtext}
+      </p>
+
+      <div className="sm-career-grid">
+        {outcomes.roles.map((role) => (
+          <div key={role} className="sm-career-card">
+            <Briefcase size={22} color="#1A8C4E" style={{ marginBottom: 8 }} />
+            <div style={{ fontSize: 13, fontWeight: 600, color: "#0A2E1A", lineHeight: 1.4 }}>
+              {role}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <p
+        style={{
+          fontSize: 13,
+          color: "#4a7a5a",
+          textAlign: "center",
+          marginTop: 20,
+          maxWidth: 560,
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
+      >
+        {outcomes.note}
+      </p>
     </section>
   );
 }
