@@ -14,12 +14,12 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as FaqRouteImport } from './routes/faq'
-import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CoursesIndexRouteImport } from './routes/courses.index'
 import { Route as CoursesVirtualAssistantProgrammeRouteImport } from './routes/courses.virtual-assistant-programme'
 import { Route as CoursesScrumMasterRouteImport } from './routes/courses.scrum-master'
 import { Route as CoursesProjectManagementBusinessAnalysisRouteImport } from './routes/courses.project-management-business-analysis'
@@ -77,11 +77,6 @@ const FaqRoute = FaqRouteImport.update({
   path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CoursesRoute = CoursesRouteImport.update({
-  id: '/courses',
-  path: '/courses',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -104,6 +99,11 @@ const AuthenticatedRoute = AuthenticatedRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoursesIndexRoute = CoursesIndexRouteImport.update({
+  id: '/courses/',
+  path: '/courses/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CoursesVirtualAssistantProgrammeRoute =
@@ -292,7 +292,6 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/blog': typeof BlogRoute
   '/contact': typeof ContactRoute
-  '/courses': typeof CoursesRouteWithChildren
   '/faq': typeof FaqRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
@@ -307,6 +306,7 @@ export interface FileRoutesByFullPath {
   '/courses/project-management-business-analysis': typeof CoursesProjectManagementBusinessAnalysisRoute
   '/courses/scrum-master': typeof CoursesScrumMasterRoute
   '/courses/virtual-assistant-programme': typeof CoursesVirtualAssistantProgrammeRoute
+  '/courses/': typeof CoursesIndexRoute
   '/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
   '/admin/capstones': typeof AuthenticatedAdminCapstonesRoute
   '/admin/certificates': typeof AuthenticatedAdminCertificatesRoute
@@ -335,7 +335,6 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/blog': typeof BlogRoute
   '/contact': typeof ContactRoute
-  '/courses': typeof CoursesRouteWithChildren
   '/faq': typeof FaqRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
@@ -349,6 +348,7 @@ export interface FileRoutesByTo {
   '/courses/project-management-business-analysis': typeof CoursesProjectManagementBusinessAnalysisRoute
   '/courses/scrum-master': typeof CoursesScrumMasterRoute
   '/courses/virtual-assistant-programme': typeof CoursesVirtualAssistantProgrammeRoute
+  '/courses': typeof CoursesIndexRoute
   '/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
   '/admin/capstones': typeof AuthenticatedAdminCapstonesRoute
   '/admin/certificates': typeof AuthenticatedAdminCertificatesRoute
@@ -379,7 +379,6 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/blog': typeof BlogRoute
   '/contact': typeof ContactRoute
-  '/courses': typeof CoursesRouteWithChildren
   '/faq': typeof FaqRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
@@ -394,6 +393,7 @@ export interface FileRoutesById {
   '/courses/project-management-business-analysis': typeof CoursesProjectManagementBusinessAnalysisRoute
   '/courses/scrum-master': typeof CoursesScrumMasterRoute
   '/courses/virtual-assistant-programme': typeof CoursesVirtualAssistantProgrammeRoute
+  '/courses/': typeof CoursesIndexRoute
   '/_authenticated/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
   '/_authenticated/admin/capstones': typeof AuthenticatedAdminCapstonesRoute
   '/_authenticated/admin/certificates': typeof AuthenticatedAdminCertificatesRoute
@@ -424,7 +424,6 @@ export interface FileRouteTypes {
     | '/about'
     | '/blog'
     | '/contact'
-    | '/courses'
     | '/faq'
     | '/forgot-password'
     | '/login'
@@ -439,6 +438,7 @@ export interface FileRouteTypes {
     | '/courses/project-management-business-analysis'
     | '/courses/scrum-master'
     | '/courses/virtual-assistant-programme'
+    | '/courses/'
     | '/admin/announcements'
     | '/admin/capstones'
     | '/admin/certificates'
@@ -467,7 +467,6 @@ export interface FileRouteTypes {
     | '/about'
     | '/blog'
     | '/contact'
-    | '/courses'
     | '/faq'
     | '/forgot-password'
     | '/login'
@@ -481,6 +480,7 @@ export interface FileRouteTypes {
     | '/courses/project-management-business-analysis'
     | '/courses/scrum-master'
     | '/courses/virtual-assistant-programme'
+    | '/courses'
     | '/admin/announcements'
     | '/admin/capstones'
     | '/admin/certificates'
@@ -510,7 +510,6 @@ export interface FileRouteTypes {
     | '/about'
     | '/blog'
     | '/contact'
-    | '/courses'
     | '/faq'
     | '/forgot-password'
     | '/login'
@@ -525,6 +524,7 @@ export interface FileRouteTypes {
     | '/courses/project-management-business-analysis'
     | '/courses/scrum-master'
     | '/courses/virtual-assistant-programme'
+    | '/courses/'
     | '/_authenticated/admin/announcements'
     | '/_authenticated/admin/capstones'
     | '/_authenticated/admin/certificates'
@@ -555,12 +555,12 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   BlogRoute: typeof BlogRoute
   ContactRoute: typeof ContactRoute
-  CoursesRoute: typeof CoursesRouteWithChildren
   FaqRoute: typeof FaqRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ScholarshipRoute: typeof ScholarshipRoute
+  CoursesIndexRoute: typeof CoursesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -600,13 +600,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/courses': {
-      id: '/courses'
-      path: '/courses'
-      fullPath: '/courses'
-      preLoaderRoute: typeof CoursesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -640,6 +633,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/courses/': {
+      id: '/courses/'
+      path: '/courses'
+      fullPath: '/courses/'
+      preLoaderRoute: typeof CoursesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/courses/virtual-assistant-programme': {
@@ -945,44 +945,18 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
-interface CoursesRouteChildren {
-  CoursesAiForProfessionalsRoute: typeof CoursesAiForProfessionalsRoute
-  CoursesCybersecurityRoute: typeof CoursesCybersecurityRoute
-  CoursesDataAnalysisRoute: typeof CoursesDataAnalysisRoute
-  CoursesDigitalMarketingRoute: typeof CoursesDigitalMarketingRoute
-  CoursesProductManagementRoute: typeof CoursesProductManagementRoute
-  CoursesProjectManagementBusinessAnalysisRoute: typeof CoursesProjectManagementBusinessAnalysisRoute
-  CoursesScrumMasterRoute: typeof CoursesScrumMasterRoute
-  CoursesVirtualAssistantProgrammeRoute: typeof CoursesVirtualAssistantProgrammeRoute
-}
-
-const CoursesRouteChildren: CoursesRouteChildren = {
-  CoursesAiForProfessionalsRoute: CoursesAiForProfessionalsRoute,
-  CoursesCybersecurityRoute: CoursesCybersecurityRoute,
-  CoursesDataAnalysisRoute: CoursesDataAnalysisRoute,
-  CoursesDigitalMarketingRoute: CoursesDigitalMarketingRoute,
-  CoursesProductManagementRoute: CoursesProductManagementRoute,
-  CoursesProjectManagementBusinessAnalysisRoute:
-    CoursesProjectManagementBusinessAnalysisRoute,
-  CoursesScrumMasterRoute: CoursesScrumMasterRoute,
-  CoursesVirtualAssistantProgrammeRoute: CoursesVirtualAssistantProgrammeRoute,
-}
-
-const CoursesRouteWithChildren =
-  CoursesRoute._addFileChildren(CoursesRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AboutRoute: AboutRoute,
   BlogRoute: BlogRoute,
   ContactRoute: ContactRoute,
-  CoursesRoute: CoursesRouteWithChildren,
   FaqRoute: FaqRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ScholarshipRoute: ScholarshipRoute,
+  CoursesIndexRoute: CoursesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
