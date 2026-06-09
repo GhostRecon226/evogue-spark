@@ -38,6 +38,64 @@ export const Route = createFileRoute("/courses/project-management-business-analy
       ]}
       capstone="Complete a full project lifecycle including requirements gathering, stakeholder management, project planning and a final business case presentation that demonstrates mastery of both disciplines."
       capstoneExtraNote="Graduates of this programme receive a single Evogue Academy certificate recognising both Project Management and Business Analysis. You then choose which discipline to pursue in your career."
+      curriculum={{
+        eyebrow: "COURSE CURRICULUM",
+        headline: "What the programme covers",
+        subtext: "Six structured modules designed around what employers actually need. Every session is practical, every concept is applied.",
+        modules: [
+          {
+            title: "Module 1: Foundations of Project Management",
+            bullets: [
+              "Introduction to project management, lifecycles and methodologies",
+              "Project initiation and defining scope",
+              "Stakeholder identification and analysis",
+            ],
+          },
+          {
+            title: "Module 2: Project Planning & Scheduling",
+            bullets: [
+              "Work breakdown structures (WBS)",
+              "Activity planning, sequencing and resource allocation",
+              "Budgeting and cost management",
+            ],
+          },
+          {
+            title: "Module 3: Project Execution & Control",
+            bullets: [
+              "Team leadership and communication",
+              "Quality management",
+              "Monitoring progress and performance reporting",
+              "Risk management and mitigation",
+            ],
+          },
+          {
+            title: "Module 4: Introduction to Business Analysis",
+            bullets: [
+              "Core concepts and the BA role",
+              "Business analysis planning and monitoring",
+              "Understanding business problems and opportunities",
+            ],
+          },
+          {
+            title: "Module 5: Requirements Elicitation & Collaboration",
+            bullets: [
+              "Techniques for gathering requirements (interviews, workshops, surveys)",
+              "Documenting and confirming requirements",
+              "Stakeholder management in BA",
+              "Modelling techniques (process, data, use cases)",
+            ],
+          },
+          {
+            title: "Module 6: Agile PM & Business Analysis",
+            bullets: [
+              "Integrating BA in agile environments",
+              "User stories and backlog management",
+              "Tools and techniques for PM & BA (Jira, Trello, MS Project)",
+              "Applying your skills to a real-world capstone project",
+            ],
+          },
+        ],
+      }}
       faqs={[
         { q: "Do I need prior experience?", a: "No prior experience in project management or business analysis is required. We start from first principles and build up. A basic comfort with professional workplace environments is all you need." },
         { q: "How are classes delivered?", a: "All classes are live online via Zoom. Sessions are recorded and shared with enrolled students so you never miss anything." },
