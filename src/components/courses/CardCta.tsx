@@ -31,7 +31,16 @@ export function CardCta({ card }: { card: CourseCardLink }) {
       return <Link to="/courses/ai-for-professionals" className={className}>{label}</Link>;
     case "data-analysis":
       return <Link to="/courses/data-analysis" className={className}>{label}</Link>;
+    case "cybersecurity":
+      return <Link to="/courses/cybersecurity" className={className}>{label}</Link>;
+    case "virtual-assistant-programme":
+      return <Link to="/courses/virtual-assistant-programme" className={className}>{label}</Link>;
+    case "project-management-business-analysis":
+      return <Link to="/courses/project-management-business-analysis" className={className}>{label}</Link>;
     default:
-      return <Link to="/courses" className={className}>{label}</Link>;
+      // Unknown slug: let the router resolve and hit the 404 boundary
+      // (use a plain anchor because TanStack's typed Link can't express
+      // an arbitrary unknown path).
+      return <a href={`/courses/${card.slug}`} className={className}>{label}</a>;
   }
 }
