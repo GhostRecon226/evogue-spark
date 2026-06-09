@@ -82,7 +82,7 @@ export function Courses() {
           </p>
         </div>
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-2">
+        <div className="mt-10 grid gap-4 sm:grid-cols-3">
           {FEATURED_COURSES.map((c) => (
             <CourseCard key={c.slug} course={c} />
           ))}
@@ -107,7 +107,7 @@ export function CourseCard({ course }: { course: Course }) {
       }`}
     >
       <Link to="/courses/$slug" params={{ slug: course.slug }} className="block">
-        <div className="relative aspect-[16/9] overflow-hidden">
+        <div className="relative h-[160px] overflow-hidden">
           <img
             src={course.cover}
             alt={course.title}
@@ -135,10 +135,10 @@ export function CourseCard({ course }: { course: Course }) {
           )}
         </div>
       </Link>
-      <div className="p-6">
-        <h3 className="font-display text-xl font-bold text-forest">{course.title}</h3>
-        <p className="mt-2 text-foreground/70 leading-relaxed">{course.description}</p>
-        <div className="mt-4 flex flex-wrap gap-4 text-sm text-foreground/60">
+      <div className="py-4 px-[18px]">
+        <h3 className="font-display text-[15px] font-bold text-forest">{course.title}</h3>
+        <p className="mt-2 text-xs text-foreground/70 leading-relaxed">{course.description}</p>
+        <div className="mt-4 flex flex-wrap gap-4 text-[11px] text-foreground/60">
           <span className="inline-flex items-center gap-1.5">
             <Clock className="h-4 w-4" /> {course.duration}
           </span>
@@ -147,7 +147,7 @@ export function CourseCard({ course }: { course: Course }) {
           </span>
         </div>
         <div className="mt-6">
-          <Button asChild className="w-full sm:w-auto rounded-full bg-forest text-mint hover:bg-forest/90">
+          <Button asChild className="w-full sm:w-auto rounded-full bg-forest text-mint hover:bg-forest/90 py-2 px-3.5 text-xs">
             <Link to="/courses/$slug" params={{ slug: course.slug }}>
               View Details <ArrowRight className="ml-1 h-4 w-4" />
             </Link>
