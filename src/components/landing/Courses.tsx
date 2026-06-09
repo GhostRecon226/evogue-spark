@@ -1,7 +1,70 @@
 import { ArrowRight, Clock, Signal } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { courses, type Course } from "@/lib/courses-data";
+import { type Course } from "@/lib/courses-data";
+
+const FEATURED_COURSES: Course[] = [
+  {
+    slug: "project-management-business-analysis",
+    title: "Project Management & Business Analysis",
+    description: "Lead projects end-to-end, analyze business requirements and deliver value with modern PM & BA frameworks.",
+    longDescription: "",
+    duration: "6 weeks",
+    level: "Beginner – Intermediate",
+    price: "",
+    category: "Management",
+    cover: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1200&q=80",
+    active: true,
+    whatYouLearn: [],
+    curriculum: [],
+    instructor: { name: "", title: "", bio: "", avatar: "" },
+  } as Course,
+  {
+    slug: "scrum-master",
+    title: "Scrum Master",
+    description: "Facilitate agile teams, run sprints and ceremonies, and drive continuous improvement as a certified Scrum Master.",
+    longDescription: "",
+    duration: "3 weeks",
+    level: "Intermediate",
+    price: "",
+    category: "Management",
+    cover: "https://images.unsplash.com/photo-1531545514256-b1400bc00f31?w=1200&q=80",
+    active: true,
+    whatYouLearn: [],
+    curriculum: [],
+    instructor: { name: "", title: "", bio: "", avatar: "" },
+  } as Course,
+  {
+    slug: "digital-marketing",
+    title: "Digital Marketing",
+    description: "Build brands that grow. Master SEO, social media, content strategy and paid advertising across channels.",
+    longDescription: "",
+    duration: "3 weeks",
+    level: "Beginner",
+    price: "",
+    category: "Marketing",
+    cover: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&q=80",
+    active: true,
+    whatYouLearn: [],
+    curriculum: [],
+    instructor: { name: "", title: "", bio: "", avatar: "" },
+  } as Course,
+  {
+    slug: "ai-for-professionals",
+    title: "AI for Professionals",
+    description: "Boost productivity with AI. Learn prompting, automation and practical AI workflows for any profession.",
+    longDescription: "",
+    duration: "3 weeks",
+    level: "Beginner",
+    price: "",
+    category: "Technology",
+    cover: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&q=80",
+    active: true,
+    whatYouLearn: [],
+    curriculum: [],
+    instructor: { name: "", title: "", bio: "", avatar: "" },
+  } as Course,
+];
 
 export function Courses() {
   return (
