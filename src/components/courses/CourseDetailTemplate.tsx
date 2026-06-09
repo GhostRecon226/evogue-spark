@@ -121,6 +121,8 @@ export function CourseDetailTemplate(cfg: CourseDetailConfig) {
         .sm-display { font-family: var(--font-display, Georgia, serif); }
         .sm-outcomes { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
         .sm-capstone-cards { display:flex; gap:16px; }
+        .sm-target-grid { display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:flex-start; }
+        .sm-target-item { display:flex; align-items:flex-start; gap:12px; padding:14px 0; border-bottom:1px solid rgba(10,46,26,0.07); }
         .sm-steps { display:flex; gap:0; position:relative; }
         .sm-step { flex:1; text-align:center; position:relative; }
         .sm-step:not(:last-child)::after { content:""; position:absolute; top:20px; left:50%; right:-50%; height:1px; background:rgba(10,46,26,0.1); z-index:0; }
@@ -130,6 +132,7 @@ export function CourseDetailTemplate(cfg: CourseDetailConfig) {
         @media (max-width: 1023px) {
           .sm-hero { grid-template-columns:1fr; padding:48px 32px; }
           .sm-outcomes { grid-template-columns:1fr; }
+          .sm-target-grid { grid-template-columns:1fr; }
           .sm-steps { display:grid; grid-template-columns:1fr 1fr; gap:32px 16px; }
           .sm-step:not(:last-child)::after { display:none; }
           .sm-section { padding:48px 32px !important; }
@@ -291,6 +294,11 @@ export function CourseDetailTemplate(cfg: CourseDetailConfig) {
         {/* COURSE CURRICULUM */}
         {cfg.curriculum && (
           <CurriculumSection curriculum={cfg.curriculum} />
+        )}
+
+        {/* WHO THIS IS FOR */}
+        {cfg.targetAudience && (
+          <TargetAudienceSection audience={cfg.targetAudience} />
         )}
 
         {/* CAPSTONE */}
