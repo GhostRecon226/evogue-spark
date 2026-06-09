@@ -139,9 +139,12 @@ export function CourseDetailTemplate(cfg: CourseDetailConfig) {
         .sm-step:not(:last-child)::after { content:""; position:absolute; top:20px; left:50%; right:-50%; height:1px; background:rgba(10,46,26,0.1); z-index:0; }
         .sm-cta-strip { background:#0A2E1A; padding:40px 48px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
         .sm-enrol-btn:hover { background:#1A8C4E !important; }
+        .sm-hero-image-wrap { width:100%; aspect-ratio:4/3; border-radius:16px; overflow:hidden; margin-bottom:16px; }
+        .sm-hero-image { display:block; }
 
         @media (max-width: 1023px) {
           .sm-hero { grid-template-columns:1fr; padding:48px 32px; }
+          .sm-hero-image-wrap { aspect-ratio:16/9; }
           .sm-outcomes { grid-template-columns:1fr; }
           .sm-target-grid { grid-template-columns:1fr; }
           .sm-career-grid { grid-template-columns:repeat(2, 1fr); }
@@ -158,6 +161,7 @@ export function CourseDetailTemplate(cfg: CourseDetailConfig) {
           .sm-capstone-cards { flex-direction:column; }
           .sm-steps { grid-template-columns:1fr; gap:24px; }
           .sm-cta-strip { padding:32px 20px; flex-direction:column; align-items:flex-start; }
+          .sm-hero-image-wrap { aspect-ratio:16/10; }
         }
       `}</style>
 
