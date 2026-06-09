@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useState, type CSSProperties, type ReactNode } from "react";
+import { useState, useEffect, useRef, type CSSProperties, type ReactNode } from "react";
 import {
   ChevronRight,
   ChevronDown,
@@ -440,26 +440,101 @@ function CurriculumSection({ curriculum }: CurriculumProps) {
   const [openModules, setOpenModules] = useState<Record<string, boolean>>(() =>
     Object.fromEntries(moduleSlugs.map((s) => [s, true])),
   );
+  const [activeSlug, setActiveSlug] = useState<string>(moduleSlugs[0] ?? "");
+  const tocLinkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
+  const headerBtnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const SCROLL_OFFSET = 96;
 
   const toggle = (slug: string) =>
     setOpenModules((prev) => ({ ...prev, [slug]: !prev[slug] }));
 
+  const scrollToModule = (slug: string) => {
+    const el = document.getElementById(`module-${slug}`);
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.pageYOffset - SCROLL_OFFSET;
+    window.scrollTo({ top, behavior: "smooth" });
+    if (typeof history !== "undefined") {
+      history.replaceState(null, "", `#module-${slug}`);
+    }
+  };
+
   const handleTocClick = (e: React.MouseEvent<HTMLAnchorElement>, slug: string) => {
     e.preventDefault();
     setOpenModules((prev) => ({ ...prev, [slug]: true }));
-    requestAnimationFrame(() => {
-      const el = document.getElementById(`module-${slug}`);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-        if (typeof history !== "undefined") {
-          history.replaceState(null, "", `#module-${slug}`);
-        }
-      }
-    });
+    requestAnimationFrame(() => scrollToModule(slug));
   };
+
+  const focusModule = (i: number) => {
+    const slug = moduleSlugs[i];
+    if (!slug) return;
+    headerBtnRefs.current[slug]?.focus();
+  };
+
+  const handleHeaderKey = (e: React.KeyboardEvent<HTMLButtonElement>, i: number) => {
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        focusModule((i + 1) % moduleSlugs.length);
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        focusModule((i - 1 + moduleSlugs.length) % moduleSlugs.length);
+        break;
+      case "Home":
+        e.preventDefault();
+        focusModule(0);
+        break;
+      case "End":
+        e.preventDefault();
+        focusModule(moduleSlugs.length - 1);
+        break;
+    }
+  };
+
+  // Scrollspy: track which module is currently in view
+  useEffect(() => {
+    const els = moduleSlugs
+      .map((s) => document.getElementById(`module-${s}`))
+      .filter((el): el is HTMLElement => !!el);
+    if (els.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible[0]) {
+          const id = visible[0].target.id.replace(/^module-/, "");
+          setActiveSlug(id);
+        }
+      },
+      { rootMargin: `-${SCROLL_OFFSET}px 0px -55% 0px`, threshold: 0 },
+    );
+    els.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [moduleSlugs.join("|")]);
+
+  // Open initial hash on mount
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const hash = window.location.hash.replace(/^#/, "");
+    if (hash.startsWith("module-")) {
+      const slug = hash.replace(/^module-/, "");
+      if (moduleSlugs.includes(slug)) {
+        setOpenModules((prev) => ({ ...prev, [slug]: true }));
+        requestAnimationFrame(() => scrollToModule(slug));
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <section className="sm-section" style={{ padding: "64px 48px", background: "#fff" }}>
+      <style>{`
+        @media (prefers-reduced-motion: reduce) {
+          html { scroll-behavior: auto; }
+        }
+      `}</style>
       <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.14em", color: "#1A8C4E", fontWeight: 600, marginBottom: 10 }}>
         {curriculum.eyebrow}
       </div>
@@ -478,6 +553,9 @@ function CurriculumSection({ curriculum }: CurriculumProps) {
           borderRadius: 12,
           padding: "18px 22px",
           marginBottom: 28,
+          position: "sticky",
+          top: 12,
+          zIndex: 5,
         }}
       >
         <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", color: "#1A8C4E", fontWeight: 600, marginBottom: 12 }}>
@@ -486,18 +564,25 @@ function CurriculumSection({ curriculum }: CurriculumProps) {
         <ol style={{ margin: 0, padding: 0, listStyle: "none", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "8px 16px" }}>
           {curriculum.modules.map((m, i) => {
             const slug = moduleSlugs[i];
+            const isActive = activeSlug === slug;
             return (
               <li key={slug}>
                 <a
+                  ref={(el) => { tocLinkRefs.current[slug] = el; }}
                   href={`#module-${slug}`}
                   onClick={(e) => handleTocClick(e, slug)}
+                  aria-current={isActive ? "true" : undefined}
                   style={{
                     display: "block",
                     fontSize: 13,
-                    color: "#0A2E1A",
+                    color: isActive ? "#0A2E1A" : "#3d6b4f",
                     textDecoration: "none",
-                    fontWeight: 500,
-                    padding: "6px 0",
+                    fontWeight: isActive ? 700 : 500,
+                    padding: "6px 10px",
+                    borderLeft: `3px solid ${isActive ? "#1A8C4E" : "transparent"}`,
+                    background: isActive ? "rgba(26,140,78,0.08)" : "transparent",
+                    borderRadius: 4,
+                    transition: "all 0.15s ease",
                   }}
                 >
                   {m.title}
@@ -508,68 +593,79 @@ function CurriculumSection({ curriculum }: CurriculumProps) {
         </ol>
       </nav>
 
-      <div>
+      <div role="region" aria-label="Curriculum modules detail">
         {curriculum.modules.map((m, i) => {
           const slug = moduleSlugs[i];
           const isOpen = openModules[slug];
           const panelId = `module-panel-${slug}`;
+          const headerId = `module-header-${slug}`;
           return (
             <div
               key={m.title}
               id={`module-${slug}`}
               style={{
                 border: "1px solid rgba(10,46,26,0.08)",
-                borderLeft: "3px solid #1A8C4E",
+                borderLeft: `3px solid ${activeSlug === slug ? "#0A2E1A" : "#1A8C4E"}`,
                 borderRadius: "0 12px 12px 0",
                 marginBottom: 12,
                 background: "#fff",
-                scrollMarginTop: 24,
+                scrollMarginTop: SCROLL_OFFSET,
               }}
             >
-              <button
-                type="button"
-                onClick={() => toggle(slug)}
-                aria-expanded={isOpen}
-                aria-controls={panelId}
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: 12,
-                  background: "transparent",
-                  border: "none",
-                  padding: "18px 24px",
-                  cursor: "pointer",
-                  textAlign: "left",
-                  fontSize: 15,
-                  fontWeight: 600,
-                  color: "#0A2E1A",
-                  fontFamily: "inherit",
-                }}
-              >
-                <span>{m.title}</span>
-                <ChevronDown
-                  size={18}
-                  color="#1A8C4E"
+              <h3 style={{ margin: 0 }}>
+                <button
+                  ref={(el) => { headerBtnRefs.current[slug] = el; }}
+                  id={headerId}
+                  type="button"
+                  onClick={() => toggle(slug)}
+                  onKeyDown={(e) => handleHeaderKey(e, i)}
+                  aria-expanded={isOpen}
+                  aria-controls={panelId}
                   style={{
-                    transition: "transform 0.2s",
-                    transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-                    flexShrink: 0,
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 12,
+                    background: "transparent",
+                    border: "none",
+                    padding: "18px 24px",
+                    cursor: "pointer",
+                    textAlign: "left",
+                    fontSize: 15,
+                    fontWeight: 600,
+                    color: "#0A2E1A",
+                    fontFamily: "inherit",
                   }}
-                />
-              </button>
-              {isOpen && (
-                <div id={panelId} style={{ padding: "0 24px 20px" }}>
-                  <ul style={{ margin: 0, paddingLeft: 16, listStyle: "disc" }}>
-                    {m.bullets.map((b) => (
-                      <li key={b} style={{ fontSize: 13, color: "#4a7a5a", lineHeight: 1.8 }}>
-                        {b}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+                >
+                  <span>{m.title}</span>
+                  <ChevronDown
+                    size={18}
+                    color="#1A8C4E"
+                    aria-hidden="true"
+                    style={{
+                      transition: "transform 0.2s",
+                      transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+                      flexShrink: 0,
+                    }}
+                  />
+                </button>
+              </h3>
+              <div
+                id={panelId}
+                role="region"
+                aria-labelledby={headerId}
+                hidden={!isOpen}
+                style={{ padding: isOpen ? "0 24px 20px" : 0 }}
+              >
+                <ul style={{ margin: 0, paddingLeft: 16, listStyle: "disc" }}>
+                  {m.bullets.map((b) => (
+                    <li key={b} style={{ fontSize: 13, color: "#4a7a5a", lineHeight: 1.8 }}>
+                      {b}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           );
         })}
@@ -577,3 +673,4 @@ function CurriculumSection({ curriculum }: CurriculumProps) {
     </section>
   );
 }
+
