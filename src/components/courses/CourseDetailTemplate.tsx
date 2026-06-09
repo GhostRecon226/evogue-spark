@@ -767,3 +767,61 @@ function TargetAudienceSection({ audience }: { audience: NonNullable<CourseDetai
   );
 }
 
+function CareerOutcomesSection({ outcomes }: { outcomes: NonNullable<CourseDetailConfig["careerOutcomes"]> }) {
+  return (
+    <section className="sm-section" style={{ padding: "64px 48px", background: "#fff" }}>
+      <div
+        style={{
+          fontSize: 11,
+          textTransform: "uppercase",
+          letterSpacing: "0.14em",
+          color: "#1A8C4E",
+          fontWeight: 600,
+          marginBottom: 10,
+        }}
+      >
+        {outcomes.eyebrow}
+      </div>
+      <h2
+        className="sm-display"
+        style={{
+          fontSize: 26,
+          fontWeight: 700,
+          color: "#0A2E1A",
+          marginBottom: 8,
+        }}
+      >
+        {outcomes.headline}
+      </h2>
+      <p style={{ fontSize: 14, color: "#4a7a5a", marginBottom: 32 }}>
+        {outcomes.subtext}
+      </p>
+
+      <div className="sm-career-grid">
+        {outcomes.roles.map((role) => (
+          <div key={role} className="sm-career-card">
+            <Briefcase size={22} color="#1A8C4E" style={{ marginBottom: 8 }} />
+            <div style={{ fontSize: 13, fontWeight: 600, color: "#0A2E1A", lineHeight: 1.4 }}>
+              {role}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <p
+        style={{
+          fontSize: 13,
+          color: "#4a7a5a",
+          textAlign: "center",
+          marginTop: 20,
+          maxWidth: 560,
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
+      >
+        {outcomes.note}
+      </p>
+    </section>
+  );
+}
+
