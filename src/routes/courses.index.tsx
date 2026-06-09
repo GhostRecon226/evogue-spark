@@ -43,7 +43,7 @@ const COURSE_CARDS: CourseCard[] = [
   { slug: "virtual-assistant-programme", title: "Virtual Assistant Programme", category: "Management", duration: "4 weeks", level: "Beginner", status: "soon", href: "/contact", description: "Launch a remote VA career with the tools, workflows and client skills that pay.", image: vaImg },
 ];
 
-export const Route = createFileRoute("/courses")({
+export const Route = createFileRoute("/courses/")({
   head: () => ({
     meta: [
       { title: "Courses — Evogue Academy" },
