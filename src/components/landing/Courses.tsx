@@ -107,7 +107,7 @@ export function CourseCard({ course }: { course: Course }) {
       }`}
     >
       <Link to="/courses/$slug" params={{ slug: course.slug }} className="block">
-        <div className="relative aspect-[16/9] overflow-hidden">
+        <div className="relative h-[160px] overflow-hidden">
           <img
             src={course.cover}
             alt={course.title}
