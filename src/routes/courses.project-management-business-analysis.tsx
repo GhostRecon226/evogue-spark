@@ -1,20 +1,61 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CourseDetailTemplate } from "@/components/courses/CourseDetailTemplate";
 
+const CURRICULUM_MODULES = [
+  "Foundations of Project Management",
+  "Project Planning & Scheduling",
+  "Project Execution & Control",
+  "Introduction to Business Analysis",
+  "Requirements Elicitation & Collaboration",
+  "Agile PM & Business Analysis",
+];
+
+const COURSE_URL = "https://evogue-spark.lovable.app/courses/project-management-business-analysis";
+const COURSE_TITLE = "Project Management & Business Analysis Course (10 Weeks) — Evogue Academy";
+const COURSE_DESC = "10-week live cohort covering 6 modules: PM foundations, planning & scheduling, execution & control, business analysis, requirements elicitation, and agile PM & BA. Dual certificate.";
+
 export const Route = createFileRoute("/courses/project-management-business-analysis")({
   head: () => ({
     meta: [
-      { title: "Project Management & Business Analysis — Evogue Academy" },
-      { name: "description", content: "Our flagship 6-week elite programme covering both disciplines in depth, with a dual certificate." },
-      { property: "og:title", content: "Project Management & Business Analysis — Evogue Academy" },
-      { property: "og:description", content: "Study PM and BA in depth, then choose the path that fits you best." },
+      { title: COURSE_TITLE },
+      { name: "description", content: COURSE_DESC },
+      { property: "og:title", content: COURSE_TITLE },
+      { property: "og:description", content: COURSE_DESC },
       { property: "og:type", content: "article" },
-      { property: "og:url", content: "https://evogue-spark.lovable.app/courses/project-management-business-analysis" },
+      { property: "og:url", content: COURSE_URL },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Project Management & Business Analysis — Evogue Academy" },
-      { name: "twitter:description", content: "Study PM and BA in depth, then choose the path that fits you best." },
+      { name: "twitter:title", content: COURSE_TITLE },
+      { name: "twitter:description", content: COURSE_DESC },
     ],
-    links: [{ rel: "canonical", href: "https://evogue-spark.lovable.app/courses/project-management-business-analysis" }],
+    links: [{ rel: "canonical", href: COURSE_URL }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Course",
+          name: "Project Management & Business Analysis",
+          description: COURSE_DESC,
+          url: COURSE_URL,
+          provider: {
+            "@type": "Organization",
+            name: "Evogue Academy",
+            sameAs: "https://evogue-spark.lovable.app",
+          },
+          educationalCredentialAwarded: "Dual certificate in Project Management and Business Analysis",
+          timeRequired: "P10W",
+          hasCourseInstance: {
+            "@type": "CourseInstance",
+            courseMode: "Online",
+            courseWorkload: "P10W",
+          },
+          syllabusSections: CURRICULUM_MODULES.map((title, i) => ({
+            "@type": "Syllabus",
+            name: `Module ${i + 1}: ${title}`,
+          })),
+        }),
+      },
+    ],
   }),
   component: () => (
     <CourseDetailTemplate
