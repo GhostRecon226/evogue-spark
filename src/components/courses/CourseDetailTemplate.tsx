@@ -217,23 +217,26 @@ export function CourseDetailTemplate(cfg: CourseDetailConfig) {
 
           {/* Right column */}
           <div>
-            {cfg.imageSrc ? (
-              <img
-                src={cfg.imageSrc}
-                alt={cfg.imageAlt ?? cfg.title}
-                style={{
-                  width: "100%", aspectRatio: "4 / 3", borderRadius: 16,
-                  objectFit: "cover", marginBottom: 16,
+            <div className="sm-hero-image-wrap">
+              {cfg.imageSrc ? (
+                <img
+                  src={cfg.imageSrc}
+                  alt={cfg.imageAlt ?? cfg.title}
+                  className="sm-hero-image"
+                  style={{
+                    width: "100%", height: "100%", borderRadius: 16,
+                    objectFit: "cover",
+                    background: cfg.imageGradient,
+                  }}
+                  onError={(e) => { e.currentTarget.style.display = "none"; }}
+                />
+              ) : (
+                <div className="sm-hero-image" style={{
+                  width: "100%", height: "100%", borderRadius: 16,
                   background: cfg.imageGradient,
-                }}
-                onError={(e) => { e.currentTarget.style.display = "none"; }}
-              />
-            ) : (
-              <div style={{
-                width: "100%", aspectRatio: "4 / 3", borderRadius: 16,
-                marginBottom: 16, background: cfg.imageGradient,
-              }} />
-            )}
+                }} />
+              )}
+            </div>
             <div style={{
               background: "#fff", borderRadius: 12,
               border: "1px solid rgba(10,46,26,0.08)", padding: "22px 24px",
