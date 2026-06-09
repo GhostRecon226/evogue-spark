@@ -200,15 +200,8 @@ function CoursesPage() {
                 <span><BarChart3 size={13} /> {c.level}</span>
               </div>
               <div className="cc-capstone"><Check size={13} /> Includes capstone project</div>
-              {c.status === "live" ? (
-                <Link to={c.href as string} className="cc-cta cc-cta-live">
-                  View Details <ArrowRight size={13} />
-                </Link>
-              ) : (
-                <Link to={c.href as string} className="cc-cta cc-cta-soon">
-                  <Bell size={13} /> Join Waitlist
-                </Link>
-              )}
+              <CardCta card={c} />
+
             </div>
           </article>
         ))}
