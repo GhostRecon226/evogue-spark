@@ -72,13 +72,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let active = true;
     let sessionVersion = 0;
 
-    const applySession = (nextSession: Session | null) => {
+    let initialSessionResolved = false;
+
+    const applySession = (nextSession: Session | null, markReady: boolean) => {
       if (!active) return;
 
       const currentVersion = ++sessionVersion;
 
       setSession(nextSession);
-      setLoading(false);
+      if (markReady) {
+        initialSessionResolved = true;
+        setLoading(false);
+      } else if (initialSessionResolved) {
+        // After the initial session has resolved, subsequent auth events
+        // (sign-in, sign-out, token refresh) should not re-enter loading.
+        setLoading(false);
+      }
 
       if (nextSession?.user) {
         void loadProfile(nextSession.user.id)
@@ -97,15 +106,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_evt, nextSession) => {
-      applySession(nextSession);
+      // Do NOT mark ready here — wait for getSession() to settle so we never
+      // briefly report `user = null` before the persisted session restores.
+      applySession(nextSession, false);
     });
 
     void supabase.auth.getSession()
       .then(({ data }) => {
-        applySession(data.session);
+        applySession(data.session, true);
       })
       .catch(() => {
-        applySession(null);
+        applySession(null, true);
       });
 
     return () => {

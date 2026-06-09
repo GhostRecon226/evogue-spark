@@ -1,46 +1,44 @@
-## What I found
-- I could not find any remaining hardcoded singular `/course` links in the current source.
-- The current preview and the published site both route the visible `/courses` CTAs correctly to dedicated URLs such as:
-  - `/courses/scrum-master`
-  - `/courses/digital-marketing`
-  - `/courses/product-management`
-- Dedicated static route files already exist for the course pages under `src/routes/`.
+## What's happening
 
-## Likely root cause
-The app currently has **two parallel course-detail systems**:
-1. **Dedicated static course pages** like `src/routes/courses.scrum-master.tsx`, `src/routes/courses.digital-marketing.tsx`, etc.
-2. A **generic dynamic fallback page** at `src/routes/courses.$slug.tsx`, fed by `src/lib/courses-data.ts`.
+Two things in the current setup explain the "delay, then a brief wrong page before the real one" feeling:
 
-That duplication is the deeper issue. Different parts of the app can still point into different routing/data systems, which makes course navigation inconsistent and can make the app behave like it is using a generic course page instead of the intended dedicated page.
+1. **No link preloading.** The router (`src/router.tsx`) doesn't set `defaultPreload`, so when you click a link it has to fetch the route's code and data *after* the click. That's the "delay before it goes to the specific page."
 
-## Implementation plan
-1. **Audit every course entry point**
-   - Check homepage featured-course cards, `/courses`, dashboard course links, and any other CTA that leads into course details.
-   - Build a single map of which slug each entry point should open.
+2. **Auth gate can flash a redirect.** `src/routes/_authenticated.tsx` reads `loading` and `user` from `AuthProvider`. On a hard refresh of any protected URL (e.g. `/dashboard`), Supabase's session is restored asynchronously from `localStorage`. The provider currently sets `loading = false` as soon as *either* `onAuthStateChange` or `getSession()` fires — and `onAuthStateChange` can fire first with no user, briefly showing `user = null` and triggering `<Navigate to="/login" />`. A moment later the real session lands and `/login`'s `beforeLoad` bounces you back. That's the "redirects to a different page first."
 
-2. **Unify routing around dedicated pages**
-   - Point all live-course CTAs to the dedicated static course routes.
-   - Keep waitlist courses pointing to `/contact` only where intended.
-   - Remove or narrow generic fallback behavior so it does not compete with dedicated course pages.
+## Fix
 
-3. **Resolve slug/data mismatches**
-   - Compare `src/lib/courses-data.ts` slugs with the dedicated route filenames.
-   - Fix mismatches and outdated course definitions so all navigation sources agree.
+### 1. Enable intent preloading on the router
 
-4. **Expand regression tests**
-   - Keep the existing `/courses` CTA tests.
-   - Add tests for other entry points, especially the homepage featured cards and any dashboard course links that should land on dedicated course pages.
+`src/router.tsx`: add `defaultPreload: "intent"`. TanStack will warm the next route on hover/focus/touch-start so the click feels instant.
 
-5. **Re-verify in both environments**
-   - Validate the fixed routes in preview and published output on desktop and mobile.
+```ts
+const router = createRouter({
+  routeTree,
+  context: { queryClient },
+  scrollRestoration: true,
+  defaultPreload: "intent",
+  defaultPreloadStaleTime: 0,
+});
+```
 
-## Technical notes
-Relevant files to align:
-- `src/routes/courses.tsx`
-- `src/components/courses/CardCta.tsx`
-- `src/components/landing/Courses.tsx`
-- `src/routes/courses.$slug.tsx`
-- `src/lib/courses-data.ts`
-- Dedicated route files under `src/routes/courses.*.tsx`
+### 2. Make `AuthProvider` wait for `getSession()` before reporting `loading: false`
 
-This plan focuses on eliminating the duplicate routing paths that are most likely causing the persistent inconsistency.
+`src/hooks/use-auth.tsx`: today both the `getSession()` resolver and the `onAuthStateChange` listener call `applySession`, which sets `loading = false`. We'll keep `loading = true` until the initial `getSession()` call settles, regardless of which event happens first. `onAuthStateChange` still updates the session and profile; it just no longer prematurely flips `loading` to false on the first INITIAL_SESSION fire.
+
+Net effect: the `_authenticated` guard shows its existing spinner instead of momentarily seeing `user = null` and redirecting.
+
+### 3. (Light cleanup, optional) Make protected loaders cheaper
+
+No loaders currently call `requireSupabaseAuth` at the route level, so no further refactor is needed. Existing pages keep working.
+
+## Verification
+
+After the change I'll:
+- Hard-refresh `/dashboard` while signed out → should land directly on `/login` (no flash).
+- Hard-refresh `/dashboard` while signed in → spinner, then dashboard (no `/login` flash).
+- Click between public pages (Courses, About, Blog, Contact) → instant, no perceptible delay thanks to intent preloading.
+
+## Out of scope
+
+No content, styling, route structure, or other behavior changes. Only `src/router.tsx` and `src/hooks/use-auth.tsx` are touched.
