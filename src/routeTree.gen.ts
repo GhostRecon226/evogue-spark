@@ -28,7 +28,6 @@ import { Route as CoursesDigitalMarketingRouteImport } from './routes/courses.di
 import { Route as CoursesDataAnalysisRouteImport } from './routes/courses.data-analysis'
 import { Route as CoursesCybersecurityRouteImport } from './routes/courses.cybersecurity'
 import { Route as CoursesAiForProfessionalsRouteImport } from './routes/courses.ai-for-professionals'
-import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedInstructorIndexRouteImport } from './routes/_authenticated/instructor.index'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
@@ -151,11 +150,6 @@ const CoursesAiForProfessionalsRoute =
     path: '/ai-for-professionals',
     getParentRoute: () => CoursesRoute,
   } as any)
-const CoursesSlugRoute = CoursesSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => CoursesRoute,
-} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -305,7 +299,6 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/scholarship': typeof ScholarshipRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
-  '/courses/$slug': typeof CoursesSlugRoute
   '/courses/ai-for-professionals': typeof CoursesAiForProfessionalsRoute
   '/courses/cybersecurity': typeof CoursesCybersecurityRoute
   '/courses/data-analysis': typeof CoursesDataAnalysisRoute
@@ -348,7 +341,6 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/scholarship': typeof ScholarshipRoute
-  '/courses/$slug': typeof CoursesSlugRoute
   '/courses/ai-for-professionals': typeof CoursesAiForProfessionalsRoute
   '/courses/cybersecurity': typeof CoursesCybersecurityRoute
   '/courses/data-analysis': typeof CoursesDataAnalysisRoute
@@ -394,7 +386,6 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/scholarship': typeof ScholarshipRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
-  '/courses/$slug': typeof CoursesSlugRoute
   '/courses/ai-for-professionals': typeof CoursesAiForProfessionalsRoute
   '/courses/cybersecurity': typeof CoursesCybersecurityRoute
   '/courses/data-analysis': typeof CoursesDataAnalysisRoute
@@ -440,7 +431,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/scholarship'
     | '/dashboard'
-    | '/courses/$slug'
     | '/courses/ai-for-professionals'
     | '/courses/cybersecurity'
     | '/courses/data-analysis'
@@ -483,7 +473,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/scholarship'
-    | '/courses/$slug'
     | '/courses/ai-for-professionals'
     | '/courses/cybersecurity'
     | '/courses/data-analysis'
@@ -528,7 +517,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/scholarship'
     | '/_authenticated/dashboard'
-    | '/courses/$slug'
     | '/courses/ai-for-professionals'
     | '/courses/cybersecurity'
     | '/courses/data-analysis'
@@ -708,13 +696,6 @@ declare module '@tanstack/react-router' {
       path: '/ai-for-professionals'
       fullPath: '/courses/ai-for-professionals'
       preLoaderRoute: typeof CoursesAiForProfessionalsRouteImport
-      parentRoute: typeof CoursesRoute
-    }
-    '/courses/$slug': {
-      id: '/courses/$slug'
-      path: '/$slug'
-      fullPath: '/courses/$slug'
-      preLoaderRoute: typeof CoursesSlugRouteImport
       parentRoute: typeof CoursesRoute
     }
     '/_authenticated/dashboard': {
@@ -965,7 +946,6 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 )
 
 interface CoursesRouteChildren {
-  CoursesSlugRoute: typeof CoursesSlugRoute
   CoursesAiForProfessionalsRoute: typeof CoursesAiForProfessionalsRoute
   CoursesCybersecurityRoute: typeof CoursesCybersecurityRoute
   CoursesDataAnalysisRoute: typeof CoursesDataAnalysisRoute
@@ -977,7 +957,6 @@ interface CoursesRouteChildren {
 }
 
 const CoursesRouteChildren: CoursesRouteChildren = {
-  CoursesSlugRoute: CoursesSlugRoute,
   CoursesAiForProfessionalsRoute: CoursesAiForProfessionalsRoute,
   CoursesCybersecurityRoute: CoursesCybersecurityRoute,
   CoursesDataAnalysisRoute: CoursesDataAnalysisRoute,
@@ -1008,3 +987,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

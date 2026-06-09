@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { Download, Video, CheckCircle2, Loader2, Lock, PlayCircle } from "lucide-react";
 import { toast } from "sonner";
@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
+import { CourseLink } from "@/components/courses/CourseLink";
 
 export const Route = createFileRoute("/_authenticated/dashboard/courses/$slug")({
   component: ClassroomPage,
@@ -126,7 +127,7 @@ function ClassroomPage() {
           <h1 className="mt-4 font-display text-2xl font-extrabold text-forest">You're not enrolled in {course.title}</h1>
           <p className="mt-2 text-sm text-foreground/65">Enroll to access the classroom, lessons, and live sessions.</p>
           <Button asChild className="mt-6 rounded-full bg-forest text-mint hover:bg-forest/90">
-            <Link to="/courses/$slug" params={{ slug: course.slug }}>View course</Link>
+            <CourseLink slug={course.slug}>View course</CourseLink>
           </Button>
         </div>
       </DashboardLayout>
