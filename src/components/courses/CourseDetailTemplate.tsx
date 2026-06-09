@@ -281,6 +281,44 @@ export function CourseDetailTemplate(cfg: CourseDetailConfig) {
           </div>
         </section>
 
+        {/* COURSE CURRICULUM */}
+        {cfg.curriculum && (
+          <section className="sm-section" style={{ padding: "64px 48px", background: "#fff" }}>
+            <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.14em", color: "#1A8C4E", fontWeight: 600, marginBottom: 10 }}>
+              {cfg.curriculum.eyebrow}
+            </div>
+            <h2 className="sm-display" style={{ fontSize: 28, fontWeight: 700, color: "#0A2E1A", marginBottom: 8 }}>
+              {cfg.curriculum.headline}
+            </h2>
+            <p style={{ fontSize: 14, color: "#4a7a5a", lineHeight: 1.6, marginBottom: 36 }}>
+              {cfg.curriculum.subtext}
+            </p>
+            <div>
+              {cfg.curriculum.modules.map((m) => (
+                <div key={m.title} style={{
+                  border: "1px solid rgba(10,46,26,0.08)",
+                  borderLeft: "3px solid #1A8C4E",
+                  borderRadius: "0 12px 12px 0",
+                  padding: "20px 24px",
+                  marginBottom: 12,
+                  background: "#fff",
+                }}>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: "#0A2E1A", marginBottom: 10 }}>
+                    {m.title}
+                  </div>
+                  <ul style={{ margin: 0, paddingLeft: 16, listStyle: "disc" }}>
+                    {m.bullets.map((b) => (
+                      <li key={b} style={{ fontSize: 13, color: "#4a7a5a", lineHeight: 1.8 }}>
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* CAPSTONE */}
         <section className="sm-section" style={{
           background: "#0A2E1A",
