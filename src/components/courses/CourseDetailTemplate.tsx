@@ -313,6 +313,11 @@ export function CourseDetailTemplate(cfg: CourseDetailConfig) {
           <TargetAudienceSection audience={cfg.targetAudience} />
         )}
 
+        {/* CAREER OUTCOMES */}
+        {cfg.careerOutcomes && (
+          <CareerOutcomesSection outcomes={cfg.careerOutcomes} />
+        )}
+
         {/* CAPSTONE */}
         <section className="sm-section" style={{
           background: "#0A2E1A",
