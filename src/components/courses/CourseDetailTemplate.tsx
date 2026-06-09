@@ -689,3 +689,64 @@ function CurriculumSection({ curriculum }: CurriculumProps) {
   );
 }
 
+function TargetAudienceSection({ audience }: { audience: NonNullable<CourseDetailConfig["targetAudience"]> }) {
+  return (
+    <section
+      className="sm-section"
+      style={{
+        padding: "64px 48px",
+        background: "#EDF7F0",
+        backgroundImage:
+          "radial-gradient(circle, rgba(10,46,26,0.055) 1px, transparent 1px)",
+        backgroundSize: "22px 22px",
+      }}
+    >
+      <div className="sm-target-grid">
+        <div>
+          <div
+            style={{
+              fontSize: 11,
+              textTransform: "uppercase",
+              letterSpacing: "0.14em",
+              color: "#1A8C4E",
+              fontWeight: 600,
+              marginBottom: 10,
+            }}
+          >
+            {audience.eyebrow}
+          </div>
+          <h2
+            className="sm-display"
+            style={{
+              fontSize: 26,
+              fontWeight: 700,
+              color: "#0A2E1A",
+              marginBottom: 12,
+            }}
+          >
+            {audience.headline}
+          </h2>
+          <p style={{ fontSize: 14, color: "#4a7a5a", lineHeight: 1.7 }}>
+            {audience.subtext}
+          </p>
+        </div>
+
+        <div>
+          {audience.items.map((item) => (
+            <div key={item} className="sm-target-item">
+              <Check
+                size={18}
+                color="#00F5A0"
+                style={{ flexShrink: 0, marginTop: 2 }}
+              />
+              <span style={{ fontSize: 14, color: "#0A2E1A", lineHeight: 1.5 }}>
+                {item}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
