@@ -137,6 +137,19 @@ export const Route = createFileRoute("/courses/project-management-business-analy
           },
         ],
       }}
+      targetAudience={{
+        eyebrow: "WHO THIS IS FOR",
+        headline: "Is this programme right for you?",
+        subtext: "This programme is built for ambitious people at every stage. If any of the below describes you, you're in the right place.",
+        items: [
+          "Aspiring project managers or business analysts looking to break into the field",
+          "Professionals transitioning into PM or BA roles from another career",
+          "Team leads and managers who oversee projects but lack formal training",
+          "Entrepreneurs and business owners who want to run projects more effectively",
+          "IT professionals, engineers or marketers whose work involves project delivery",
+          "Anyone who wants a globally recognised dual certificate in PM and BA",
+        ],
+      }}
       faqs={[
         { q: "Do I need prior experience?", a: "No prior experience in project management or business analysis is required. We start from first principles and build up. A basic comfort with professional workplace environments is all you need." },
         { q: "How are classes delivered?", a: "All classes are live online via Zoom. Sessions are recorded and shared with enrolled students so you never miss anything." },
