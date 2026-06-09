@@ -5,7 +5,7 @@ import { Values } from "@/components/landing/Values";
 import { Courses } from "@/components/landing/Courses";
 import { Testimonials } from "@/components/landing/Testimonials";
 import { EnrollCta } from "@/components/landing/EnrollCta";
-import { Contact } from "@/components/landing/Contact";
+
 import { PublicShell } from "@/components/PublicShell";
 
 export const Route = createFileRoute("/")({
@@ -31,7 +31,6 @@ function Index() {
       <Courses />
       <Testimonials />
       <EnrollCta />
-      <Contact />
     </PublicShell>
   );
 }
