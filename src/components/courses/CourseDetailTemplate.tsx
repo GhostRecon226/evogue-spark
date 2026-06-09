@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useState, type CSSProperties, type ReactNode } from "react";
+import { useState, useEffect, useRef, type CSSProperties, type ReactNode } from "react";
 import {
   ChevronRight,
   ChevronDown,
