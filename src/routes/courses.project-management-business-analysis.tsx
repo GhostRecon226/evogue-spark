@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CourseDetailTemplate } from "@/components/courses/CourseDetailTemplate";
+import img from "@/assets/courses/project-management-business-analysis.jpg";
 
 const CURRICULUM_MODULES = [
   "Foundations of Project Management",
