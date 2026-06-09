@@ -274,7 +274,16 @@ export const COURSE_CATEGORIES: CourseCategory[] = [
   "Security",
 ];
 
-export const COURSE_NAMES = courses.map((c) => c.title);
+export const COURSE_NAMES = [
+  "Project Management & Business Analysis",
+  "Scrum Master",
+  "Digital Marketing",
+  "Product Management",
+  "AI for Professionals",
+  "Data Analysis",
+  "Cybersecurity",
+  "Virtual Assistant Programme",
+];
 
 export function getCourseBySlug(slug: string): Course | undefined {
   return courses.find((c) => c.slug === slug);
