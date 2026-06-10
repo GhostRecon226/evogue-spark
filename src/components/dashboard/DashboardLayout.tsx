@@ -241,16 +241,115 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                 <Link to="/courses">Browse courses</Link>
               </Button>
             )}
-            <button
-              type="button"
-              aria-label="Notifications"
-              className="relative h-11 w-11 grid place-items-center rounded-full hover:bg-mint/15 transition"
-            >
-              <Bell className="h-5 w-5 text-forest" />
-              <span className="absolute top-2 right-2 min-w-[18px] h-[18px] px-1 grid place-items-center rounded-full bg-mint text-forest text-[10px] font-extrabold ring-2 ring-background">
-                3
-              </span>
-            </button>
+            <div className="relative" ref={notifRef}>
+              <button
+                type="button"
+                aria-label="Notifications"
+                onClick={() => setNotifOpen((v) => !v)}
+                className="relative h-11 w-11 grid place-items-center rounded-full hover:bg-mint/15 transition"
+              >
+                <Bell className="h-5 w-5 text-forest" />
+                {unreadCount > 0 && (
+                  <span className="absolute top-2 right-2 min-w-[18px] h-[18px] px-1 grid place-items-center rounded-full bg-mint text-forest text-[10px] font-extrabold ring-2 ring-background">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+              {notifOpen && (
+                <div
+                  className="absolute overflow-hidden"
+                  style={{
+                    top: "52px",
+                    right: 0,
+                    width: "320px",
+                    background: "#fff",
+                    borderRadius: "12px",
+                    border: "1px solid rgba(10,46,26,0.08)",
+                    boxShadow: "0 8px 32px rgba(10,46,26,0.12)",
+                    zIndex: 100,
+                  }}
+                >
+                  <div
+                    className="flex items-center justify-between"
+                    style={{ padding: "16px 20px", borderBottom: "1px solid rgba(10,46,26,0.08)" }}
+                  >
+                    <span style={{ fontSize: "14px", fontWeight: 600, color: "#0A2E1A" }}>Notifications</span>
+                    <button
+                      type="button"
+                      onClick={() => setNotifications((arr) => arr.map((n) => ({ ...n, read: true })))}
+                      style={{ fontSize: "12px", color: "#1A8C4E", cursor: "pointer", background: "none", border: "none" }}
+                    >
+                      Mark all as read
+                    </button>
+                  </div>
+                  {notifications.length === 0 ? (
+                    <div style={{ padding: "40px 20px", textAlign: "center" }}>
+                      <Bell style={{ color: "rgba(10,46,26,0.2)", fontSize: "28px", marginBottom: "10px" }} className="mx-auto h-7 w-7" />
+                      <p style={{ fontSize: "14px", fontWeight: 500, color: "#0A2E1A" }}>No notifications yet</p>
+                      <p style={{ fontSize: "12px", color: "rgba(10,46,26,0.45)", lineHeight: 1.6, marginTop: "4px" }}>
+                        We'll notify you about classes, announcements and certificate updates.
+                      </p>
+                    </div>
+                  ) : (
+                    <ul className="max-h-[360px] overflow-y-auto">
+                      {notifications.map((n) => {
+                        const Icon = n.type === "class" ? Video : n.type === "announcement" ? Megaphone : Award;
+                        return (
+                          <li
+                            key={n.id}
+                            onClick={() => setNotifications((arr) => arr.map((x) => (x.id === n.id ? { ...x, read: true } : x)))}
+                            className="hover:bg-[rgba(10,46,26,0.03)]"
+                            style={{
+                              padding: "14px 20px",
+                              borderBottom: "1px solid rgba(10,46,26,0.06)",
+                              display: "flex",
+                              alignItems: "flex-start",
+                              gap: "12px",
+                              cursor: "pointer",
+                              transition: "background 0.15s",
+                            }}
+                          >
+                            <div style={{ position: "relative" }}>
+                              <span
+                                style={{
+                                  width: "36px",
+                                  height: "36px",
+                                  borderRadius: "50%",
+                                  background: "#EDF7F0",
+                                  color: "#1A8C4E",
+                                  display: "grid",
+                                  placeItems: "center",
+                                }}
+                              >
+                                <Icon style={{ fontSize: "16px" }} className="h-4 w-4" />
+                              </span>
+                              {!n.read && (
+                                <span
+                                  style={{
+                                    position: "absolute",
+                                    top: 0,
+                                    right: 0,
+                                    width: "8px",
+                                    height: "8px",
+                                    borderRadius: "50%",
+                                    background: "#00F5A0",
+                                  }}
+                                />
+                              )}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p style={{ fontSize: "13px", fontWeight: 600, color: "#0A2E1A" }}>{n.title}</p>
+                              <p style={{ fontSize: "12px", color: "rgba(10,46,26,0.55)", lineHeight: 1.5 }}>{n.body}</p>
+                              <p style={{ fontSize: "11px", color: "rgba(10,46,26,0.35)", marginTop: "3px" }}>{n.time}</p>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+                </div>
+              )}
+            </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="rounded-full ring-2 ring-transparent hover:ring-secondary/40 transition h-11 w-11 grid place-items-center" aria-label="Account menu">
