@@ -26,9 +26,9 @@ function Index() {
   return (
     <PublicShell className="pt-0">
       <Hero />
-      <About />
       <Values />
       <Courses />
+      <About />
       <Testimonials />
       <EnrollCta />
     </PublicShell>
