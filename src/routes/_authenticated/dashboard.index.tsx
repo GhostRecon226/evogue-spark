@@ -51,6 +51,7 @@ function DashboardHome() {
   const [next, setNext] = useState<Continue | null>(null);
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [upcoming, setUpcoming] = useState<UpcomingLesson | null>(null);
+  const [progressList, setProgressList] = useState<Array<{ slug: string; title: string; done: number; total: number; capstoneReleased: boolean }>>([]);
   const [capstoneDetail, setCapstoneDetail] = useState<CapstoneDetail | null>(null);
   const [capstoneOpen, setCapstoneOpen] = useState(false);
 
