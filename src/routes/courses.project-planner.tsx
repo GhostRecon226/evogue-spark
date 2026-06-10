@@ -39,11 +39,11 @@ export const Route = createFileRoute("/courses/project-planner")({
 });
 
 const OUTCOMES = [
-  "Use Primavera P6 from beginner to intermediate level",
+  "Use Primavera P6 from beginner to intermediate levels.",
   "Develop schedules using programme development and scheduling principles",
   "Apply critical path analysis to real project scenarios",
-  "Manage baselines and track progress against them",
-  "Update progress, report performance and handle change management",
+  "Set up, manage, and track project baselines effectively",
+  "Update progress, report performance, and handle compensation events",
   "Apply project controls fundamentals across real-life project scenarios",
 ];
 
