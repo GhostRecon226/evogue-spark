@@ -191,10 +191,25 @@ function ClassroomPage() {
               </p>
             )}
             <div className="mt-5 flex flex-wrap gap-3">
-              <Button asChild variant="outline" className="rounded-full" disabled={!active.pdf_url}>
-                <a href={active.pdf_url ?? "#"} target="_blank" rel="noreferrer">
-                  <Download className="h-4 w-4 mr-1" /> {active.pdf_url ? "Download PDF" : "PDF coming soon"}
-                </a>
+              <Button
+                variant="outline"
+                className="rounded-full"
+                disabled={!active.pdf_url}
+                onClick={async () => {
+                  if (!active.pdf_url) return;
+                  // Legacy values may contain a full public URL; extract the storage path
+                  const raw = active.pdf_url;
+                  const marker = "/lesson-pdfs/";
+                  const idx = raw.indexOf(marker);
+                  const path = idx >= 0 ? raw.slice(idx + marker.length) : raw;
+                  const { data, error } = await supabase.storage
+                    .from("lesson-pdfs")
+                    .createSignedUrl(path, 60 * 10); // 10 minutes
+                  if (error || !data?.signedUrl) { toast.error(error?.message ?? "Could not open PDF"); return; }
+                  window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+                }}
+              >
+                <Download className="h-4 w-4 mr-1" /> {active.pdf_url ? "Download PDF" : "PDF coming soon"}
               </Button>
               {(() => {
                 const live = active.zoom_live_link ?? active.zoom_link;

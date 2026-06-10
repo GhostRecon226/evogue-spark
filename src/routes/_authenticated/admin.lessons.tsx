@@ -109,8 +109,8 @@ function AdminLessonsPage() {
     const path = `${Date.now()}-${file.name.replace(/[^\w.-]/g, "_")}`;
     const { error } = await supabase.storage.from("lesson-pdfs").upload(path, file);
     if (error) { setUploading(false); toast.error(error.message); return; }
-    const { data: pub } = supabase.storage.from("lesson-pdfs").getPublicUrl(path);
-    setForm((f) => ({ ...f, pdf_url: pub.publicUrl }));
+    // Store storage path (bucket is private; signed URLs are minted at view time)
+    setForm((f) => ({ ...f, pdf_url: path }));
     setUploading(false);
     toast.success("PDF uploaded");
   };
