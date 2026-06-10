@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Hammer, Globe2, TrendingUp } from "lucide-react";
 import { PublicShell } from "@/components/PublicShell";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -21,12 +21,6 @@ const features = [
   { icon: TrendingUp, title: "Career Growth", text: "Portfolio reviews, interview prep, and a global hiring network." },
 ];
 
-const team = [
-  { name: "Adaeze Okonkwo", role: "Head of Design", avatar: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&q=80" },
-  { name: "Tunde Bakare", role: "Head of Product", avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&q=80" },
-  { name: "Funmi Adesanya", role: "Head of Engineering", avatar: "https://images.unsplash.com/photo-1573497019418-b400bb3ab074?w=400&q=80" },
-  { name: "Kemi Lawal", role: "Head of Data", avatar: "https://images.unsplash.com/photo-1580894732444-8ecded7900cd?w=400&q=80" },
-];
 
 function AboutPage() {
   return (
@@ -82,23 +76,6 @@ function AboutPage() {
         </div>
       </section>
 
-      <section className="bg-mint-tint py-14 sm:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center font-display text-3xl sm:text-4xl font-extrabold text-forest">Meet the team</h2>
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {team.map((m) => (
-              <div key={m.name} className="rounded-2xl bg-background p-6 border border-border text-center">
-                <Avatar className="h-20 w-20 mx-auto">
-                  <AvatarImage src={m.avatar} />
-                  <AvatarFallback>{m.name[0]}</AvatarFallback>
-                </Avatar>
-                <p className="mt-4 font-display font-bold text-forest">{m.name}</p>
-                <p className="text-sm text-secondary">{m.role}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
     </PublicShell>
   );
 }
