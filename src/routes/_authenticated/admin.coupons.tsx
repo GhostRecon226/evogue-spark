@@ -147,7 +147,7 @@ function CouponsInner() {
 
     const studentIds = Array.from(new Set((r ?? []).map((x) => x.student_id)));
     let profileMap = new Map<string, { name: string; reg: string | null }>();
-    let enrolmentMap = new Map<string, number>();
+    const enrolmentMap = new Map<string, number>();
     if (studentIds.length > 0) {
       const [{ data: profs }, { data: enrols }] = await Promise.all([
         supabase.from("profiles").select("id, full_name, registration_number").in("id", studentIds),

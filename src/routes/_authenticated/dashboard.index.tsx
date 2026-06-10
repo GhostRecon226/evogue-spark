@@ -162,7 +162,7 @@ function DashboardHome() {
 
       let annRows: Announcement[] = [];
       let nextLesson: UpcomingLesson | null = null;
-      let capstoneByCourse = new Map<string, boolean>();
+      const capstoneByCourse = new Map<string, boolean>();
       if (cohortIds.length > 0) {
         const [{ data: ann }, { data: up }, { data: caps }] = await Promise.all([
           supabase

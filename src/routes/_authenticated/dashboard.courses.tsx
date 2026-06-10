@@ -47,8 +47,8 @@ function MyCourses() {
       }
 
       const courseIds = enrollments.map((e) => e.course_id);
-      let lessonCounts: Record<string, number> = {};
-      let completedCounts: Record<string, number> = {};
+      const lessonCounts: Record<string, number> = {};
+      const completedCounts: Record<string, number> = {};
 
       if (courseIds.length) {
         const [{ data: lessons }, { data: progress }] = await Promise.all([
