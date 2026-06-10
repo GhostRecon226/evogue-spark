@@ -218,7 +218,7 @@ function ScrumMasterPage() {
             {/* CTA row */}
             <div className="sm-cta-row" style={{ display: "flex", alignItems: "center", gap: 16 }}>
               <Link
-                to="/contact"
+                to="/enrol?course=scrum-master"
                 className="sm-enrol-btn"
                 style={{
                   background: "#0A2E1A",
@@ -606,7 +606,7 @@ function ScrumMasterPage() {
         </div>
         <div style={{ display: "flex", gap: 12 }}>
           <Link
-            to="/contact"
+            to="/enrol?course=scrum-master"
             style={{
               background: "#00F5A0",
               color: "#0A2E1A",
