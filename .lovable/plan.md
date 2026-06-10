@@ -1,27 +1,23 @@
-## Plan: Test student account
+## Vercel Deployment Configuration
 
-The database already has a `handle_new_user` trigger that auto-creates a `profiles` row and assigns the `student` role on every new auth signup. So the cleanest way to create your test account is to use the normal signup page — no code or migration changes required.
+### Problem
+The project is configured for Cloudflare Workers by default (via `@lovable.dev/vite-tanstack-config`). When deploying to Vercel, this causes a 404 because Vercel expects Nitro's Build Output API v3 format with the `vercel` preset.
 
-### Steps
+### Changes
 
-1. Open `/auth` on the preview (or published) site.
-2. Switch to the **Sign Up** tab.
-3. Use:
-   - Email: `peter@evogueacademy.com`
-   - Password: `Pass=123@`
-   - Fill any required fields (full name, WhatsApp number, etc.) — anything works for a test account.
-4. Submit. The trigger automatically:
-   - creates the matching `profiles` row (with a generated `EVG-YYYY-####` registration number)
-   - inserts `('student')` into `user_roles`
-5. If email confirmation is enabled, check the inbox for the confirmation link before logging in. (If you'd like, I can switch on auto-confirm so you can log in immediately without verifying email — just say the word.)
+1. **Update `vite.config.ts`**
+   - Add `nitro` configuration with `preset: "vercel"`
+   - Set `output.dir` to `.vercel/output`
+   - Set `output.serverDir` to `.vercel/output/functions/__server.func`
+   - Set `output.publicDir` to `.vercel/output/static`
 
-### Why not create it server-side
+2. **Create `vercel.json`** in the project root:
+   - `buildCommand`: `npm run build`
+   - `outputDirectory`: `.vercel/output`
+   - `framework`: `null` (disables auto-detection so Vercel respects our config)
 
-Lovable Cloud doesn't expose the service-role key to the agent, so I can't script an admin `auth.admin.createUser` call from here. The signup flow does exactly the same thing and is the supported path.
+### Verification Step
+After the changes are applied, run `npm run build` locally and confirm that `.vercel/output/` is generated containing `config.json`, `functions/`, and `static/`.
 
-### Optional follow-ups (only if you want)
-
-- Auto-confirm signups (so no email click needed for testing).
-- Promote this account to `instructor` or `admin` via a small migration after signup.
-
-Tell me if you'd like either of those, otherwise just sign up at `/auth` and you're in.
+### Technical Details
+The `@lovable.dev/vite-tanstack-config` wrapper accepts a top-level `nitro` key that merges into the underlying Nitro plugin configuration. This overrides the default Cloudflare preset without duplicating plugins. The `vercel.json` tells the Vercel platform where to find the build artifacts and which command to run.
