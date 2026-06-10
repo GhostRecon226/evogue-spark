@@ -34,22 +34,7 @@ export function Values() {
   return (
     <section className="py-14 sm:py-20 bg-mint-tint">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-3 max-w-5xl mx-auto text-center lg:text-left">
-          <p className="text-base sm:text-lg text-foreground/75 leading-relaxed">
-            We believe ambitious minds everywhere deserve world-class training.
-            Evogue exists to close the gap between raw talent and global opportunity.
-          </p>
-          <p className="text-base sm:text-lg text-foreground/75 leading-relaxed">
-            Every cohort is intentionally small — students get one-on-one feedback,
-            dedicated mentors, and a curriculum designed around real industry briefs.
-          </p>
-          <p className="text-base sm:text-lg text-foreground/75 leading-relaxed">
-            Our mission: produce graduates who are <span className="font-semibold text-secondary">job-ready,
-            confident, and globally competitive</span> from day one.
-          </p>
-        </div>
-
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((f) => (
             <div
               key={f.title}
