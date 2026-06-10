@@ -20,6 +20,7 @@ import aiImg from "@/assets/courses/ai-for-professionals.jpg";
 import dataImg from "@/assets/courses/data-analysis.jpg";
 import cyberImg from "@/assets/courses/cybersecurity.jpg";
 import vaImg from "@/assets/courses/virtual-assistant.jpg";
+import projectPlannerImg from "@/assets/courses/project-planner.jpg";
 
 type CourseCard = {
   slug: string;
