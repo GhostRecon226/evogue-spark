@@ -16,7 +16,7 @@ type Props = Omit<ButtonProps, "asChild"> & {
 export const EnrollButton = forwardRef<HTMLButtonElement, Props>(
   ({ children, onNavigate, ...buttonProps }, ref) => {
     const { user, loading } = useAuth();
-    const to = user ? "/dashboard" : "/contact";
+    const to = user ? "/dashboard" : "/enrol";
     return (
       <Button ref={ref} asChild disabled={loading} {...buttonProps}>
         <Link to={to} onClick={onNavigate}>
