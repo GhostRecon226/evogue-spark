@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "check:css": "node scripts/check-css.mjs",
     "check:visual": "node scripts/visual-regression-testimonials.mjs",
     "check:visual:update": "node scripts/visual-regression-testimonials.mjs --update",
