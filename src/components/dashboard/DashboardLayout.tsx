@@ -279,12 +279,26 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                       Mark all as read
                     </button>
                   </div>
-                  {notifications.length === 0 ? (
-                    <div style={{ padding: "40px 20px", textAlign: "center" }}>
-                      <Bell style={{ color: "rgba(10,46,26,0.2)", fontSize: "28px", marginBottom: "10px" }} className="mx-auto h-7 w-7" />
-                      <p style={{ fontSize: "14px", fontWeight: 500, color: "#0A2E1A" }}>No notifications yet</p>
-                      <p style={{ fontSize: "12px", color: "rgba(10,46,26,0.45)", lineHeight: 1.6, marginTop: "4px" }}>
-                        We'll notify you about classes, announcements and certificate updates.
+                  {notifications.length === 0 || unreadCount === 0 ? (
+                    <div className="flex-1 flex flex-col items-center justify-center" style={{ padding: "40px 20px", textAlign: "center" }}>
+                      <div
+                        className="mx-auto grid place-items-center mb-4"
+                        style={{
+                          width: "56px",
+                          height: "56px",
+                          borderRadius: "16px",
+                          background: "#EDF7F0",
+                        }}
+                      >
+                        <Bell className="h-6 w-6" style={{ color: "#1A8C4E" }} />
+                      </div>
+                      <p style={{ fontSize: "15px", fontWeight: 600, color: "#0A2E1A" }}>
+                        {notifications.length === 0 ? "No notifications yet" : "You're all caught up"}
+                      </p>
+                      <p style={{ fontSize: "13px", color: "rgba(10,46,26,0.45)", lineHeight: 1.6, marginTop: "6px" }}>
+                        {notifications.length === 0
+                          ? "We'll notify you about classes, announcements and certificate updates."
+                          : "Check back later for new classes, announcements and certificates."}
                       </p>
                     </div>
                   ) : (
