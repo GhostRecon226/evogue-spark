@@ -38,35 +38,101 @@ const features = [
   },
 ];
 
+const stats = [
+  { value: "500+", label: "Students trained" },
+  { value: "94%", label: "Completion rate" },
+  { value: "4", label: "Continents represented" },
+  { value: "8", label: "Professional tracks" },
+];
+
 function AboutPage() {
   return (
     <PublicShell>
       <section className="py-14 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid gap-12 lg:grid-cols-2 items-center">
           <div>
-            <span className="inline-block text-xs font-bold tracking-[0.2em] uppercase text-secondary">
-              Our Story
+            <span
+              className="inline-block font-medium uppercase"
+              style={{
+                color: "#1A8C4E",
+                fontSize: 11,
+                letterSpacing: "0.12em",
+              }}
+            >
+              OUR STORY
             </span>
-            <h1 className="mt-3 font-display text-4xl sm:text-5xl font-extrabold text-forest leading-tight">
-              Built in Africa. <span className="text-secondary">Open to the World.</span>
+            <h1
+              className="mt-3 leading-tight"
+              style={{
+                fontFamily: '"Fraunces", serif',
+                fontSize: 38,
+                fontWeight: 700,
+              }}
+            >
+              <span style={{ color: "#0A2E1A" }}>Built in Africa.</span>{" "}
+              <span style={{ color: "#1A8C4E" }}>Open to the World.</span>
             </h1>
-            <p className="mt-5 text-foreground/75 text-base sm:text-lg">
-              Evogue Academy started with a simple question: why should where you grow up determine
-              the quality of your education? We built the academy to close that gap. Pairing
-              ambitious learners from everywhere with world-class practitioners who have shipped
-              real products at top global companies.
+            <p
+              className="mt-5"
+              style={{ color: "#3a5a47", fontSize: 15, lineHeight: 1.75 }}
+            >
+              Evogue Academy started with a simple question: why should where
+              you grow up determine the quality of your education? We built the
+              academy to close that gap. Pairing ambitious learners from
+              everywhere with world-class practitioners who have shipped real
+              products at top global companies.
             </p>
-            <p className="mt-4 text-foreground/75 text-base sm:text-lg">
-              Today our graduates are designing, engineering and shipping across four continents. We
-              are just getting started.
+            <p
+              className="mt-4"
+              style={{ color: "#3a5a47", fontSize: 15, lineHeight: 1.75 }}
+            >
+              Today our graduates are designing, engineering and shipping across
+              four continents. We are just getting started.
             </p>
           </div>
-          <div className="rounded-3xl overflow-hidden shadow-soft">
+          <div
+            className="overflow-hidden shadow-soft"
+            style={{ borderRadius: 12 }}
+          >
             <img
-              src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1200&q=80"
-              alt="Evogue Academy founder"
+              src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1200&q=80"
+              alt="Diverse professionals learning tech together"
               className="w-full aspect-[4/3] object-cover"
             />
+          </div>
+        </div>
+      </section>
+
+      <section
+        className="w-full"
+        style={{ backgroundColor: "#0A2E1A", padding: "48px 0" }}
+      >
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+            {stats.map((stat) => (
+              <div key={stat.label}>
+                <div
+                  style={{
+                    fontFamily: '"Fraunces", serif',
+                    fontSize: 42,
+                    fontWeight: 700,
+                    color: "#00F5A0",
+                  }}
+                >
+                  {stat.value}
+                </div>
+                <div
+                  className="mt-2"
+                  style={{
+                    fontFamily: '"DM Sans", sans-serif',
+                    fontSize: 13,
+                    color: "#9ecfb0",
+                  }}
+                >
+                  {stat.label}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -77,8 +143,8 @@ function AboutPage() {
             Our Mission
           </h2>
           <p className="mt-5 text-foreground/75 text-base sm:text-lg leading-relaxed">
-            To equip ambitious minds everywhere with the skills, mentorship and confidence to
-            compete and win on the global tech stage.
+            To equip ambitious minds everywhere with the skills, mentorship and
+            confidence to compete and win on the global tech stage.
           </p>
         </div>
       </section>
@@ -97,8 +163,12 @@ function AboutPage() {
                 <span className="inline-grid h-12 w-12 place-items-center rounded-xl bg-mint/30 text-secondary">
                   <f.icon className="h-6 w-6" strokeWidth={2.25} />
                 </span>
-                <h3 className="mt-5 font-display text-xl font-bold text-forest">{f.title}</h3>
-                <p className="mt-2 text-foreground/70 leading-relaxed">{f.text}</p>
+                <h3 className="mt-5 font-display text-xl font-bold text-forest">
+                  {f.title}
+                </h3>
+                <p className="mt-2 text-foreground/70 leading-relaxed">
+                  {f.text}
+                </p>
               </div>
             ))}
           </div>
