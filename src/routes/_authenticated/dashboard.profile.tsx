@@ -118,7 +118,7 @@ function ProfilePage() {
     {
       const { error } = await supabase
         .from("lessons")
-        .insert({ course_id: "00000000-0000-0000-0000-000000000000", title: "__perm_probe__" })
+        .insert({ course_id: "00000000-0000-0000-0000-000000000000", title: "__perm_probe__", lesson_number: -1 })
         .select()
         .single();
       // Foreign-key / not-null errors mean we passed RLS but failed validation — count as access granted.
