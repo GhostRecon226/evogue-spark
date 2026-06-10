@@ -267,6 +267,33 @@ export type Database = {
         }
         Relationships: []
       }
+      coupon_codes: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string
+          discount_percentage: number
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string
+          discount_percentage: number
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string
+          discount_percentage?: number
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       course_instructors: {
         Row: {
           course_id: string
@@ -673,6 +700,8 @@ export type Database = {
       }
       profiles: {
         Row: {
+          applied_coupon_at: string | null
+          applied_coupon_code: string | null
           avatar_url: string | null
           created_at: string
           email: string | null
@@ -685,6 +714,8 @@ export type Database = {
           whatsapp_number: string | null
         }
         Insert: {
+          applied_coupon_at?: string | null
+          applied_coupon_code?: string | null
           avatar_url?: string | null
           created_at?: string
           email?: string | null
@@ -697,6 +728,8 @@ export type Database = {
           whatsapp_number?: string | null
         }
         Update: {
+          applied_coupon_at?: string | null
+          applied_coupon_code?: string | null
           avatar_url?: string | null
           created_at?: string
           email?: string | null
