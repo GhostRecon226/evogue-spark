@@ -345,6 +345,215 @@ function AboutPage() {
           </div>
         </div>
       </section>
+      {/* Graduate Voices */}
+      <section
+        style={{
+          backgroundColor: "#f4faf7",
+          padding: "64px 48px",
+          borderTop: "0.5px solid #e0ede6",
+        }}
+      >
+        <div className="mx-auto max-w-7xl">
+          <span className="inline-block" style={eyebrowStyle}>
+            GRADUATE VOICES
+          </span>
+          <h2
+            className="mt-4 mb-10"
+            style={{
+              fontFamily: '"Fraunces", serif',
+              fontSize: 30,
+              fontWeight: 400,
+              color: "#0A2E1A",
+            }}
+          >
+            From our community.
+          </h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div
+              style={{
+                backgroundColor: "#ffffff",
+                border: "0.5px solid #c8e3d4",
+                borderRadius: 12,
+                padding: 28,
+              }}
+            >
+              <p
+                style={{
+                  fontStyle: "italic",
+                  fontSize: 14,
+                  lineHeight: 1.75,
+                  color: "#2a4a38",
+                  marginBottom: 20,
+                }}
+              >
+                "Before Evogue I had no portfolio, no direction. Six weeks later
+                I had a product case study and my first PM interview. I got the
+                role."
+              </p>
+              <div className="flex items-center gap-3">
+                <div
+                  className="flex items-center justify-center shrink-0"
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: "50%",
+                    backgroundColor: "#0A2E1A",
+                    color: "#00F5A0",
+                    fontSize: 13,
+                    fontWeight: 600,
+                  }}
+                >
+                  AO
+                </div>
+                <div>
+                  <div
+                    style={{
+                      fontFamily: '"DM Sans", sans-serif',
+                      fontWeight: 600,
+                      fontSize: 13,
+                      color: "#0A2E1A",
+                    }}
+                  >
+                    Amara O.
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: '"DM Sans", sans-serif',
+                      fontSize: 12,
+                      color: "#5a8070",
+                    }}
+                  >
+                    Product Manager, Lagos
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              style={{
+                backgroundColor: "#ffffff",
+                border: "0.5px solid #c8e3d4",
+                borderRadius: 12,
+                padding: 28,
+              }}
+            >
+              <p
+                style={{
+                  fontStyle: "italic",
+                  fontSize: 14,
+                  lineHeight: 1.75,
+                  color: "#2a4a38",
+                  marginBottom: 20,
+                }}
+              >
+                "The cohort model is what makes the difference. You are not
+                learning alone. You are building alongside people who push you
+                every week."
+              </p>
+              <div className="flex items-center gap-3">
+                <div
+                  className="flex items-center justify-center shrink-0"
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: "50%",
+                    backgroundColor: "#0A2E1A",
+                    color: "#00F5A0",
+                    fontSize: 13,
+                    fontWeight: 600,
+                  }}
+                >
+                  KN
+                </div>
+                <div>
+                  <div
+                    style={{
+                      fontFamily: '"DM Sans", sans-serif',
+                      fontWeight: 600,
+                      fontSize: 13,
+                      color: "#0A2E1A",
+                    }}
+                  >
+                    Kofi N.
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: '"DM Sans", sans-serif',
+                      fontSize: 12,
+                      color: "#5a8070",
+                    }}
+                  >
+                    Scrum Master, Accra
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section
+        className="text-center"
+        style={{ backgroundColor: "#0A2E1A", padding: "72px 48px" }}
+      >
+        <span
+          className="inline-block"
+          style={{
+            color: "#00F5A0",
+            fontSize: 11,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            fontWeight: 500,
+          }}
+        >
+          READY TO START?
+        </span>
+        <h2
+          className="mx-auto mt-4"
+          style={{
+            fontFamily: '"Fraunces", serif',
+            fontSize: 34,
+            fontWeight: 400,
+            color: "#ffffff",
+            maxWidth: 560,
+            lineHeight: 1.25,
+            marginBottom: 32,
+          }}
+        >
+          Your next career move starts with the right skills.
+        </h2>
+        <div className="flex flex-wrap items-center justify-center gap-4">
+          <Link
+            to="/courses"
+            className="inline-flex items-center justify-center"
+            style={{
+              backgroundColor: "#00F5A0",
+              color: "#0A2E1A",
+              padding: "13px 28px",
+              borderRadius: 8,
+              fontWeight: 600,
+              fontSize: 14,
+            }}
+          >
+            Explore Courses
+          </Link>
+          <Link
+            to="/scholarship"
+            className="inline-flex items-center justify-center"
+            style={{
+              backgroundColor: "transparent",
+              border: "1px solid #1A8C4E",
+              color: "#00F5A0",
+              padding: "13px 28px",
+              borderRadius: 8,
+              fontWeight: 600,
+              fontSize: 14,
+            }}
+          >
+            Apply for Scholarship
+          </Link>
+        </div>
+      </section>
     </PublicShell>
   );
 }
