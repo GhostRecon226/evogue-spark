@@ -112,8 +112,8 @@ function UploadContent() {
         const path = `${form.courseId}/lesson-${Date.now()}.${ext}`;
         const { error: upErr } = await supabase.storage.from("lesson-pdfs").upload(path, pdf, { upsert: false });
         if (upErr) throw upErr;
-        const { data: pub } = supabase.storage.from("lesson-pdfs").getPublicUrl(path);
-        pdfUrl = pub.publicUrl;
+        // Store storage path; bucket is private and signed URLs are minted at view time
+        pdfUrl = path;
       }
 
       const payload = {
