@@ -50,22 +50,52 @@ function ClassroomPage() {
     if (!user) return;
     setLoading(true);
     const { data: courseRow } = await supabase
-      .from("courses").select("id, slug, title, capstone_released, capstone_brief, capstone_brief_url")
-      .eq("slug", slug).eq("is_published", true).maybeSingle();
-    if (!courseRow) { setCourse(null); setLoading(false); throw notFound(); }
+      .from("courses")
+      .select("id, slug, title, capstone_released, capstone_brief, capstone_brief_url")
+      .eq("slug", slug)
+      .eq("is_published", true)
+      .maybeSingle();
+    if (!courseRow) {
+      setCourse(null);
+      setLoading(false);
+      throw notFound();
+    }
 
     const [{ data: enr }, { data: lessonRows }, { data: progressRows }] = await Promise.all([
-      supabase.from("enrollments")
-        .select("id, cohort_id, cohorts:cohort_id(capstone_released, capstone_brief_text, capstone_brief_url)")
-        .eq("student_id", user.id).eq("course_id", courseRow.id).maybeSingle(),
-      supabase.from("lessons")
-        .select("id, title, lesson_number, zoom_link, zoom_live_link, zoom_recording_link, pdf_url, lesson_date")
-        .eq("course_id", courseRow.id).eq("is_published", true).order("lesson_number"),
-      supabase.from("lesson_progress").select("lesson_id, completed").eq("student_id", user.id).eq("course_id", courseRow.id),
+      supabase
+        .from("enrollments")
+        .select(
+          "id, cohort_id, cohorts:cohort_id(capstone_released, capstone_brief_text, capstone_brief_url)",
+        )
+        .eq("student_id", user.id)
+        .eq("course_id", courseRow.id)
+        .maybeSingle(),
+      supabase
+        .from("lessons")
+        .select(
+          "id, title, lesson_number, zoom_link, zoom_live_link, zoom_recording_link, pdf_url, lesson_date",
+        )
+        .eq("course_id", courseRow.id)
+        .eq("is_published", true)
+        .order("lesson_number"),
+      supabase
+        .from("lesson_progress")
+        .select("lesson_id, completed")
+        .eq("student_id", user.id)
+        .eq("course_id", courseRow.id),
     ]);
 
     // Cohort overrides for capstone visibility / brief
-    const cohort = (enr as { cohorts?: { capstone_released: boolean; capstone_brief_text: string | null; capstone_brief_url: string | null } | null } | null)?.cohorts ?? null;
+    const cohort =
+      (
+        enr as {
+          cohorts?: {
+            capstone_released: boolean;
+            capstone_brief_text: string | null;
+            capstone_brief_url: string | null;
+          } | null;
+        } | null
+      )?.cohorts ?? null;
     const merged: Course = {
       ...(courseRow as Course),
       capstone_released: cohort?.capstone_released ?? courseRow.capstone_released,
@@ -83,25 +113,25 @@ function ClassroomPage() {
     setLoading(false);
   }, [slug, user]);
 
-  useEffect(() => { void load(); }, [load]);
+  useEffect(() => {
+    void load();
+  }, [load]);
 
   const toggleComplete = async (lessonId: string) => {
     if (!user || !course || !enrolled) return;
     const next = !done[lessonId];
     setDone((d) => ({ ...d, [lessonId]: next }));
     setSaving(true);
-    const { error } = await supabase
-      .from("lesson_progress")
-      .upsert(
-        {
-          student_id: user.id,
-          course_id: course.id,
-          lesson_id: lessonId,
-          completed: next,
-          completed_at: next ? new Date().toISOString() : null,
-        },
-        { onConflict: "student_id,lesson_id" },
-      );
+    const { error } = await supabase.from("lesson_progress").upsert(
+      {
+        student_id: user.id,
+        course_id: course.id,
+        lesson_id: lessonId,
+        completed: next,
+        completed_at: next ? new Date().toISOString() : null,
+      },
+      { onConflict: "student_id,lesson_id" },
+    );
     setSaving(false);
     if (error) {
       setDone((d) => ({ ...d, [lessonId]: !next }));
@@ -112,7 +142,9 @@ function ClassroomPage() {
   if (loading) {
     return (
       <DashboardLayout>
-        <div className="grid place-items-center py-20 text-foreground/50"><Loader2 className="h-6 w-6 animate-spin" /></div>
+        <div className="grid place-items-center py-20 text-foreground/50">
+          <Loader2 className="h-6 w-6 animate-spin" />
+        </div>
       </DashboardLayout>
     );
   }
@@ -124,8 +156,12 @@ function ClassroomPage() {
       <DashboardLayout>
         <div className="max-w-xl mx-auto mt-10 rounded-3xl border border-dashed border-border bg-background p-10 text-center">
           <Lock className="h-10 w-10 text-secondary mx-auto" />
-          <h1 className="mt-4 font-display text-2xl font-extrabold text-forest">You're not enrolled in {course.title}</h1>
-          <p className="mt-2 text-sm text-foreground/65">Enroll to access the classroom, lessons, and live sessions.</p>
+          <h1 className="mt-4 font-display text-2xl font-extrabold text-forest">
+            You're not enrolled in {course.title}
+          </h1>
+          <p className="mt-2 text-sm text-foreground/65">
+            Enroll to access the classroom, lessons, and live sessions.
+          </p>
           <Button asChild className="mt-6 rounded-full bg-forest text-mint hover:bg-forest/90">
             <CourseLink slug={course.slug}>View course</CourseLink>
           </Button>
@@ -143,9 +179,14 @@ function ClassroomPage() {
       <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
         <aside className="rounded-2xl bg-background border border-border p-4 h-fit">
           <h2 className="font-display font-bold text-forest">{course.title}</h2>
-          <div className="mt-2"><Progress value={progress} /><p className="mt-1 text-xs text-foreground/60">{progress}% complete</p></div>
+          <div className="mt-2">
+            <Progress value={progress} />
+            <p className="mt-1 text-xs text-foreground/60">{progress}% complete</p>
+          </div>
           <ul className="mt-4 space-y-1 max-h-[60vh] overflow-y-auto pr-1">
-            {lessons.length === 0 && <li className="text-sm text-foreground/55 px-3 py-2">Lessons coming soon.</li>}
+            {lessons.length === 0 && (
+              <li className="text-sm text-foreground/55 px-3 py-2">Lessons coming soon.</li>
+            )}
             {lessons.map((l) => {
               const isActive = active?.id === l.id;
               const isDone = !!done[l.id];
@@ -154,7 +195,9 @@ function ClassroomPage() {
                   <button
                     onClick={() => setActiveId(l.id)}
                     className={`w-full flex items-start gap-2 text-left rounded-lg px-3 py-2 text-sm transition ${
-                      isActive ? "bg-mint text-forest font-semibold" : "hover:bg-mint-tint text-foreground/80"
+                      isActive
+                        ? "bg-mint text-forest font-semibold"
+                        : "hover:bg-mint-tint text-foreground/80"
                     }`}
                   >
                     {isDone ? (
@@ -167,7 +210,10 @@ function ClassroomPage() {
                         className="mt-0.5"
                       />
                     )}
-                    <span className="flex-1"><span className="text-foreground/50 mr-1">{l.lesson_number}.</span>{l.title}</span>
+                    <span className="flex-1">
+                      <span className="text-foreground/50 mr-1">{l.lesson_number}.</span>
+                      {l.title}
+                    </span>
                   </button>
                 </li>
               );
@@ -177,8 +223,12 @@ function ClassroomPage() {
 
         {active ? (
           <main>
-            <p className="text-xs uppercase tracking-wide text-secondary font-bold">Lesson {active.lesson_number}</p>
-            <h1 className="mt-1 font-display text-2xl sm:text-3xl font-extrabold text-forest">{active.title}</h1>
+            <p className="text-xs uppercase tracking-wide text-secondary font-bold">
+              Lesson {active.lesson_number}
+            </p>
+            <h1 className="mt-1 font-display text-2xl sm:text-3xl font-extrabold text-forest">
+              {active.title}
+            </h1>
             <div className="mt-5 aspect-video rounded-2xl bg-forest/90 grid place-items-center text-mint border border-border overflow-hidden">
               <div className="text-center">
                 <Video className="h-12 w-12 mx-auto opacity-70" />
@@ -187,7 +237,14 @@ function ClassroomPage() {
             </div>
             {active.lesson_date && (
               <p className="mt-3 text-xs text-foreground/55">
-                Live class: {new Date(active.lesson_date).toLocaleString(undefined, { weekday: "short", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                Live class:{" "}
+                {new Date(active.lesson_date).toLocaleString(undefined, {
+                  weekday: "short",
+                  month: "short",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
               </p>
             )}
             <div className="mt-5 flex flex-wrap gap-3">
@@ -205,18 +262,27 @@ function ClassroomPage() {
                   const { data, error } = await supabase.storage
                     .from("lesson-pdfs")
                     .createSignedUrl(path, 60 * 10); // 10 minutes
-                  if (error || !data?.signedUrl) { toast.error(error?.message ?? "Could not open PDF"); return; }
+                  if (error || !data?.signedUrl) {
+                    toast.error(error?.message ?? "Could not open PDF");
+                    return;
+                  }
                   window.open(data.signedUrl, "_blank", "noopener,noreferrer");
                 }}
               >
-                <Download className="h-4 w-4 mr-1" /> {active.pdf_url ? "Download PDF" : "PDF coming soon"}
+                <Download className="h-4 w-4 mr-1" />{" "}
+                {active.pdf_url ? "Download PDF" : "PDF coming soon"}
               </Button>
               {(() => {
                 const live = active.zoom_live_link ?? active.zoom_link;
                 return (
-                  <Button asChild className="rounded-full bg-mint text-forest hover:bg-mint/90 font-bold" disabled={!live}>
+                  <Button
+                    asChild
+                    className="rounded-full bg-mint text-forest hover:bg-mint/90 font-bold"
+                    disabled={!live}
+                  >
                     <a href={live ?? "#"} target="_blank" rel="noreferrer">
-                      <Video className="h-4 w-4 mr-1" /> {live ? "Join Zoom Live" : "Zoom link coming soon"}
+                      <Video className="h-4 w-4 mr-1" />{" "}
+                      {live ? "Join Zoom Live" : "Zoom link coming soon"}
                     </a>
                   </Button>
                 );
@@ -230,9 +296,16 @@ function ClassroomPage() {
               )}
             </div>
             <div className="mt-8">
-              <Button onClick={() => toggleComplete(active.id)} disabled={saving}
-                className="rounded-full bg-forest text-mint hover:bg-forest/90">
-                {saving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <CheckCircle2 className="h-4 w-4 mr-2" />}
+              <Button
+                onClick={() => toggleComplete(active.id)}
+                disabled={saving}
+                className="rounded-full bg-forest text-mint hover:bg-forest/90"
+              >
+                {saving ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <CheckCircle2 className="h-4 w-4 mr-2" />
+                )}
                 {done[active.id] ? "Marked Complete" : "Mark as Complete"}
               </Button>
             </div>

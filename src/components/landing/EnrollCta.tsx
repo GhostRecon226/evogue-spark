@@ -4,7 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -63,7 +67,8 @@ export function EnrollCta() {
           Join the next cohort
         </h2>
         <p className="mt-4 text-mint/80 text-base sm:text-lg">
-          Seats are limited per cohort. Drop your details and our team will reach out within 24 hours to walk you through everything.
+          Seats are limited per cohort. Drop your details and our team will reach out within 24
+          hours to walk you through everything.
         </p>
 
         <form
@@ -100,10 +105,7 @@ export function EnrollCta() {
               />
             </Field>
             <Field label="Course interest">
-              <Select
-                value={form.course}
-                onValueChange={(v) => setForm({ ...form, course: v })}
-              >
+              <Select value={form.course} onValueChange={(v) => setForm({ ...form, course: v })}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a course" />
                 </SelectTrigger>

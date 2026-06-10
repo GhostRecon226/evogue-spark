@@ -54,10 +54,14 @@ export function Footer() {
             <h4 className="font-display font-bold text-mint">Contact</h4>
             <ul className="mt-4 space-y-2.5 text-sm">
               <li>
-                <a href="mailto:hello@evogueacademy.com" className="hover:text-mint">hello@evogueacademy.com</a>
+                <a href="mailto:hello@evogueacademy.com" className="hover:text-mint">
+                  hello@evogueacademy.com
+                </a>
               </li>
               <li>
-                <a href="tel:+447404331835" className="hover:text-mint">+44 7404 331835</a>
+                <a href="tel:+447404331835" className="hover:text-mint">
+                  +44 7404 331835
+                </a>
               </li>
               <li className="text-mint/60">Online — Worldwide</li>
             </ul>

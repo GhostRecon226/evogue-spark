@@ -40,18 +40,27 @@ function CertificatesPage() {
         issued_at: c.issued_at,
         certificate_url: c.certificate_url,
       }));
-      if (!cancelled) { setCerts(mapped); setLoading(false); }
+      if (!cancelled) {
+        setCerts(mapped);
+        setLoading(false);
+      }
     })();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [user]);
 
   return (
     <DashboardLayout>
       <h1 className="font-display text-3xl font-extrabold text-forest">Certificates</h1>
-      <p className="mt-1 text-foreground/65">Earned certificates appear here once you complete a course.</p>
+      <p className="mt-1 text-foreground/65">
+        Earned certificates appear here once you complete a course.
+      </p>
 
       {loading ? (
-        <div className="mt-12 grid place-items-center text-foreground/50"><Loader2 className="h-6 w-6 animate-spin" /></div>
+        <div className="mt-12 grid place-items-center text-foreground/50">
+          <Loader2 className="h-6 w-6 animate-spin" />
+        </div>
       ) : certs.length === 0 ? (
         <div className="mt-10 rounded-3xl border border-dashed border-mint/50 bg-mint/10 p-12 text-center">
           <div className="mx-auto h-20 w-20 rounded-full bg-mint/30 grid place-items-center">
@@ -65,17 +74,33 @@ function CertificatesPage() {
       ) : (
         <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {certs.map((c) => (
-            <div key={c.id} className="rounded-2xl bg-background border border-border border-t-4 border-t-[#00F5A0] p-6 shadow-sm hover:shadow-md transition-shadow">
+            <div
+              key={c.id}
+              className="rounded-2xl bg-background border border-border border-t-4 border-t-[#00F5A0] p-6 shadow-sm hover:shadow-md transition-shadow"
+            >
               <div className="flex items-center gap-3">
-                <span className="grid h-10 w-10 place-items-center rounded-xl bg-mint/30 text-secondary"><Award className="h-5 w-5" /></span>
-                <p className="text-[11px] uppercase tracking-wider font-bold text-secondary">Certificate</p>
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-mint/30 text-secondary">
+                  <Award className="h-5 w-5" />
+                </span>
+                <p className="text-[11px] uppercase tracking-wider font-bold text-secondary">
+                  Certificate
+                </p>
               </div>
-              <h3 className="mt-4 font-display text-lg font-bold text-forest line-clamp-2">{c.course_title}</h3>
+              <h3 className="mt-4 font-display text-lg font-bold text-forest line-clamp-2">
+                {c.course_title}
+              </h3>
               <p className="mt-1 text-xs text-foreground/60">
-                Issued {new Date(c.issued_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
+                Issued{" "}
+                {new Date(c.issued_at).toLocaleDateString(undefined, {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
               </p>
               {profile?.registration_number && (
-                <p className="mt-1 text-xs font-mono tracking-wider text-foreground/55">Reg. {profile.registration_number}</p>
+                <p className="mt-1 text-xs font-mono tracking-wider text-foreground/55">
+                  Reg. {profile.registration_number}
+                </p>
               )}
               <Button
                 onClick={() =>

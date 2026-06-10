@@ -27,8 +27,7 @@ export const Route = createFileRoute("/courses/scrum-master")({
       { property: "og:title", content: "Scrum Master — Evogue Academy" },
       {
         property: "og:description",
-        content:
-          "A 3-week live cohort that prepares you to lead agile teams with confidence.",
+        content: "A 3-week live cohort that prepares you to lead agile teams with confidence.",
       },
     ],
   }),
@@ -88,8 +87,7 @@ const FAQS = [
 
 const pageBg: CSSProperties = {
   background: "#EDF7F0",
-  backgroundImage:
-    "radial-gradient(circle, rgba(10,46,26,0.055) 1px, transparent 1px)",
+  backgroundImage: "radial-gradient(circle, rgba(10,46,26,0.055) 1px, transparent 1px)",
   backgroundSize: "22px 22px",
 };
 
@@ -134,27 +132,58 @@ function ScrumMasterPage() {
         <section className="sm-hero">
           <div>
             {/* Breadcrumb */}
-            <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#1A8C4E", marginBottom: 16 }}>
-              <Link to="/courses" style={{ color: "#1A8C4E", textDecoration: "none" }}>Courses</Link>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                fontSize: 12,
+                color: "#1A8C4E",
+                marginBottom: 16,
+              }}
+            >
+              <Link to="/courses" style={{ color: "#1A8C4E", textDecoration: "none" }}>
+                Courses
+              </Link>
               <ChevronRight size={12} />
               <span>Scrum Master</span>
             </div>
 
             {/* Category badge */}
-            <div style={{
-              display: "inline-flex", alignItems: "center", gap: 6,
-              border: "1px solid rgba(10,46,26,0.18)", borderRadius: 50,
-              padding: "4px 13px", fontSize: 10, fontWeight: 600,
-              letterSpacing: "0.1em", color: "#1A8C4E", textTransform: "uppercase",
-              background: "rgba(255,255,255,0.6)", marginBottom: 16,
-            }}>
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                border: "1px solid rgba(10,46,26,0.18)",
+                borderRadius: 50,
+                padding: "4px 13px",
+                fontSize: 10,
+                fontWeight: 600,
+                letterSpacing: "0.1em",
+                color: "#1A8C4E",
+                textTransform: "uppercase",
+                background: "rgba(255,255,255,0.6)",
+                marginBottom: 16,
+              }}
+            >
               Management
             </div>
 
             <h1 className="sm-title">Scrum Master</h1>
 
-            <p style={{ fontSize: 15, color: "#3d6b4f", lineHeight: 1.7, maxWidth: 520, marginBottom: 28 }}>
-              Lead agile teams, run effective sprints and help organisations deliver better products, faster. This programme gives you the frameworks, tools and confidence to become the kind of Scrum Master teams actually want.
+            <p
+              style={{
+                fontSize: 15,
+                color: "#3d6b4f",
+                lineHeight: 1.7,
+                maxWidth: 520,
+                marginBottom: 28,
+              }}
+            >
+              Lead agile teams, run effective sprints and help organisations deliver better
+              products, faster. This programme gives you the frameworks, tools and confidence to
+              become the kind of Scrum Master teams actually want.
             </p>
 
             {/* Stat pills */}
@@ -165,31 +194,60 @@ function ScrumMasterPage() {
                 { icon: <Users size={14} color="#1A8C4E" />, text: "Live cohort" },
                 { icon: <Award size={14} color="#1A8C4E" />, text: "Certificate included" },
               ].map((p) => (
-                <span key={p.text} style={{
-                  display: "inline-flex", alignItems: "center", gap: 6,
-                  background: "#fff", border: "1.5px solid rgba(10,46,26,0.1)",
-                  borderRadius: 50, padding: "7px 16px", fontSize: 13,
-                  color: "#0A2E1A", fontWeight: 500,
-                }}>
-                  {p.icon}{p.text}
+                <span
+                  key={p.text}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    background: "#fff",
+                    border: "1.5px solid rgba(10,46,26,0.1)",
+                    borderRadius: 50,
+                    padding: "7px 16px",
+                    fontSize: 13,
+                    color: "#0A2E1A",
+                    fontWeight: 500,
+                  }}
+                >
+                  {p.icon}
+                  {p.text}
                 </span>
               ))}
             </div>
 
             {/* CTA row */}
             <div className="sm-cta-row" style={{ display: "flex", alignItems: "center", gap: 16 }}>
-              <Link to="/contact" className="sm-enrol-btn" style={{
-                background: "#0A2E1A", color: "#fff", padding: "14px 32px",
-                borderRadius: 8, fontSize: 14, fontWeight: 600, border: "none",
-                cursor: "pointer", transition: "background 0.2s", textDecoration: "none",
-                display: "inline-flex", alignItems: "center", gap: 8,
-              }}>
+              <Link
+                to="/contact"
+                className="sm-enrol-btn"
+                style={{
+                  background: "#0A2E1A",
+                  color: "#fff",
+                  padding: "14px 32px",
+                  borderRadius: 8,
+                  fontSize: 14,
+                  fontWeight: 600,
+                  border: "none",
+                  cursor: "pointer",
+                  transition: "background 0.2s",
+                  textDecoration: "none",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                }}
+              >
                 Enrol Now <ArrowRight size={16} />
               </Link>
-              <Link to="/scholarship" style={{
-                fontSize: 14, color: "#1A8C4E", fontWeight: 500,
-                textDecoration: "underline", textUnderlineOffset: 3,
-              }}>
+              <Link
+                to="/scholarship"
+                style={{
+                  fontSize: 14,
+                  color: "#1A8C4E",
+                  fontWeight: 500,
+                  textDecoration: "underline",
+                  textUnderlineOffset: 3,
+                }}
+              >
                 Apply for a Scholarship →
               </Link>
             </div>
@@ -201,31 +259,59 @@ function ScrumMasterPage() {
               src={scrumImg}
               alt="Scrum Master programme"
               style={{
-                width: "100%", aspectRatio: "4 / 3", borderRadius: 16,
-                objectFit: "cover", marginBottom: 16,
+                width: "100%",
+                aspectRatio: "4 / 3",
+                borderRadius: 16,
+                objectFit: "cover",
+                marginBottom: 16,
                 background: "linear-gradient(135deg, #0d3d2a, #1a7a50, #0a2e1a)",
               }}
               onError={(e) => {
                 e.currentTarget.style.display = "none";
               }}
             />
-            <div style={{
-              background: "#fff", borderRadius: 12,
-              border: "1px solid rgba(10,46,26,0.08)", padding: "22px 24px",
-            }}>
-              <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.12em", color: "rgba(10,46,26,0.4)" }}>
+            <div
+              style={{
+                background: "#fff",
+                borderRadius: 12,
+                border: "1px solid rgba(10,46,26,0.08)",
+                padding: "22px 24px",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 10,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.12em",
+                  color: "rgba(10,46,26,0.4)",
+                }}
+              >
                 Programme Fee
               </div>
-              <div className="sm-display" style={{ fontSize: 22, fontWeight: 700, color: "#0A2E1A", margin: "6px 0" }}>
+              <div
+                className="sm-display"
+                style={{ fontSize: 22, fontWeight: 700, color: "#0A2E1A", margin: "6px 0" }}
+              >
                 Contact us for pricing
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#1A8C4E", fontWeight: 500 }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  fontSize: 12,
+                  color: "#1A8C4E",
+                  fontWeight: 500,
+                }}
+              >
                 <Check size={14} /> Scholarship available — up to 100% tuition coverage
               </div>
               <div style={{ borderTop: "1px solid rgba(10,46,26,0.06)", margin: "14px 0" }} />
               <div style={{ fontSize: 12, color: "#4a7a5a" }}>
                 Flexible payment plans available.{" "}
-                <Link to="/contact" style={{ color: "#1A8C4E", fontWeight: 600 }}>Talk to us</Link>
+                <Link to="/contact" style={{ color: "#1A8C4E", fontWeight: 600 }}>
+                  Talk to us
+                </Link>
               </div>
             </div>
           </div>
@@ -233,10 +319,22 @@ function ScrumMasterPage() {
 
         {/* WHAT YOU'LL LEARN */}
         <section className="sm-section" style={{ padding: "64px 48px", background: "#fff" }}>
-          <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.14em", color: "#1A8C4E", fontWeight: 600, marginBottom: 10 }}>
+          <div
+            style={{
+              fontSize: 11,
+              textTransform: "uppercase",
+              letterSpacing: "0.14em",
+              color: "#1A8C4E",
+              fontWeight: 600,
+              marginBottom: 10,
+            }}
+          >
             PROGRAMME OUTCOMES
           </div>
-          <h2 className="sm-display" style={{ fontSize: 28, fontWeight: 700, color: "#0A2E1A", marginBottom: 8 }}>
+          <h2
+            className="sm-display"
+            style={{ fontSize: 28, fontWeight: 700, color: "#0A2E1A", marginBottom: 8 }}
+          >
             What you'll learn
           </h2>
           <p style={{ fontSize: 14, color: "#4a7a5a", marginBottom: 36 }}>
@@ -244,76 +342,174 @@ function ScrumMasterPage() {
           </p>
           <div className="sm-outcomes">
             {OUTCOMES.map((o) => (
-              <div key={o} style={{
-                display: "flex", alignItems: "flex-start", gap: 12,
-                padding: "16px 18px", background: "#EDF7F0",
-                borderRadius: 10, border: "1px solid rgba(10,46,26,0.06)",
-              }}>
+              <div
+                key={o}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: 12,
+                  padding: "16px 18px",
+                  background: "#EDF7F0",
+                  borderRadius: 10,
+                  border: "1px solid rgba(10,46,26,0.06)",
+                }}
+              >
                 <Check size={18} color="#00F5A0" style={{ flexShrink: 0, marginTop: 2 }} />
-                <span style={{ fontSize: 14, color: "#0A2E1A", fontWeight: 500, lineHeight: 1.5 }}>{o}</span>
+                <span style={{ fontSize: 14, color: "#0A2E1A", fontWeight: 500, lineHeight: 1.5 }}>
+                  {o}
+                </span>
               </div>
             ))}
           </div>
         </section>
 
         {/* CAPSTONE */}
-        <section className="sm-section" style={{
-          background: "#0A2E1A",
-          backgroundImage: "radial-gradient(circle at 20% 50%, rgba(0,245,160,0.06) 0%, transparent 50%)",
-          padding: "64px 48px",
-        }}>
-          <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.14em", color: "#00F5A0", fontWeight: 600, marginBottom: 10 }}>
+        <section
+          className="sm-section"
+          style={{
+            background: "#0A2E1A",
+            backgroundImage:
+              "radial-gradient(circle at 20% 50%, rgba(0,245,160,0.06) 0%, transparent 50%)",
+            padding: "64px 48px",
+          }}
+        >
+          <div
+            style={{
+              fontSize: 11,
+              textTransform: "uppercase",
+              letterSpacing: "0.14em",
+              color: "#00F5A0",
+              fontWeight: 600,
+              marginBottom: 10,
+            }}
+          >
             CAPSTONE PROJECT
           </div>
-          <h2 className="sm-display" style={{ fontSize: 28, fontWeight: 700, color: "#EDF7F0", marginBottom: 16 }}>
+          <h2
+            className="sm-display"
+            style={{ fontSize: 28, fontWeight: 700, color: "#EDF7F0", marginBottom: 16 }}
+          >
             Your capstone project
           </h2>
-          <p style={{ fontSize: 15, color: "rgba(237,247,240,0.65)", lineHeight: 1.7, maxWidth: 620, marginBottom: 28 }}>
-            Lead a simulated 2-sprint agile project from kickoff to retrospective, including backlog grooming, sprint planning and velocity tracking.
+          <p
+            style={{
+              fontSize: 15,
+              color: "rgba(237,247,240,0.65)",
+              lineHeight: 1.7,
+              maxWidth: 620,
+              marginBottom: 28,
+            }}
+          >
+            Lead a simulated 2-sprint agile project from kickoff to retrospective, including backlog
+            grooming, sprint planning and velocity tracking.
           </p>
           <div className="sm-capstone-cards">
             {[
-              { icon: <ClipboardList size={22} color="#00F5A0" />, title: "Real-world brief", text: "You'll work on a realistic project scenario, not a toy exercise." },
-              { icon: <Users size={22} color="#00F5A0" />, title: "Instructor reviewed", text: "Your submission is reviewed by the Evogue Academy team before approval." },
-              { icon: <FileCheck2 size={22} color="#00F5A0" />, title: "Certificate gated", text: "Your certificate is only issued once your capstone is approved." },
+              {
+                icon: <ClipboardList size={22} color="#00F5A0" />,
+                title: "Real-world brief",
+                text: "You'll work on a realistic project scenario, not a toy exercise.",
+              },
+              {
+                icon: <Users size={22} color="#00F5A0" />,
+                title: "Instructor reviewed",
+                text: "Your submission is reviewed by the Evogue Academy team before approval.",
+              },
+              {
+                icon: <FileCheck2 size={22} color="#00F5A0" />,
+                title: "Certificate gated",
+                text: "Your certificate is only issued once your capstone is approved.",
+              },
             ].map((c) => (
-              <div key={c.title} style={{
-                background: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(255,255,255,0.08)",
-                borderRadius: 12, padding: "22px 20px", flex: 1,
-              }}>
+              <div
+                key={c.title}
+                style={{
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  borderRadius: 12,
+                  padding: "22px 20px",
+                  flex: 1,
+                }}
+              >
                 <div style={{ marginBottom: 10 }}>{c.icon}</div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: "#EDF7F0", marginBottom: 6 }}>{c.title}</div>
-                <div style={{ fontSize: 12, color: "rgba(237,247,240,0.55)", lineHeight: 1.6 }}>{c.text}</div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: "#EDF7F0", marginBottom: 6 }}>
+                  {c.title}
+                </div>
+                <div style={{ fontSize: 12, color: "rgba(237,247,240,0.55)", lineHeight: 1.6 }}>
+                  {c.text}
+                </div>
               </div>
             ))}
           </div>
-          <p style={{ fontStyle: "italic", fontSize: 13, color: "rgba(237,247,240,0.4)", marginTop: 24 }}>
-            Your certificate is issued only after your capstone project is reviewed and approved by the Evogue Academy team.
+          <p
+            style={{
+              fontStyle: "italic",
+              fontSize: 13,
+              color: "rgba(237,247,240,0.4)",
+              marginTop: 24,
+            }}
+          >
+            Your certificate is issued only after your capstone project is reviewed and approved by
+            the Evogue Academy team.
           </p>
         </section>
 
         {/* HOW IT WORKS */}
         <section className="sm-section" style={{ padding: "64px 48px", background: "#EDF7F0" }}>
-          <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.14em", color: "#1A8C4E", fontWeight: 600, marginBottom: 10 }}>
+          <div
+            style={{
+              fontSize: 11,
+              textTransform: "uppercase",
+              letterSpacing: "0.14em",
+              color: "#1A8C4E",
+              fontWeight: 600,
+              marginBottom: 10,
+            }}
+          >
             THE PROCESS
           </div>
-          <h2 className="sm-display" style={{ fontSize: 28, fontWeight: 700, color: "#0A2E1A", marginBottom: 40 }}>
+          <h2
+            className="sm-display"
+            style={{ fontSize: 28, fontWeight: 700, color: "#0A2E1A", marginBottom: 40 }}
+          >
             How the programme works
           </h2>
           <div className="sm-steps">
             {STEPS.map((s, i) => (
               <div key={s.title} className="sm-step">
-                <div style={{
-                  width: 40, height: 40, borderRadius: "50%", background: "#0A2E1A",
-                  color: "#fff", fontSize: 14, fontWeight: 700,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  margin: "0 auto 14px", position: "relative", zIndex: 1,
-                }}>
+                <div
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: "50%",
+                    background: "#0A2E1A",
+                    color: "#fff",
+                    fontSize: 14,
+                    fontWeight: 700,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    margin: "0 auto 14px",
+                    position: "relative",
+                    zIndex: 1,
+                  }}
+                >
                   {i + 1}
                 </div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: "#0A2E1A", marginBottom: 6 }}>{s.title}</div>
-                <div style={{ fontSize: 12, color: "#4a7a5a", lineHeight: 1.6, maxWidth: 160, margin: "0 auto" }}>{s.desc}</div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: "#0A2E1A", marginBottom: 6 }}>
+                  {s.title}
+                </div>
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: "#4a7a5a",
+                    lineHeight: 1.6,
+                    maxWidth: 160,
+                    margin: "0 auto",
+                  }}
+                >
+                  {s.desc}
+                </div>
               </div>
             ))}
           </div>
@@ -321,30 +517,74 @@ function ScrumMasterPage() {
 
         {/* FAQ */}
         <section className="sm-section" style={{ padding: "64px 48px", background: "#fff" }}>
-          <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.14em", color: "#1A8C4E", fontWeight: 600, marginBottom: 10 }}>
+          <div
+            style={{
+              fontSize: 11,
+              textTransform: "uppercase",
+              letterSpacing: "0.14em",
+              color: "#1A8C4E",
+              fontWeight: 600,
+              marginBottom: 10,
+            }}
+          >
             FAQ
           </div>
-          <h2 className="sm-display" style={{ fontSize: 28, fontWeight: 700, color: "#0A2E1A", marginBottom: 32 }}>
+          <h2
+            className="sm-display"
+            style={{ fontSize: 28, fontWeight: 700, color: "#0A2E1A", marginBottom: 32 }}
+          >
             Common questions
           </h2>
           <div>
             {FAQS.map((f, i) => {
               const open = openFaq === i;
               return (
-                <div key={f.q} style={{ borderBottom: "1px solid rgba(10,46,26,0.08)", padding: "18px 0", cursor: "pointer" }}
+                <div
+                  key={f.q}
+                  style={{
+                    borderBottom: "1px solid rgba(10,46,26,0.08)",
+                    padding: "18px 0",
+                    cursor: "pointer",
+                  }}
                   onClick={() => setOpenFaq(open ? -1 : i)}
                 >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      gap: 16,
+                    }}
+                  >
                     <span style={{ fontSize: 15, fontWeight: 600, color: "#0A2E1A" }}>{f.q}</span>
-                    <ChevronDown size={18} color="#0A2E1A" style={{ transition: "transform 0.2s", transform: open ? "rotate(180deg)" : "rotate(0deg)" }} />
+                    <ChevronDown
+                      size={18}
+                      color="#0A2E1A"
+                      style={{
+                        transition: "transform 0.2s",
+                        transform: open ? "rotate(180deg)" : "rotate(0deg)",
+                      }}
+                    />
                   </div>
-                  <div style={{
-                    display: "grid",
-                    gridTemplateRows: open ? "1fr" : "0fr",
-                    transition: "grid-template-rows 0.25s ease",
-                  }}>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateRows: open ? "1fr" : "0fr",
+                      transition: "grid-template-rows 0.25s ease",
+                    }}
+                  >
                     <div style={{ overflow: "hidden" }}>
-                      <p style={{ fontSize: 14, color: "#4a7a5a", lineHeight: 1.7, paddingTop: 10, margin: 0 }}>{f.a}</p>
+                      <p
+                        style={{
+                          fontSize: 14,
+                          color: "#4a7a5a",
+                          lineHeight: 1.7,
+                          paddingTop: 10,
+                          margin: 0,
+                        }}
+                      >
+                        {f.a}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -365,17 +605,33 @@ function ScrumMasterPage() {
           </div>
         </div>
         <div style={{ display: "flex", gap: 12 }}>
-          <Link to="/contact" style={{
-            background: "#00F5A0", color: "#0A2E1A", fontWeight: 600,
-            padding: "12px 24px", borderRadius: 8, fontSize: 14, textDecoration: "none",
-          }}>
+          <Link
+            to="/contact"
+            style={{
+              background: "#00F5A0",
+              color: "#0A2E1A",
+              fontWeight: 600,
+              padding: "12px 24px",
+              borderRadius: 8,
+              fontSize: 14,
+              textDecoration: "none",
+            }}
+          >
             Enrol Now
           </Link>
-          <Link to="/scholarship" style={{
-            background: "transparent", border: "1.5px solid rgba(255,255,255,0.2)",
-            color: "#EDF7F0", padding: "12px 24px", borderRadius: 8, fontSize: 14,
-            fontWeight: 600, textDecoration: "none",
-          }}>
+          <Link
+            to="/scholarship"
+            style={{
+              background: "transparent",
+              border: "1.5px solid rgba(255,255,255,0.2)",
+              color: "#EDF7F0",
+              padding: "12px 24px",
+              borderRadius: 8,
+              fontSize: 14,
+              fontWeight: 600,
+              textDecoration: "none",
+            }}
+          >
             Apply for a Scholarship
           </Link>
         </div>

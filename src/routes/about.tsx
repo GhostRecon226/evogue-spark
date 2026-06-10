@@ -2,25 +2,41 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Hammer, Globe2, TrendingUp } from "lucide-react";
 import { PublicShell } from "@/components/PublicShell";
 
-
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
       { title: "About — Evogue Academy" },
-      { name: "description", content: "Our founder story, mission and team behind Evogue Academy." },
+      {
+        name: "description",
+        content: "Our founder story, mission and team behind Evogue Academy.",
+      },
       { property: "og:title", content: "About — Evogue Academy" },
-      { property: "og:description", content: "Building the next generation of global tech leaders." },
+      {
+        property: "og:description",
+        content: "Building the next generation of global tech leaders.",
+      },
     ],
   }),
   component: AboutPage,
 });
 
 const features = [
-  { icon: Hammer, title: "Practical Learning", text: "Build real products from week one — no passive lectures." },
-  { icon: Globe2, title: "Global Standards", text: "Curriculum benchmarked against the world's best companies." },
-  { icon: TrendingUp, title: "Career Growth", text: "Portfolio reviews, interview prep, and a global hiring network." },
+  {
+    icon: Hammer,
+    title: "Practical Learning",
+    text: "Build real products from week one — no passive lectures.",
+  },
+  {
+    icon: Globe2,
+    title: "Global Standards",
+    text: "Curriculum benchmarked against the world's best companies.",
+  },
+  {
+    icon: TrendingUp,
+    title: "Career Growth",
+    text: "Portfolio reviews, interview prep, and a global hiring network.",
+  },
 ];
-
 
 function AboutPage() {
   return (
@@ -28,15 +44,21 @@ function AboutPage() {
       <section className="py-14 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid gap-12 lg:grid-cols-2 items-center">
           <div>
-            <span className="inline-block text-xs font-bold tracking-[0.2em] uppercase text-secondary">Our Story</span>
+            <span className="inline-block text-xs font-bold tracking-[0.2em] uppercase text-secondary">
+              Our Story
+            </span>
             <h1 className="mt-3 font-display text-4xl sm:text-5xl font-extrabold text-forest leading-tight">
               Built in Africa. <span className="text-secondary">Open to the World.</span>
             </h1>
             <p className="mt-5 text-foreground/75 text-base sm:text-lg">
-              Evogue Academy started with a simple question: why should where you grow up determine the quality of your education? We built the academy to close that gap. Pairing ambitious learners from everywhere with world-class practitioners who have shipped real products at top global companies.
+              Evogue Academy started with a simple question: why should where you grow up determine
+              the quality of your education? We built the academy to close that gap. Pairing
+              ambitious learners from everywhere with world-class practitioners who have shipped
+              real products at top global companies.
             </p>
             <p className="mt-4 text-foreground/75 text-base sm:text-lg">
-              Today our graduates are designing, engineering and shipping across four continents. We are just getting started.
+              Today our graduates are designing, engineering and shipping across four continents. We
+              are just getting started.
             </p>
           </div>
           <div className="rounded-3xl overflow-hidden shadow-soft">
@@ -51,20 +73,27 @@ function AboutPage() {
 
       <section className="bg-mint-tint py-12 sm:py-16">
         <div className="mx-auto max-w-4xl px-4 text-center">
-          <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-forest">Our Mission</h2>
+          <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-forest">
+            Our Mission
+          </h2>
           <p className="mt-5 text-foreground/75 text-base sm:text-lg leading-relaxed">
-            To equip ambitious minds everywhere with the skills, mentorship and
-            confidence to compete and win on the global tech stage.
+            To equip ambitious minds everywhere with the skills, mentorship and confidence to
+            compete and win on the global tech stage.
           </p>
         </div>
       </section>
 
       <section className="py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center font-display text-3xl sm:text-4xl font-extrabold text-forest">Our Values</h2>
+          <h2 className="text-center font-display text-3xl sm:text-4xl font-extrabold text-forest">
+            Our Values
+          </h2>
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((f) => (
-              <div key={f.title} className="rounded-2xl bg-background p-7 border border-border shadow-soft">
+              <div
+                key={f.title}
+                className="rounded-2xl bg-background p-7 border border-border shadow-soft"
+              >
                 <span className="inline-grid h-12 w-12 place-items-center rounded-xl bg-mint/30 text-secondary">
                   <f.icon className="h-6 w-6" strokeWidth={2.25} />
                 </span>
@@ -75,7 +104,6 @@ function AboutPage() {
           </div>
         </div>
       </section>
-
     </PublicShell>
   );
 }

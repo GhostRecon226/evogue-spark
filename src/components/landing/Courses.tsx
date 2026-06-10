@@ -4,12 +4,12 @@ import { Button } from "@/components/ui/button";
 import { type Course } from "@/lib/courses-data";
 import { CourseLink } from "@/components/courses/CourseLink";
 
-
 const FEATURED_COURSES: Course[] = [
   {
     slug: "project-management-business-analysis",
     title: "Project Management & Business Analysis",
-    description: "Lead projects end-to-end, analyze business requirements and deliver value with modern PM & BA frameworks.",
+    description:
+      "Lead projects end-to-end, analyze business requirements and deliver value with modern PM & BA frameworks.",
     longDescription: "",
     duration: "10 weeks",
     level: "Beginner – Intermediate",
@@ -24,7 +24,8 @@ const FEATURED_COURSES: Course[] = [
   {
     slug: "scrum-master",
     title: "Scrum Master",
-    description: "Facilitate agile teams, run sprints and ceremonies, and drive continuous improvement as a certified Scrum Master.",
+    description:
+      "Facilitate agile teams, run sprints and ceremonies, and drive continuous improvement as a certified Scrum Master.",
     longDescription: "",
     duration: "3 weeks",
     level: "Intermediate",
@@ -39,7 +40,8 @@ const FEATURED_COURSES: Course[] = [
   {
     slug: "digital-marketing",
     title: "Digital Marketing",
-    description: "Build brands that grow. Master SEO, social media, content strategy and paid advertising across channels.",
+    description:
+      "Build brands that grow. Master SEO, social media, content strategy and paid advertising across channels.",
     longDescription: "",
     duration: "3 weeks",
     level: "Beginner",
@@ -103,7 +105,8 @@ export function CourseCard({ course }: { course: Course }) {
               const img = e.currentTarget;
               if (!img.dataset.fallback) {
                 img.dataset.fallback = "1";
-                img.src = "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80";
+                img.src =
+                  "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80";
               }
             }}
             className={`w-full h-full object-cover transition-transform duration-700 ${
@@ -134,7 +137,10 @@ export function CourseCard({ course }: { course: Course }) {
           </span>
         </div>
         <div className="mt-6">
-          <Button asChild className="w-full sm:w-auto rounded-full bg-forest text-mint hover:bg-forest/90 py-2 px-3.5 text-xs">
+          <Button
+            asChild
+            className="w-full sm:w-auto rounded-full bg-forest text-mint hover:bg-forest/90 py-2 px-3.5 text-xs"
+          >
             <CourseLink slug={course.slug}>
               View Details <ArrowRight className="ml-1 h-4 w-4" />
             </CourseLink>

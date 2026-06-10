@@ -6,7 +6,11 @@ import { Button } from "@/components/ui/button";
 
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/hooks/use-auth";
@@ -72,7 +76,9 @@ export function Navbar() {
                   <button className="rounded-full ring-2 ring-transparent hover:ring-secondary/40 transition">
                     <Avatar className="h-10 w-10">
                       <AvatarImage src={user?.user_metadata?.avatar_url} alt="" />
-                      <AvatarFallback className="bg-secondary text-forest font-bold">{initials}</AvatarFallback>
+                      <AvatarFallback className="bg-secondary text-forest font-bold">
+                        {initials}
+                      </AvatarFallback>
                     </Avatar>
                   </button>
                 </DropdownMenuTrigger>
@@ -89,7 +95,10 @@ export function Navbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button asChild className="h-10 rounded-full bg-forest px-5 text-sm font-semibold text-white hover:bg-forest/90 hover:text-white">
+              <Button
+                asChild
+                className="h-10 rounded-full bg-forest px-5 text-sm font-semibold text-white hover:bg-forest/90 hover:text-white"
+              >
                 <Link to="/login">Login</Link>
               </Button>
             )}
@@ -120,11 +129,18 @@ export function Navbar() {
                 ))}
                 {isAuthenticated && (
                   <>
-                    <Link to="/dashboard" onClick={() => setOpen(false)} className="rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-accent data-[status=active]:bg-secondary/10 data-[status=active]:text-secondary">
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setOpen(false)}
+                      className="rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-accent data-[status=active]:bg-secondary/10 data-[status=active]:text-secondary"
+                    >
                       Dashboard
                     </Link>
                     <button
-                      onClick={async () => { setOpen(false); await signOut(); }}
+                      onClick={async () => {
+                        setOpen(false);
+                        await signOut();
+                      }}
                       className="text-right rounded-lg px-3 py-3 text-base font-medium text-foreground hover:bg-accent"
                     >
                       Logout
@@ -133,8 +149,13 @@ export function Navbar() {
                 )}
               </nav>
               {!isAuthenticated && (
-                <Button asChild className="mt-6 h-11 w-full rounded-full bg-forest text-white hover:bg-forest/90 hover:text-white text-sm font-semibold">
-                  <Link to="/login" onClick={() => setOpen(false)}>Login</Link>
+                <Button
+                  asChild
+                  className="mt-6 h-11 w-full rounded-full bg-forest text-white hover:bg-forest/90 hover:text-white text-sm font-semibold"
+                >
+                  <Link to="/login" onClick={() => setOpen(false)}>
+                    Login
+                  </Link>
                 </Button>
               )}
             </div>

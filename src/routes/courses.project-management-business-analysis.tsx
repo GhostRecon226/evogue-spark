@@ -13,7 +13,8 @@ const CURRICULUM_MODULES = [
 
 const COURSE_URL = "https://evogue-spark.lovable.app/courses/project-management-business-analysis";
 const COURSE_TITLE = "Project Management & Business Analysis Course (10 Weeks) — Evogue Academy";
-const COURSE_DESC = "10-week live cohort covering 6 modules: PM foundations, planning & scheduling, execution & control, business analysis, requirements elicitation, and agile PM & BA. Dual certificate.";
+const COURSE_DESC =
+  "10-week live cohort covering 6 modules: PM foundations, planning & scheduling, execution & control, business analysis, requirements elicitation, and agile PM & BA. Dual certificate.";
 
 export const Route = createFileRoute("/courses/project-management-business-analysis")({
   head: () => ({
@@ -43,7 +44,8 @@ export const Route = createFileRoute("/courses/project-management-business-analy
             name: "Evogue Academy",
             sameAs: "https://evogue-spark.lovable.app",
           },
-          educationalCredentialAwarded: "Dual certificate in Project Management and Business Analysis",
+          educationalCredentialAwarded:
+            "Dual certificate in Project Management and Business Analysis",
           timeRequired: "P10W",
           hasCourseInstance: {
             "@type": "CourseInstance",
@@ -84,7 +86,8 @@ export const Route = createFileRoute("/courses/project-management-business-analy
       curriculum={{
         eyebrow: "COURSE CURRICULUM",
         headline: "What the programme covers",
-        subtext: "Six structured modules designed around what employers actually need. Every session is practical, every concept is applied.",
+        subtext:
+          "Six structured modules designed around what employers actually need. Every session is practical, every concept is applied.",
         modules: [
           {
             title: "Module 1: Foundations of Project Management",
@@ -142,7 +145,8 @@ export const Route = createFileRoute("/courses/project-management-business-analy
       targetAudience={{
         eyebrow: "WHO THIS IS FOR",
         headline: "Is this programme right for you?",
-        subtext: "This programme is built for ambitious people at every stage. If any of the below describes you, you're in the right place.",
+        subtext:
+          "This programme is built for ambitious people at every stage. If any of the below describes you, you're in the right place.",
         items: [
           "Aspiring project managers or business analysts looking to break into the field",
           "Professionals transitioning into PM or BA roles from another career",
@@ -155,7 +159,8 @@ export const Route = createFileRoute("/courses/project-management-business-analy
       careerOutcomes={{
         eyebrow: "CAREER OUTCOMES",
         headline: "Roles you'll be ready for",
-        subtext: "Graduates of this programme are qualified to step into a range of high-demand roles across industries and geographies.",
+        subtext:
+          "Graduates of this programme are qualified to step into a range of high-demand roles across industries and geographies.",
         roles: [
           "Project Manager",
           "Business Analyst",
@@ -169,11 +174,26 @@ export const Route = createFileRoute("/courses/project-management-business-analy
         note: "You'll graduate with the confidence and credentials to pursue roles that require expertise in both project delivery and business analysis.",
       }}
       faqs={[
-        { q: "Do I need prior experience?", a: "No prior experience in project management or business analysis is required. We start from first principles and build up. A basic comfort with professional workplace environments is all you need." },
-        { q: "How are classes delivered?", a: "All classes are live online via Zoom. Sessions are recorded and shared with enrolled students so you never miss anything." },
-        { q: "What do I need to enrol?", a: "A reliable laptop, a stable internet connection and the commitment to show up every week. That's it." },
-        { q: "How does the certificate work?", a: "Your certificate is issued after your capstone project is reviewed and approved by the Evogue Academy team. Every graduate receives the same certificate regardless of scholarship status." },
-        { q: "Is there a payment plan?", a: "Yes. Reach out to us at hello@evogueacademy.com and we'll work something out based on your situation." },
+        {
+          q: "Do I need prior experience?",
+          a: "No prior experience in project management or business analysis is required. We start from first principles and build up. A basic comfort with professional workplace environments is all you need.",
+        },
+        {
+          q: "How are classes delivered?",
+          a: "All classes are live online via Zoom. Sessions are recorded and shared with enrolled students so you never miss anything.",
+        },
+        {
+          q: "What do I need to enrol?",
+          a: "A reliable laptop, a stable internet connection and the commitment to show up every week. That's it.",
+        },
+        {
+          q: "How does the certificate work?",
+          a: "Your certificate is issued after your capstone project is reviewed and approved by the Evogue Academy team. Every graduate receives the same certificate regardless of scholarship status.",
+        },
+        {
+          q: "Is there a payment plan?",
+          a: "Yes. Reach out to us at hello@evogueacademy.com and we'll work something out based on your situation.",
+        },
       ]}
       bottomHeadline="Ready to become our most qualified graduate?"
       bottomSubtext="The PM & BA programme is our most comprehensive offering. Limited cohort spots available."

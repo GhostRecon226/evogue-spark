@@ -39,7 +39,11 @@ function LoginPage() {
     }
 
     const [{ data: profile }, { data: roleRows }] = await Promise.all([
-      supabase.from("profiles").select("is_active, full_name").eq("id", signIn.user.id).maybeSingle(),
+      supabase
+        .from("profiles")
+        .select("is_active, full_name")
+        .eq("id", signIn.user.id)
+        .maybeSingle(),
       supabase.from("user_roles").select("role").eq("user_id", signIn.user.id),
     ]);
 
@@ -73,7 +77,13 @@ function LoginPage() {
             aria-hidden="true"
           >
             <defs>
-              <pattern id="hex" width="56" height="49" patternUnits="userSpaceOnUse" patternTransform="scale(1.2)">
+              <pattern
+                id="hex"
+                width="56"
+                height="49"
+                patternUnits="userSpaceOnUse"
+                patternTransform="scale(1.2)"
+              >
                 <polygon
                   points="28,2 54,16 54,42 28,56 2,42 2,16"
                   fill="none"
@@ -97,18 +107,40 @@ function LoginPage() {
 
           <div className="relative z-10 space-y-6 my-8">
             <h2 className="font-display text-4xl xl:text-5xl font-extrabold leading-[1.05] text-white">
-              Train. Build.<br />Launch Your Career.
+              Train. Build.
+              <br />
+              Launch Your Career.
             </h2>
-            <p className="text-mint text-lg font-medium">
-              Built in Africa. Open to the world.
-            </p>
+            <p className="text-mint text-lg font-medium">Built in Africa. Open to the world.</p>
 
             {/* Abstract illustration */}
             <div className="pt-8">
-              <svg viewBox="0 0 400 260" className="w-full max-w-md" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <svg
+                viewBox="0 0 400 260"
+                className="w-full max-w-md"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
                 {/* Floating dashboard card */}
-                <rect x="60" y="60" width="280" height="160" rx="16" fill="#1A8C4E" opacity="0.25" />
-                <rect x="80" y="80" width="240" height="140" rx="12" fill="#0A2E1A" stroke="#00F5A0" strokeWidth="1.5" />
+                <rect
+                  x="60"
+                  y="60"
+                  width="280"
+                  height="160"
+                  rx="16"
+                  fill="#1A8C4E"
+                  opacity="0.25"
+                />
+                <rect
+                  x="80"
+                  y="80"
+                  width="240"
+                  height="140"
+                  rx="12"
+                  fill="#0A2E1A"
+                  stroke="#00F5A0"
+                  strokeWidth="1.5"
+                />
 
                 {/* Header bar */}
                 <rect x="96" y="96" width="80" height="10" rx="5" fill="#00F5A0" />
@@ -123,43 +155,109 @@ function LoginPage() {
 
                 {/* Stat circle */}
                 <circle cx="270" cy="160" r="32" fill="none" stroke="#1A8C4E" strokeWidth="6" />
-                <circle cx="270" cy="160" r="32" fill="none" stroke="#00F5A0" strokeWidth="6"
-                  strokeDasharray="150 200" strokeLinecap="round" transform="rotate(-90 270 160)" />
-                <text x="270" y="166" textAnchor="middle" fill="#00F5A0" fontSize="14" fontWeight="700">87%</text>
+                <circle
+                  cx="270"
+                  cy="160"
+                  r="32"
+                  fill="none"
+                  stroke="#00F5A0"
+                  strokeWidth="6"
+                  strokeDasharray="150 200"
+                  strokeLinecap="round"
+                  transform="rotate(-90 270 160)"
+                />
+                <text
+                  x="270"
+                  y="166"
+                  textAnchor="middle"
+                  fill="#00F5A0"
+                  fontSize="14"
+                  fontWeight="700"
+                >
+                  87%
+                </text>
 
                 {/* Floating chips */}
                 <g>
                   <rect x="20" y="40" width="86" height="32" rx="16" fill="#00F5A0" />
-                  <text x="63" y="60" textAnchor="middle" fill="#0A2E1A" fontSize="11" fontWeight="700">LIVE CLASS</text>
+                  <text
+                    x="63"
+                    y="60"
+                    textAnchor="middle"
+                    fill="#0A2E1A"
+                    fontSize="11"
+                    fontWeight="700"
+                  >
+                    LIVE CLASS
+                  </text>
                 </g>
                 <g>
-                  <rect x="300" y="30" width="80" height="30" rx="15" fill="#1A8C4E" stroke="#00F5A0" strokeWidth="1.5" />
-                  <text x="340" y="50" textAnchor="middle" fill="#00F5A0" fontSize="11" fontWeight="700">+12 XP</text>
+                  <rect
+                    x="300"
+                    y="30"
+                    width="80"
+                    height="30"
+                    rx="15"
+                    fill="#1A8C4E"
+                    stroke="#00F5A0"
+                    strokeWidth="1.5"
+                  />
+                  <text
+                    x="340"
+                    y="50"
+                    textAnchor="middle"
+                    fill="#00F5A0"
+                    fontSize="11"
+                    fontWeight="700"
+                  >
+                    +12 XP
+                  </text>
                 </g>
                 <g>
-                  <rect x="290" y="210" width="100" height="34" rx="17" fill="#0A2E1A" stroke="#00F5A0" strokeWidth="1.5" />
+                  <rect
+                    x="290"
+                    y="210"
+                    width="100"
+                    height="34"
+                    rx="17"
+                    fill="#0A2E1A"
+                    stroke="#00F5A0"
+                    strokeWidth="1.5"
+                  />
                   <circle cx="307" cy="227" r="6" fill="#00F5A0" />
-                  <text x="320" y="232" fill="#ffffff" fontSize="11" fontWeight="600">Certified</text>
+                  <text x="320" y="232" fill="#ffffff" fontSize="11" fontWeight="600">
+                    Certified
+                  </text>
                 </g>
               </svg>
             </div>
           </div>
 
           <div className="relative z-10 flex items-center gap-10 xl:gap-14 text-xs text-white/70">
-            <div className="flex items-center gap-2"><GraduationCap className="h-4 w-4 text-mint" /> 1.2k+ Students</div>
-            <div className="flex items-center gap-2"><BookOpen className="h-4 w-4 text-mint" /> 500+ Hours Live instruction</div>
-            <div className="flex items-center gap-2"><Sparkles className="h-4 w-4 text-mint" /> 87% Job Outcome</div>
+            <div className="flex items-center gap-2">
+              <GraduationCap className="h-4 w-4 text-mint" /> 1.2k+ Students
+            </div>
+            <div className="flex items-center gap-2">
+              <BookOpen className="h-4 w-4 text-mint" /> 500+ Hours Live instruction
+            </div>
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-mint" /> 87% Job Outcome
+            </div>
           </div>
         </div>
 
         {/* Right Panel — form */}
         <div className="flex flex-col justify-center px-6 py-10 sm:px-10 lg:px-14 xl:px-16">
           <div className="lg:hidden mb-6 flex justify-center">
-            <Link to="/"><Logo /></Link>
+            <Link to="/">
+              <Logo />
+            </Link>
           </div>
 
           <div className="max-w-md w-full mx-auto">
-            <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-forest">Welcome back</h1>
+            <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-forest">
+              Welcome back
+            </h1>
             <p className="mt-2 text-foreground/60">Log in to access your dashboard.</p>
 
             <form onSubmit={submit} className="mt-8 space-y-5">
@@ -198,11 +296,12 @@ function LoginPage() {
                     {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
-                {error ? (
-                  <p className="text-sm text-destructive pt-1">{error}</p>
-                ) : null}
+                {error ? <p className="text-sm text-destructive pt-1">{error}</p> : null}
                 <div className="text-right pt-1">
-                  <Link to="/forgot-password" className="text-sm text-secondary font-semibold hover:underline">
+                  <Link
+                    to="/forgot-password"
+                    className="text-sm text-secondary font-semibold hover:underline"
+                  >
                     Forgot password?
                   </Link>
                 </div>

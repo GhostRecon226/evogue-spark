@@ -6,14 +6,23 @@ export const Route = createFileRoute("/courses/data-analysis")({
   head: () => ({
     meta: [
       { title: "Data Analysis — Evogue Academy" },
-      { name: "description", content: "Turn messy data into clear insights with Excel, SQL and modern BI tools." },
+      {
+        name: "description",
+        content: "Turn messy data into clear insights with Excel, SQL and modern BI tools.",
+      },
       { property: "og:title", content: "Data Analysis — Evogue Academy" },
-      { property: "og:description", content: "A 4-week live cohort that builds practical data analysis skills from scratch." },
+      {
+        property: "og:description",
+        content: "A 4-week live cohort that builds practical data analysis skills from scratch.",
+      },
       { property: "og:type", content: "article" },
       { property: "og:url", content: "https://evogue-spark.lovable.app/courses/data-analysis" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Data Analysis — Evogue Academy" },
-      { name: "twitter:description", content: "A 4-week live cohort that builds practical data analysis skills from scratch." },
+      {
+        name: "twitter:description",
+        content: "A 4-week live cohort that builds practical data analysis skills from scratch.",
+      },
     ],
     links: [{ rel: "canonical", href: "https://evogue-spark.lovable.app/courses/data-analysis" }],
   }),
@@ -37,11 +46,26 @@ export const Route = createFileRoute("/courses/data-analysis")({
       ]}
       capstone="Analyse a real-world dataset, extract meaningful business insights, build a dashboard to visualise your findings and present a structured report to a non-technical audience."
       faqs={[
-        { q: "Do I need prior experience?", a: "No. We start with the basics of Excel and build from there. If you can use a spreadsheet, you're ready to start." },
-        { q: "How are classes delivered?", a: "All classes are live online via Zoom. Sessions are recorded and shared with enrolled students so you never miss anything." },
-        { q: "What do I need to enrol?", a: "A reliable laptop, a stable internet connection and the commitment to show up every week. That's it." },
-        { q: "How does the certificate work?", a: "Your certificate is issued after your capstone project is reviewed and approved by the Evogue Academy team. Every graduate receives the same certificate regardless of scholarship status." },
-        { q: "Is there a payment plan?", a: "Yes. Reach out to us at hello@evogueacademy.com and we'll work something out based on your situation." },
+        {
+          q: "Do I need prior experience?",
+          a: "No. We start with the basics of Excel and build from there. If you can use a spreadsheet, you're ready to start.",
+        },
+        {
+          q: "How are classes delivered?",
+          a: "All classes are live online via Zoom. Sessions are recorded and shared with enrolled students so you never miss anything.",
+        },
+        {
+          q: "What do I need to enrol?",
+          a: "A reliable laptop, a stable internet connection and the commitment to show up every week. That's it.",
+        },
+        {
+          q: "How does the certificate work?",
+          a: "Your certificate is issued after your capstone project is reviewed and approved by the Evogue Academy team. Every graduate receives the same certificate regardless of scholarship status.",
+        },
+        {
+          q: "Is there a payment plan?",
+          a: "Yes. Reach out to us at hello@evogueacademy.com and we'll work something out based on your situation.",
+        },
       ]}
     />
   ),

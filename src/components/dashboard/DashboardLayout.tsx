@@ -1,11 +1,40 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, BookOpen, Award, User, LogOut, Menu, ArrowLeft, Shield, GraduationCap, ClipboardCheck, Users, Wallet, Mail, CalendarDays, PlayCircle, Megaphone, Settings as SettingsIcon, Bell, PanelLeftClose, PanelLeftOpen, UserCircle2, Video, Ticket } from "lucide-react";
+import {
+  LayoutDashboard,
+  BookOpen,
+  Award,
+  User,
+  LogOut,
+  Menu,
+  ArrowLeft,
+  Shield,
+  GraduationCap,
+  ClipboardCheck,
+  Users,
+  Wallet,
+  Mail,
+  CalendarDays,
+  PlayCircle,
+  Megaphone,
+  Settings as SettingsIcon,
+  Bell,
+  PanelLeftClose,
+  PanelLeftOpen,
+  UserCircle2,
+  Video,
+  Ticket,
+} from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Logo } from "@/components/landing/Logo";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Toaster } from "@/components/ui/sonner";
@@ -59,10 +88,40 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
 
   // Notifications panel (placeholder data — wire up when notifications backend exists).
   const [notifOpen, setNotifOpen] = useState(false);
-  const [notifications, setNotifications] = useState<Array<{ id: string; type: "class" | "announcement" | "certificate"; title: string; body: string; time: string; read: boolean }>>([
-    { id: "n1", type: "class", title: "Class reminder", body: "Your next live class is tomorrow at 11:00am", time: "2h ago", read: false },
-    { id: "n2", type: "announcement", title: "New announcement", body: "New announcement from your instructor", time: "Yesterday", read: false },
-    { id: "n3", type: "certificate", title: "Certificate ready", body: "Your certificate is ready to download", time: "3 days ago", read: false },
+  const [notifications, setNotifications] = useState<
+    Array<{
+      id: string;
+      type: "class" | "announcement" | "certificate";
+      title: string;
+      body: string;
+      time: string;
+      read: boolean;
+    }>
+  >([
+    {
+      id: "n1",
+      type: "class",
+      title: "Class reminder",
+      body: "Your next live class is tomorrow at 11:00am",
+      time: "2h ago",
+      read: false,
+    },
+    {
+      id: "n2",
+      type: "announcement",
+      title: "New announcement",
+      body: "New announcement from your instructor",
+      time: "Yesterday",
+      read: false,
+    },
+    {
+      id: "n3",
+      type: "certificate",
+      title: "Certificate ready",
+      body: "Your certificate is ready to download",
+      time: "3 days ago",
+      read: false,
+    },
   ]);
   const unreadCount = notifications.filter((n) => !n.read).length;
   const notifRef = useRef<HTMLDivElement>(null);
@@ -81,7 +140,8 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
     .slice(0, 2)
     .join("")
     .toUpperCase();
-  const displayName = profile?.full_name || user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Student";
+  const displayName =
+    profile?.full_name || user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Student";
   const avatarUrl = profile?.avatar_url || user?.user_metadata?.avatar_url;
 
   // Role-based: admin sees ONLY admin nav, instructor sees ONLY instructor nav, student sees student nav.
@@ -93,8 +153,15 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
   // Pick the longest matching nav item so deeper routes (e.g. /dashboard/courses) win over /dashboard.
   const current = [...navItems]
     .sort((a, b) => b.to.length - a.to.length)
-    .find((it) => (exactMatch(it.to) ? path === it.to : path === it.to || path.startsWith(it.to + "/")));
-  const todayStr = new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+    .find((it) =>
+      exactMatch(it.to) ? path === it.to : path === it.to || path.startsWith(it.to + "/"),
+    );
+  const todayStr = new Date().toLocaleDateString(undefined, {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
 
   const renderSidebar = (isMobile: boolean) => {
     const isCollapsed = !isMobile && canCollapse && collapsed;
@@ -103,8 +170,12 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         className="h-full flex flex-col text-mint"
         style={{ background: "var(--gradient-forest)" }}
       >
-        <div className={`${isCollapsed ? "px-3" : "px-6"} pt-6 pb-7 border-b border-mint/15 relative`}>
-          <div className={`flex ${isCollapsed ? "justify-center" : "items-start justify-between gap-2"}`}>
+        <div
+          className={`${isCollapsed ? "px-3" : "px-6"} pt-6 pb-7 border-b border-mint/15 relative`}
+        >
+          <div
+            className={`flex ${isCollapsed ? "justify-center" : "items-start justify-between gap-2"}`}
+          >
             <Link to="/" onClick={() => setOpen(false)} aria-label="Evogue Academy home">
               <Logo variant="light" className={isCollapsed ? "h-9 w-auto" : "h-16 w-auto"} />
             </Link>
@@ -125,7 +196,9 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                 <div className="flex items-center gap-3">
                   <Avatar className="h-11 w-11 ring-2 ring-mint/40">
                     <AvatarImage src={avatarUrl} alt="" />
-                    <AvatarFallback className="bg-mint text-forest font-bold text-sm">{initials}</AvatarFallback>
+                    <AvatarFallback className="bg-mint text-forest font-bold text-sm">
+                      {initials}
+                    </AvatarFallback>
                   </Avatar>
                   <div className="min-w-0">
                     <p className="text-[14px] font-semibold text-white truncate">{displayName}</p>
@@ -134,14 +207,18 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                         {profile.registration_number}
                       </p>
                     ) : (
-                      <p className="text-[11px] uppercase tracking-[0.18em] font-bold text-mint mt-0.5">Student</p>
+                      <p className="text-[11px] uppercase tracking-[0.18em] font-bold text-mint mt-0.5">
+                        Student
+                      </p>
                     )}
                   </div>
                 </div>
               ) : (
                 <>
                   <p className="text-[14px] font-semibold text-white truncate">{displayName}</p>
-                  <p className="text-[11px] uppercase tracking-[0.18em] font-bold text-mint mt-0.5">{roleLabel}</p>
+                  <p className="text-[11px] uppercase tracking-[0.18em] font-bold text-mint mt-0.5">
+                    {roleLabel}
+                  </p>
                 </>
               )}
             </div>
@@ -157,7 +234,9 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
             </button>
           )}
         </div>
-        <nav className={`sidebar-scroll flex-1 ${isCollapsed ? "px-2" : "px-3"} py-4 space-y-1 overflow-y-auto`}>
+        <nav
+          className={`sidebar-scroll flex-1 ${isCollapsed ? "px-2" : "px-3"} py-4 space-y-1 overflow-y-auto`}
+        >
           {navItems.map((it) => {
             const active = exactMatch(it.to) ? path === it.to : path.startsWith(it.to);
             return (
@@ -207,7 +286,11 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-mint-tint flex">
-      <aside className={`hidden lg:block ${desktopAsideWidth} shrink-0 sticky top-0 h-screen transition-[width] duration-200`}>{renderSidebar(false)}</aside>
+      <aside
+        className={`hidden lg:block ${desktopAsideWidth} shrink-0 sticky top-0 h-screen transition-[width] duration-200`}
+      >
+        {renderSidebar(false)}
+      </aside>
 
       <div className="flex-1 flex flex-col min-w-0">
         <header className="sticky top-0 z-30 flex items-center justify-between gap-3 bg-background/85 backdrop-blur-md border-b border-border px-4 sm:px-6 lg:px-8 h-16">
@@ -224,21 +307,25 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
               </SheetContent>
             </Sheet>
             <div className="lg:hidden min-w-0">
-              <Link to="/" aria-label="Evogue Academy home"><Logo /></Link>
+              <Link to="/" aria-label="Evogue Academy home">
+                <Logo />
+              </Link>
             </div>
             <div className="hidden lg:flex flex-col min-w-0">
               <h1 className="font-display text-lg font-bold text-forest truncate leading-tight">
                 {current?.label ?? "Dashboard"}
               </h1>
-              {isStudent && (
-                <p className="text-[11px] text-foreground/55 truncate">{todayStr}</p>
-              )}
+              {isStudent && <p className="text-[11px] text-foreground/55 truncate">{todayStr}</p>}
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             {!isAdmin && (
-              <Button asChild variant="ghost" className="hidden sm:inline-flex rounded-full text-sm">
+              <Button
+                asChild
+                variant="ghost"
+                className="hidden sm:inline-flex rounded-full text-sm"
+              >
                 <Link to="/courses">Browse courses</Link>
               </Button>
             )}
@@ -271,17 +358,30 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                     className="flex items-center justify-between shrink-0"
                     style={{ padding: "16px 20px", borderBottom: "1px solid rgba(10,46,26,0.08)" }}
                   >
-                    <span style={{ fontSize: "14px", fontWeight: 600, color: "#0A2E1A" }}>Notifications</span>
+                    <span style={{ fontSize: "14px", fontWeight: 600, color: "#0A2E1A" }}>
+                      Notifications
+                    </span>
                     <button
                       type="button"
-                      onClick={() => setNotifications((arr) => arr.map((n) => ({ ...n, read: true })))}
-                      style={{ fontSize: "12px", color: "#1A8C4E", cursor: "pointer", background: "none", border: "none" }}
+                      onClick={() =>
+                        setNotifications((arr) => arr.map((n) => ({ ...n, read: true })))
+                      }
+                      style={{
+                        fontSize: "12px",
+                        color: "#1A8C4E",
+                        cursor: "pointer",
+                        background: "none",
+                        border: "none",
+                      }}
                     >
                       Mark all as read
                     </button>
                   </div>
                   {notifications.length === 0 || unreadCount === 0 ? (
-                    <div className="flex-1 flex flex-col items-center justify-center" style={{ padding: "40px 20px", textAlign: "center" }}>
+                    <div
+                      className="flex-1 flex flex-col items-center justify-center"
+                      style={{ padding: "40px 20px", textAlign: "center" }}
+                    >
                       <div
                         className="mx-auto grid place-items-center mb-4"
                         style={{
@@ -294,9 +394,18 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                         <Bell className="h-6 w-6" style={{ color: "#1A8C4E" }} />
                       </div>
                       <p style={{ fontSize: "15px", fontWeight: 600, color: "#0A2E1A" }}>
-                        {notifications.length === 0 ? "No notifications yet" : "You're all caught up"}
+                        {notifications.length === 0
+                          ? "No notifications yet"
+                          : "You're all caught up"}
                       </p>
-                      <p style={{ fontSize: "13px", color: "rgba(10,46,26,0.45)", lineHeight: 1.6, marginTop: "6px" }}>
+                      <p
+                        style={{
+                          fontSize: "13px",
+                          color: "rgba(10,46,26,0.45)",
+                          lineHeight: 1.6,
+                          marginTop: "6px",
+                        }}
+                      >
                         {notifications.length === 0
                           ? "We'll notify you about classes, announcements and certificate updates."
                           : "Check back later for new classes, announcements and certificates."}
@@ -305,11 +414,20 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                   ) : (
                     <ul className="overflow-y-auto">
                       {notifications.map((n) => {
-                        const Icon = n.type === "class" ? Video : n.type === "announcement" ? Megaphone : Award;
+                        const Icon =
+                          n.type === "class"
+                            ? Video
+                            : n.type === "announcement"
+                              ? Megaphone
+                              : Award;
                         return (
                           <li
                             key={n.id}
-                            onClick={() => setNotifications((arr) => arr.map((x) => (x.id === n.id ? { ...x, read: true } : x)))}
+                            onClick={() =>
+                              setNotifications((arr) =>
+                                arr.map((x) => (x.id === n.id ? { ...x, read: true } : x)),
+                              )
+                            }
                             className="hover:bg-[rgba(10,46,26,0.03)]"
                             style={{
                               padding: "14px 20px",
@@ -350,9 +468,27 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                               )}
                             </div>
                             <div className="min-w-0 flex-1">
-                              <p style={{ fontSize: "13px", fontWeight: 600, color: "#0A2E1A" }}>{n.title}</p>
-                              <p style={{ fontSize: "12px", color: "rgba(10,46,26,0.55)", lineHeight: 1.5 }}>{n.body}</p>
-                              <p style={{ fontSize: "11px", color: "rgba(10,46,26,0.35)", marginTop: "3px" }}>{n.time}</p>
+                              <p style={{ fontSize: "13px", fontWeight: 600, color: "#0A2E1A" }}>
+                                {n.title}
+                              </p>
+                              <p
+                                style={{
+                                  fontSize: "12px",
+                                  color: "rgba(10,46,26,0.55)",
+                                  lineHeight: 1.5,
+                                }}
+                              >
+                                {n.body}
+                              </p>
+                              <p
+                                style={{
+                                  fontSize: "11px",
+                                  color: "rgba(10,46,26,0.35)",
+                                  marginTop: "3px",
+                                }}
+                              >
+                                {n.time}
+                              </p>
                             </div>
                             {!n.read && (
                               <span
@@ -381,10 +517,15 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="rounded-full ring-2 ring-transparent hover:ring-secondary/40 transition h-11 w-11 grid place-items-center" aria-label="Account menu">
+                <button
+                  className="rounded-full ring-2 ring-transparent hover:ring-secondary/40 transition h-11 w-11 grid place-items-center"
+                  aria-label="Account menu"
+                >
                   <Avatar className="h-9 w-9">
                     <AvatarImage src={user?.user_metadata?.avatar_url} alt="" />
-                    <AvatarFallback className="bg-forest text-mint font-bold text-sm">{initials}</AvatarFallback>
+                    <AvatarFallback className="bg-forest text-mint font-bold text-sm">
+                      {initials}
+                    </AvatarFallback>
                   </Avatar>
                 </button>
               </DropdownMenuTrigger>
@@ -410,7 +551,9 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        <main className={`flex-1 p-4 sm:p-6 lg:p-8 min-w-0 ${showStudentBottomNav ? "pb-24 lg:pb-8" : ""}`}>
+        <main
+          className={`flex-1 p-4 sm:p-6 lg:p-8 min-w-0 ${showStudentBottomNav ? "pb-24 lg:pb-8" : ""}`}
+        >
           {children}
         </main>
 

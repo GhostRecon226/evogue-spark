@@ -1,7 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import { Award, Download, PartyPopper } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { generateCertificate } from "@/lib/generate-certificate";
 
 type Props = {
@@ -12,7 +18,13 @@ type Props = {
   issuedAt: string | Date;
 };
 
-export function CertificateModal({ open, onOpenChange, studentName, courseTitle, issuedAt }: Props) {
+export function CertificateModal({
+  open,
+  onOpenChange,
+  studentName,
+  courseTitle,
+  issuedAt,
+}: Props) {
   const download = () => generateCertificate({ studentName, courseTitle, issuedAt });
 
   return (
@@ -27,11 +39,15 @@ export function CertificateModal({ open, onOpenChange, studentName, courseTitle,
             Congratulations, {studentName?.split(" ")[0] || "Student"}!
           </DialogTitle>
           <DialogDescription className="text-foreground/70">
-            You've completed <span className="font-semibold text-forest">{courseTitle}</span>. Your certificate is ready.
+            You've completed <span className="font-semibold text-forest">{courseTitle}</span>. Your
+            certificate is ready.
           </DialogDescription>
         </DialogHeader>
         <div className="mt-2 flex flex-col gap-2">
-          <Button onClick={download} className="w-full rounded-full bg-forest text-mint hover:bg-forest/90 font-bold">
+          <Button
+            onClick={download}
+            className="w-full rounded-full bg-forest text-mint hover:bg-forest/90 font-bold"
+          >
             <Download className="h-4 w-4 mr-2" /> Download Certificate
           </Button>
           <Button asChild variant="ghost" className="w-full rounded-full">

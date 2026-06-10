@@ -19,7 +19,9 @@ export const EnrollButton = forwardRef<HTMLButtonElement, Props>(
     const to = user ? "/dashboard" : "/contact";
     return (
       <Button ref={ref} asChild disabled={loading} {...buttonProps}>
-        <Link to={to} onClick={onNavigate}>{children}</Link>
+        <Link to={to} onClick={onNavigate}>
+          {children}
+        </Link>
       </Button>
     );
   },

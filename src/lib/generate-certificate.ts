@@ -81,7 +81,9 @@ export function generateCertificate({ studentName, courseTitle, issuedAt }: Cert
 
   // Date + signature row
   const dateStr = new Date(issuedAt).toLocaleDateString(undefined, {
-    year: "numeric", month: "long", day: "numeric",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   });
 
   const baseY = H - 110;
@@ -120,6 +122,9 @@ export function generateCertificate({ studentName, courseTitle, issuedAt }: Cert
   doc.text("EVOGUE", W / 2, baseY, { align: "center" });
   doc.text("ACADEMY", W / 2, baseY + 10, { align: "center" });
 
-  const safeSlug = courseTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  const safeSlug = courseTitle
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
   doc.save(`Evogue-Certificate-${safeSlug || "course"}.pdf`);
 }

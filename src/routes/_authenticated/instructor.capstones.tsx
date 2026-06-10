@@ -22,7 +22,11 @@ type Row = {
   cohort_id: string | null;
   instructor_recommendation: boolean;
   instructor_note: string | null;
-  student: { full_name: string | null; email: string | null; registration_number: string | null } | null;
+  student: {
+    full_name: string | null;
+    email: string | null;
+    registration_number: string | null;
+  } | null;
   course: { title: string } | null;
 };
 
@@ -35,12 +39,18 @@ function InstructorCapstones() {
   const [q, setQ] = useState("");
 
   const load = async () => {
-    if (instructorCourseIds.length === 0) { setRows([]); setLoading(false); return; }
+    if (instructorCourseIds.length === 0) {
+      setRows([]);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     const [{ data }, { data: cohs }] = await Promise.all([
       supabase
         .from("capstone_submissions")
-        .select("id, status, submitted_at, submission_text, file_url, cohort_id, instructor_recommendation, instructor_note, student:profiles!capstone_submissions_student_id_fkey(full_name, email, registration_number), course:courses!capstone_submissions_course_id_fkey(title)")
+        .select(
+          "id, status, submitted_at, submission_text, file_url, cohort_id, instructor_recommendation, instructor_note, student:profiles!capstone_submissions_student_id_fkey(full_name, email, registration_number), course:courses!capstone_submissions_course_id_fkey(title)",
+        )
         .in("course_id", instructorCourseIds)
         .order("submitted_at", { ascending: false }),
       supabase.from("cohorts").select("id, name").in("course_id", instructorCourseIds),
@@ -50,7 +60,9 @@ function InstructorCapstones() {
     setLoading(false);
   };
 
-  useEffect(() => { void load(); }, [instructorCourseIds.join(",")]);
+  useEffect(() => {
+    void load();
+  }, [instructorCourseIds.join(",")]);
 
   const recommend = async (id: string, currentNote: string | null, recommend: boolean) => {
     const note = noteDraft[id] ?? currentNote ?? "";
@@ -59,14 +71,22 @@ function InstructorCapstones() {
       .from("capstone_submissions")
       .update({ instructor_recommendation: recommend, instructor_note: note || null, status })
       .eq("id", id);
-    if (error) { toast.error(error.message); return; }
-    toast.success(recommend ? "Recommended for admin approval" : "Marked as rejected — admin will review");
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success(
+      recommend ? "Recommended for admin approval" : "Marked as rejected — admin will review",
+    );
     void load();
   };
 
   const viewFile = async (path: string) => {
     const { data, error } = await supabase.storage.from("capstones").createSignedUrl(path, 60);
-    if (error || !data) { toast.error("Could not generate file link"); return; }
+    if (error || !data) {
+      toast.error("Could not generate file link");
+      return;
+    }
     window.open(data.signedUrl, "_blank", "noreferrer");
   };
 
@@ -86,17 +106,28 @@ function InstructorCapstones() {
         <GraduationCap className="h-6 w-6 text-secondary" />
         <h1 className="font-display text-3xl font-extrabold text-forest">Capstone Reviews</h1>
       </div>
-      <p className="mt-2 text-foreground/65">Review submissions for the courses you teach. Final approval sits with admin.</p>
+      <p className="mt-2 text-foreground/65">
+        Review submissions for the courses you teach. Final approval sits with admin.
+      </p>
 
       <div className="mt-6 max-w-md">
-        <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search by student, Student ID or course…" className="rounded-full" />
+        <Input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Search by student, Student ID or course…"
+          className="rounded-full"
+        />
       </div>
 
       {loading ? (
-        <div className="mt-10 grid place-items-center text-foreground/50"><Loader2 className="h-5 w-5 animate-spin" /></div>
+        <div className="mt-10 grid place-items-center text-foreground/50">
+          <Loader2 className="h-5 w-5 animate-spin" />
+        </div>
       ) : filtered.length === 0 ? (
         <div className="mt-10 rounded-3xl border border-dashed border-border bg-background p-12 text-center text-foreground/60">
-          {instructorCourseIds.length === 0 ? "No courses assigned to you yet." : "No submissions match."}
+          {instructorCourseIds.length === 0
+            ? "No courses assigned to you yet."
+            : "No submissions match."}
         </div>
       ) : (
         <div className="mt-6 space-y-4">
@@ -107,16 +138,28 @@ function InstructorCapstones() {
               <div key={r.id} className="rounded-2xl border border-border bg-background p-5">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <h3 className="font-display font-bold text-forest">{r.student?.full_name || "Student"}</h3>
+                    <h3 className="font-display font-bold text-forest">
+                      {r.student?.full_name || "Student"}
+                    </h3>
                     <p className="text-xs text-foreground/55">
-                      {r.student?.registration_number ?? "—"} · {r.course?.title ?? "—"} · {cohort} · {new Date(r.submitted_at).toLocaleDateString()}
+                      {r.student?.registration_number ?? "—"} · {r.course?.title ?? "—"} · {cohort}{" "}
+                      · {new Date(r.submitted_at).toLocaleDateString()}
                     </p>
                   </div>
-                  <span className="inline-block rounded-full bg-mint-tint px-3 py-1 text-xs font-bold text-forest capitalize">{r.status}</span>
+                  <span className="inline-block rounded-full bg-mint-tint px-3 py-1 text-xs font-bold text-forest capitalize">
+                    {r.status}
+                  </span>
                 </div>
-                <p className="mt-3 text-sm text-foreground/80 whitespace-pre-wrap">{r.submission_text}</p>
+                <p className="mt-3 text-sm text-foreground/80 whitespace-pre-wrap">
+                  {r.submission_text}
+                </p>
                 {r.file_url && (
-                  <Button onClick={() => viewFile(r.file_url!)} variant="outline" size="sm" className="mt-3 rounded-full">
+                  <Button
+                    onClick={() => viewFile(r.file_url!)}
+                    variant="outline"
+                    size="sm"
+                    className="mt-3 rounded-full"
+                  >
                     <ExternalLink className="h-3 w-3 mr-1" /> Open file
                   </Button>
                 )}

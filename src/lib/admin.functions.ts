@@ -71,9 +71,7 @@ export const setStudentActive = createServerFn({ method: "POST" })
 
 export const promoteToAdmin = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input) =>
-    z.object({ email: z.string().trim().email().max(255) }).parse(input),
-  )
+  .inputValidator((input) => z.object({ email: z.string().trim().email().max(255) }).parse(input))
   .handler(async ({ data, context }) => {
     await assertAdmin(context.userId);
     const { data: prof, error: pErr } = await supabaseAdmin
