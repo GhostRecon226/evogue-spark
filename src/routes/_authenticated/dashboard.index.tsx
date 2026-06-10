@@ -316,7 +316,7 @@ function DashboardHome() {
   );
 }
 
-function Stat({ icon: Icon, label, value, iconBg = "bg-mint/30", iconColor = "text-secondary", accent = "", valueClassName = "", tooltip }: { icon: typeof BookOpen; label: string; value: string; iconBg?: string; iconColor?: string; accent?: string; valueClassName?: string; tooltip?: string }) {
+function Stat({ icon: Icon, label, value, iconBg = "bg-mint/30", iconColor = "text-secondary", accent = "", valueClassName = "", tooltip, actionLabel, onAction }: { icon: typeof BookOpen; label: string; value: string; iconBg?: string; iconColor?: string; accent?: string; valueClassName?: string; tooltip?: string; actionLabel?: string; onAction?: () => void }) {
   const isMobile = useIsMobile();
   const [showTip, setShowTip] = useState(false);
   const tipPos = isMobile ? "top-full mt-2" : "bottom-full mb-2";
@@ -324,7 +324,7 @@ function Stat({ icon: Icon, label, value, iconBg = "bg-mint/30", iconColor = "te
     <div className={`rounded-2xl bg-background border border-border p-5 flex items-center gap-4 shadow-sm ${accent}`}>
       <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl ${iconBg} ${iconColor}`}><Icon className="h-5 w-5" /></span>
       <div className="min-w-0">
-        <div className="flex items-center gap-[6px]">
+        <div className="flex items-center gap-[6px] flex-wrap">
           <p className="text-[12px] uppercase tracking-wider font-semibold text-foreground/55">{label}</p>
           {tooltip && (
             <div className="relative" onMouseEnter={() => setShowTip(true)} onMouseLeave={() => setShowTip(false)}>
@@ -344,6 +344,11 @@ function Stat({ icon: Icon, label, value, iconBg = "bg-mint/30", iconColor = "te
                 </div>
               )}
             </div>
+          )}
+          {actionLabel && onAction && (
+            <button type="button" onClick={onAction} className="text-[11px] font-semibold text-secondary hover:underline">
+              {actionLabel}
+            </button>
           )}
         </div>
         <p className={`font-display font-extrabold text-forest ${valueClassName || "text-2xl"} truncate`}>{value}</p>
