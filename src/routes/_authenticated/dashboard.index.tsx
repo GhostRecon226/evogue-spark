@@ -1,12 +1,22 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { BookOpen, Award, ArrowRight, Loader2, CheckCircle2, Flag, Megaphone, Video, Mail, Info } from "lucide-react";
+import { BookOpen, Award, ArrowRight, Loader2, CheckCircle2, Flag, Megaphone, Video, Mail, Info, Clock, CheckCircle, XCircle, Upload } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
+
+type CapstoneDetail = {
+  status: "pending" | "recommended" | "approved" | "rejected";
+  submitted_at: string;
+  reviewed_at: string | null;
+  instructor_recommendation: boolean | null;
+  instructor_note: string | null;
+  admin_note?: string | null;
+};
 
 export const Route = createFileRoute("/_authenticated/dashboard/")({
   component: DashboardHome,
@@ -42,6 +52,8 @@ function DashboardHome() {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [upcoming, setUpcoming] = useState<UpcomingLesson | null>(null);
   const [progressList, setProgressList] = useState<Array<{ slug: string; title: string; done: number; total: number; capstoneReleased: boolean }>>([]);
+  const [capstoneDetail, setCapstoneDetail] = useState<CapstoneDetail | null>(null);
+  const [capstoneOpen, setCapstoneOpen] = useState(false);
 
   useEffect(() => {
     if (!user || isAdmin || isInstructor) return;
@@ -56,7 +68,7 @@ function DashboardHome() {
           .order("enrolled_at", { ascending: false }),
         supabase.from("certificates").select("id", { count: "exact", head: true }).eq("student_id", user.id),
         supabase.from("lesson_progress").select("id", { count: "exact", head: true }).eq("student_id", user.id).eq("completed", true),
-        supabase.from("capstone_submissions").select("status, submitted_at").eq("student_id", user.id).order("submitted_at", { ascending: false }).limit(1),
+        supabase.from("capstone_submissions").select("status, submitted_at, reviewed_at, instructor_recommendation, instructor_note").eq("student_id", user.id).order("submitted_at", { ascending: false }).limit(1),
       ]);
 
       const enrolled = enrollments ?? [];
@@ -143,6 +155,7 @@ function DashboardHome() {
           certificates: certCount ?? 0,
         });
         setCapstoneStatus(capStatus);
+        setCapstoneDetail((latestCap as CapstoneDetail | undefined) ?? null);
         setNext(nextCourse);
         setAnnouncements(annRows);
         setUpcoming(nextLesson);
@@ -182,7 +195,9 @@ function DashboardHome() {
           iconBg="bg-[#1A8C4E]" iconColor="text-white" accent="border-t-4 border-[#1A8C4E]" />
         <Stat icon={Flag} label="Capstone Status" value={loading ? "…" : capstoneLabel}
           iconBg="bg-[#F59E0B]" iconColor="text-white" accent="border-t-4 border-[#F59E0B]" valueClassName="text-base"
-          tooltip="Your capstone project is the final assignment for your course. Once submitted and approved by the Evogue Academy team, your certificate will be issued." />
+          tooltip="Your capstone project is the final assignment for your course. Once submitted and approved by the Evogue Academy team, your certificate will be issued."
+          actionLabel="View details" onAction={() => setCapstoneOpen(true)} />
+
         <Stat icon={Award} label="Certificates Earned" value={loading ? "…" : String(stats.certificates)}
           iconBg="bg-[#0A2E1A]" iconColor="text-[#00F5A0]" accent="border-t-4 border-[#0A2E1A]" />
       </div>
@@ -297,11 +312,12 @@ function DashboardHome() {
           )}
         </div>
       </div>
+      <CapstoneTimelineDialog open={capstoneOpen} onOpenChange={setCapstoneOpen} status={capstoneStatus} detail={capstoneDetail} />
     </DashboardLayout>
   );
 }
 
-function Stat({ icon: Icon, label, value, iconBg = "bg-mint/30", iconColor = "text-secondary", accent = "", valueClassName = "", tooltip }: { icon: typeof BookOpen; label: string; value: string; iconBg?: string; iconColor?: string; accent?: string; valueClassName?: string; tooltip?: string }) {
+function Stat({ icon: Icon, label, value, iconBg = "bg-mint/30", iconColor = "text-secondary", accent = "", valueClassName = "", tooltip, actionLabel, onAction }: { icon: typeof BookOpen; label: string; value: string; iconBg?: string; iconColor?: string; accent?: string; valueClassName?: string; tooltip?: string; actionLabel?: string; onAction?: () => void }) {
   const isMobile = useIsMobile();
   const [showTip, setShowTip] = useState(false);
   const tipPos = isMobile ? "top-full mt-2" : "bottom-full mb-2";
@@ -309,7 +325,7 @@ function Stat({ icon: Icon, label, value, iconBg = "bg-mint/30", iconColor = "te
     <div className={`rounded-2xl bg-background border border-border p-5 flex items-center gap-4 shadow-sm ${accent}`}>
       <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl ${iconBg} ${iconColor}`}><Icon className="h-5 w-5" /></span>
       <div className="min-w-0">
-        <div className="flex items-center gap-[6px]">
+        <div className="flex items-center gap-[6px] flex-wrap">
           <p className="text-[12px] uppercase tracking-wider font-semibold text-foreground/55">{label}</p>
           {tooltip && (
             <div className="relative" onMouseEnter={() => setShowTip(true)} onMouseLeave={() => setShowTip(false)}>
@@ -330,9 +346,123 @@ function Stat({ icon: Icon, label, value, iconBg = "bg-mint/30", iconColor = "te
               )}
             </div>
           )}
+          {actionLabel && onAction && (
+            <button type="button" onClick={onAction} className="text-[11px] font-semibold text-secondary hover:underline">
+              {actionLabel}
+            </button>
+          )}
         </div>
         <p className={`font-display font-extrabold text-forest ${valueClassName || "text-2xl"} truncate`}>{value}</p>
       </div>
     </div>
+  );
+}
+
+function CapstoneTimelineDialog({
+  open, onOpenChange, status, detail,
+}: {
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+  status: "not_started" | "pending" | "approved" | "rejected" | "recommended";
+  detail: CapstoneDetail | null;
+}) {
+  const fmt = (d: string | null | undefined) =>
+    d ? new Date(d).toLocaleString(undefined, { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }) : null;
+
+  type Step = {
+    key: string;
+    label: string;
+    icon: typeof Upload;
+    state: "done" | "current" | "pending" | "rejected";
+    at?: string | null;
+    note?: string | null;
+  };
+
+  const steps: Step[] = (() => {
+    if (!detail) {
+      return [
+        { key: "submit", label: "Submit your capstone", icon: Upload, state: "current" },
+        { key: "instructor", label: "Instructor review", icon: CheckCircle2, state: "pending" },
+        { key: "admin", label: "Final approval & certificate", icon: Award, state: "pending" },
+      ];
+    }
+    const submittedAt = fmt(detail.submitted_at);
+    const reviewedAt = fmt(detail.reviewed_at);
+    const submitStep: Step = { key: "submit", label: "Capstone submitted", icon: Upload, state: "done", at: submittedAt };
+
+    if (status === "rejected") {
+      return [
+        submitStep,
+        { key: "instructor", label: "Needs revision", icon: XCircle, state: "rejected", at: reviewedAt, note: detail.instructor_note },
+        { key: "admin", label: "Final approval & certificate", icon: Award, state: "pending" },
+      ];
+    }
+    if (status === "approved") {
+      return [
+        submitStep,
+        { key: "instructor", label: "Instructor recommended", icon: CheckCircle2, state: "done", at: reviewedAt, note: detail.instructor_note },
+        { key: "admin", label: "Approved · Certificate issued", icon: Award, state: "done", at: reviewedAt },
+      ];
+    }
+    if (status === "recommended") {
+      return [
+        submitStep,
+        { key: "instructor", label: "Instructor recommended", icon: CheckCircle2, state: "done", at: reviewedAt, note: detail.instructor_note },
+        { key: "admin", label: "Awaiting final approval", icon: Clock, state: "current" },
+      ];
+    }
+    // pending
+    return [
+      submitStep,
+      { key: "instructor", label: "Instructor review in progress", icon: Clock, state: "current" },
+      { key: "admin", label: "Final approval & certificate", icon: Award, state: "pending" },
+    ];
+  })();
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle className="font-display text-forest">Capstone Timeline</DialogTitle>
+          <DialogDescription>Track your submission and approval progress.</DialogDescription>
+        </DialogHeader>
+        <ol className="mt-2 space-y-4">
+          {steps.map((s, i) => {
+            const Icon = s.icon;
+            const tone =
+              s.state === "done" ? "bg-secondary text-white border-secondary"
+              : s.state === "current" ? "bg-[#F59E0B] text-white border-[#F59E0B]"
+              : s.state === "rejected" ? "bg-destructive text-white border-destructive"
+              : "bg-background text-foreground/40 border-border";
+            return (
+              <li key={s.key} className="flex gap-3">
+                <div className="flex flex-col items-center">
+                  <span className={`grid h-8 w-8 place-items-center rounded-full border-2 ${tone}`}>
+                    <Icon className="h-4 w-4" />
+                  </span>
+                  {i < steps.length - 1 && <span className="flex-1 w-px bg-border mt-1" />}
+                </div>
+                <div className="pb-2 min-w-0">
+                  <p className="font-display font-bold text-forest">{s.label}</p>
+                  {s.at && <p className="text-xs text-foreground/55 mt-0.5">{s.at}</p>}
+                  {s.note && (
+                    <div className="mt-2 rounded-lg bg-mint-tint p-3 text-sm text-foreground/80">
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-secondary mb-1">Instructor note</p>
+                      {s.note}
+                    </div>
+                  )}
+                  {s.state === "current" && !s.at && (
+                    <p className="text-xs text-foreground/55 mt-0.5">In progress…</p>
+                  )}
+                  {s.state === "pending" && (
+                    <p className="text-xs text-foreground/45 mt-0.5">Pending</p>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      </DialogContent>
+    </Dialog>
   );
 }
