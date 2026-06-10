@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { BookOpen, Award, ArrowRight, Loader2, CheckCircle2, Flag, Megaphone, Video, Mail, Info, Clock, CheckCircle, XCircle, Upload } from "lucide-react";
+import { BookOpen, Award, ArrowRight, Loader2, CheckCircle2, Flag, Megaphone, Video, Mail, Info, Clock, CheckCircle, XCircle, Upload, BarChart3 } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -8,6 +8,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
+import pmBaImg from "@/assets/courses/project-management-business-analysis.jpg";
+import dmImg from "@/assets/courses/digital-marketing.jpg";
+import aiImg from "@/assets/courses/ai-for-professionals.jpg";
 
 type CapstoneDetail = {
   status: "pending" | "recommended" | "approved" | "rejected";
@@ -32,6 +35,12 @@ type Continue = {
 };
 type Announcement = { id: string; title: string; message: string; created_at: string };
 type UpcomingLesson = { id: string; title: string; lesson_date: string; zoom_live_link: string | null; courseSlug: string };
+
+const RECOMMENDED_COURSES = [
+  { slug: "project-management-business-analysis", title: "Project Management & Business Analysis", cover: pmBaImg, duration: "10 weeks", level: "Beginner – Intermediate" },
+  { slug: "digital-marketing", title: "Digital Marketing", cover: dmImg, duration: "3 weeks", level: "Beginner" },
+  { slug: "ai-for-professionals", title: "AI for Professionals", cover: aiImg, duration: "3 weeks", level: "Beginner" },
+];
 
 function DashboardHome() {
   const { user, profile, isAdmin, isInstructor, loading: authLoading } = useAuth();
@@ -311,6 +320,44 @@ function DashboardHome() {
             </ul>
           )}
         </div>
+      </div>
+
+      {/* Row 4 — Explore More Courses */}
+      <div className="mt-10">
+        <h2 className="font-display text-[18px] font-semibold text-[#0A2E1A]">Explore More Courses</h2>
+        <p className="mt-1 text-[13px] text-[rgba(10,46,26,0.5)] mb-5">Expand your skills with another Evogue Academy programme.</p>
+        {loading ? (
+          <div className="grid place-items-center py-8 text-foreground/50"><Loader2 className="h-5 w-5 animate-spin" /></div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {(() => {
+              const enrolledTitles = new Set(progressList.map((p) => p.title));
+              const recs = RECOMMENDED_COURSES.filter((c) => !enrolledTitles.has(c.title)).slice(0, 3);
+              return recs.map((course) => (
+                <div
+                  key={course.slug}
+                  className="bg-white rounded-xl border border-[rgba(10,46,26,0.08)] overflow-hidden flex flex-col transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(10,46,26,0.08)]"
+                >
+                  <img src={course.cover} alt={course.title} className="w-full h-[120px] object-cover" />
+                  <div className="p-[14px_16px] flex flex-col flex-1">
+                    <h3 className="text-[13px] font-semibold text-[#0A2E1A] mb-1">{course.title}</h3>
+                    <div className="flex items-center gap-[10px] text-[11px] text-[rgba(10,46,26,0.5)] mb-3">
+                      <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {course.duration}</span>
+                      <span className="inline-flex items-center gap-1"><BarChart3 className="h-3 w-3" /> {course.level}</span>
+                    </div>
+                    <Link
+                      to="/courses/$slug"
+                      params={{ slug: course.slug }}
+                      className="mt-auto block w-full text-center bg-[#EDF7F0] border border-[rgba(10,46,26,0.12)] text-[#0A2E1A] px-[14px] py-2 rounded-md text-[12px] font-medium transition-colors duration-200 hover:bg-[#d4eede]"
+                    >
+                      View Course
+                    </Link>
+                  </div>
+                </div>
+              ));
+            })()}
+          </div>
+        )}
       </div>
       <CapstoneTimelineDialog open={capstoneOpen} onOpenChange={setCapstoneOpen} status={capstoneStatus} detail={capstoneDetail} />
     </DashboardLayout>
