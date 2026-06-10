@@ -453,7 +453,7 @@ function CouponSection({ userId, initialCode }: { userId: string | undefined; in
           <div className="flex items-start gap-2 bg-[rgba(0,245,160,0.08)] border border-[rgba(0,245,160,0.25)] rounded-lg px-4 py-3 text-[13px] text-[#0A5C2A] font-medium">
             <Check className="h-4 w-4 mt-0.5 shrink-0 text-[#00F5A0]" strokeWidth={3} />
             <span>
-              Code applied successfully. Your {applied.pct}% discount has been noted. Mention this code when you contact us to enrol.
+              Code applied successfully. Your {formatDiscount(applied.type, applied.value)} discount has been noted. Mention this code when you contact us to enrol.
             </span>
           </div>
         )}
