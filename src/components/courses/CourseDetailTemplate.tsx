@@ -96,7 +96,7 @@ export function CourseDetailTemplate(cfg: CourseDetailConfig) {
   const isElite = cfg.mode === "elite";
   const priceLabel = cfg.priceLabel ?? (isWaitlist ? "Coming Soon" : "Contact us for pricing");
   const ctaText = isWaitlist ? "Join Waitlist" : "Enrol Now";
-  const enrolHref = isWaitlist ? "/contact" : `/enrol?course=${cfg.slug}`;
+  const enrolHref = `/enrol?course=${cfg.slug}`;
   const certLabel = cfg.certificateLabel ?? "Certificate included";
 
   const categoryBadge: ReactNode = isElite ? (
