@@ -1,11 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { BookOpen, Award, ArrowRight, Loader2, CheckCircle2, Flag, Megaphone, Video, Mail } from "lucide-react";
+import { BookOpen, Award, ArrowRight, Loader2, CheckCircle2, Flag, Megaphone, Video, Mail, Info } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const Route = createFileRoute("/_authenticated/dashboard/")({
   component: DashboardHome,
@@ -180,7 +181,8 @@ function DashboardHome() {
         <Stat icon={CheckCircle2} label="Lessons Completed" value={loading ? "…" : String(stats.completedLessons)}
           iconBg="bg-[#1A8C4E]" iconColor="text-white" accent="border-t-4 border-[#1A8C4E]" />
         <Stat icon={Flag} label="Capstone Status" value={loading ? "…" : capstoneLabel}
-          iconBg="bg-[#F59E0B]" iconColor="text-white" accent="border-t-4 border-[#F59E0B]" valueClassName="text-base" />
+          iconBg="bg-[#F59E0B]" iconColor="text-white" accent="border-t-4 border-[#F59E0B]" valueClassName="text-base"
+          tooltip="Your capstone project is the final assignment for your course. Once submitted and approved by the Evogue Academy team, your certificate will be issued." />
         <Stat icon={Award} label="Certificates Earned" value={loading ? "…" : String(stats.certificates)}
           iconBg="bg-[#0A2E1A]" iconColor="text-[#00F5A0]" accent="border-t-4 border-[#0A2E1A]" />
       </div>
@@ -299,12 +301,36 @@ function DashboardHome() {
   );
 }
 
-function Stat({ icon: Icon, label, value, iconBg = "bg-mint/30", iconColor = "text-secondary", accent = "", valueClassName = "" }: { icon: typeof BookOpen; label: string; value: string; iconBg?: string; iconColor?: string; accent?: string; valueClassName?: string }) {
+function Stat({ icon: Icon, label, value, iconBg = "bg-mint/30", iconColor = "text-secondary", accent = "", valueClassName = "", tooltip }: { icon: typeof BookOpen; label: string; value: string; iconBg?: string; iconColor?: string; accent?: string; valueClassName?: string; tooltip?: string }) {
+  const isMobile = useIsMobile();
+  const [showTip, setShowTip] = useState(false);
+  const tipPos = isMobile ? "top-full mt-2" : "bottom-full mb-2";
   return (
     <div className={`rounded-2xl bg-background border border-border p-5 flex items-center gap-4 shadow-sm ${accent}`}>
       <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl ${iconBg} ${iconColor}`}><Icon className="h-5 w-5" /></span>
       <div className="min-w-0">
-        <p className="text-[12px] uppercase tracking-wider font-semibold text-foreground/55">{label}</p>
+        <div className="flex items-center gap-[6px]">
+          <p className="text-[12px] uppercase tracking-wider font-semibold text-foreground/55">{label}</p>
+          {tooltip && (
+            <div className="relative" onMouseEnter={() => setShowTip(true)} onMouseLeave={() => setShowTip(false)}>
+              <Info
+                className="h-[14px] w-[14px] cursor-pointer"
+                style={{ color: "rgba(10,46,26,0.35)", fontSize: "14px" }}
+                onClick={() => setShowTip((s) => !s)}
+              />
+              {showTip && (
+                <div className={`absolute left-1/2 -translate-x-1/2 z-50 w-max ${tipPos}`}>
+                  <div
+                    className="rounded-lg p-[10px_14px] text-[12px] leading-[1.6] max-w-[240px]"
+                    style={{ background: "#0A2E1A", color: "#EDF7F0", boxShadow: "0 4px 16px rgba(0,0,0,0.15)" }}
+                  >
+                    {tooltip}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
         <p className={`font-display font-extrabold text-forest ${valueClassName || "text-2xl"} truncate`}>{value}</p>
       </div>
     </div>
