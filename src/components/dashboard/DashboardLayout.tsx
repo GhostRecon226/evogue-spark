@@ -31,6 +31,7 @@ const adminItems: NavItem[] = [
   { label: "Payments", to: "/admin/payments", icon: Wallet },
   { label: "Inquiries", to: "/admin/inquiries", icon: Mail },
   { label: "Announcements", to: "/admin/announcements", icon: Megaphone },
+  { label: "Coupons", to: "/admin/coupons", icon: Ticket },
   { label: "Settings", to: "/admin/settings", icon: SettingsIcon },
 ];
 const instructorItems: NavItem[] = [
