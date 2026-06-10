@@ -357,3 +357,112 @@ function Stat({ icon: Icon, label, value, iconBg = "bg-mint/30", iconColor = "te
     </div>
   );
 }
+
+function CapstoneTimelineDialog({
+  open, onOpenChange, status, detail,
+}: {
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+  status: "not_started" | "pending" | "approved" | "rejected" | "recommended";
+  detail: CapstoneDetail | null;
+}) {
+  const fmt = (d: string | null | undefined) =>
+    d ? new Date(d).toLocaleString(undefined, { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }) : null;
+
+  type Step = {
+    key: string;
+    label: string;
+    icon: typeof Upload;
+    state: "done" | "current" | "pending" | "rejected";
+    at?: string | null;
+    note?: string | null;
+  };
+
+  const steps: Step[] = (() => {
+    if (!detail) {
+      return [
+        { key: "submit", label: "Submit your capstone", icon: Upload, state: "current" },
+        { key: "instructor", label: "Instructor review", icon: CheckCircle2, state: "pending" },
+        { key: "admin", label: "Final approval & certificate", icon: Award, state: "pending" },
+      ];
+    }
+    const submittedAt = fmt(detail.submitted_at);
+    const reviewedAt = fmt(detail.reviewed_at);
+    const submitStep: Step = { key: "submit", label: "Capstone submitted", icon: Upload, state: "done", at: submittedAt };
+
+    if (status === "rejected") {
+      return [
+        submitStep,
+        { key: "instructor", label: "Needs revision", icon: XCircle, state: "rejected", at: reviewedAt, note: detail.instructor_note },
+        { key: "admin", label: "Final approval & certificate", icon: Award, state: "pending" },
+      ];
+    }
+    if (status === "approved") {
+      return [
+        submitStep,
+        { key: "instructor", label: "Instructor recommended", icon: CheckCircle2, state: "done", at: reviewedAt, note: detail.instructor_note },
+        { key: "admin", label: "Approved · Certificate issued", icon: Award, state: "done", at: reviewedAt },
+      ];
+    }
+    if (status === "recommended") {
+      return [
+        submitStep,
+        { key: "instructor", label: "Instructor recommended", icon: CheckCircle2, state: "done", at: reviewedAt, note: detail.instructor_note },
+        { key: "admin", label: "Awaiting final approval", icon: Clock, state: "current" },
+      ];
+    }
+    // pending
+    return [
+      submitStep,
+      { key: "instructor", label: "Instructor review in progress", icon: Clock, state: "current" },
+      { key: "admin", label: "Final approval & certificate", icon: Award, state: "pending" },
+    ];
+  })();
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle className="font-display text-forest">Capstone Timeline</DialogTitle>
+          <DialogDescription>Track your submission and approval progress.</DialogDescription>
+        </DialogHeader>
+        <ol className="mt-2 space-y-4">
+          {steps.map((s, i) => {
+            const Icon = s.icon;
+            const tone =
+              s.state === "done" ? "bg-secondary text-white border-secondary"
+              : s.state === "current" ? "bg-[#F59E0B] text-white border-[#F59E0B]"
+              : s.state === "rejected" ? "bg-destructive text-white border-destructive"
+              : "bg-background text-foreground/40 border-border";
+            return (
+              <li key={s.key} className="flex gap-3">
+                <div className="flex flex-col items-center">
+                  <span className={`grid h-8 w-8 place-items-center rounded-full border-2 ${tone}`}>
+                    <Icon className="h-4 w-4" />
+                  </span>
+                  {i < steps.length - 1 && <span className="flex-1 w-px bg-border mt-1" />}
+                </div>
+                <div className="pb-2 min-w-0">
+                  <p className="font-display font-bold text-forest">{s.label}</p>
+                  {s.at && <p className="text-xs text-foreground/55 mt-0.5">{s.at}</p>}
+                  {s.note && (
+                    <div className="mt-2 rounded-lg bg-mint-tint p-3 text-sm text-foreground/80">
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-secondary mb-1">Instructor note</p>
+                      {s.note}
+                    </div>
+                  )}
+                  {s.state === "current" && !s.at && (
+                    <p className="text-xs text-foreground/55 mt-0.5">In progress…</p>
+                  )}
+                  {s.state === "pending" && (
+                    <p className="text-xs text-foreground/45 mt-0.5">Pending</p>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      </DialogContent>
+    </Dialog>
+  );
+}
