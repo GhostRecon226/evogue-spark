@@ -1,29 +1,27 @@
-## Plan: Inquiries admin upgrades + email notifications + WhatsApp follow-up
+## Plan: Test student account
 
-### 1. Email notification on new inquiry
-- Set up Lovable's built-in email infrastructure (email domain + queue + templates). If a sender domain is not yet configured, I'll prompt you to set one up — once it's in place, everything else proceeds automatically.
-- Create a branded "New inquiry received" template addressed to **evogueconsulting@gmail.com** with the submitter's name, email, WhatsApp, course interest, source (contact/scholarship), and message.
-- Trigger the email from the contact form submission flow (and the scholarship form, since both write to the same `inquiries` table). Idempotency key derived from inquiry id so retries don't duplicate.
+The database already has a `handle_new_user` trigger that auto-creates a `profiles` row and assigns the `student` role on every new auth signup. So the cleanest way to create your test account is to use the normal signup page — no code or migration changes required.
 
-### 2. Admin inbox upgrades (`/admin/inquiries`)
-- Add a **Read status** filter: All / Unread / Read.
-- Add a **Source** filter: All / Contact / Scholarship (replaces the current "Type" select with clearer labels).
-- Add a **search box** (name/email/message) for quick triage.
-- Unread count badge at the top.
-- Keep existing per-row Mark read/unread toggle.
+### Steps
 
-### 3. WhatsApp follow-up button
-- New action per row: **WhatsApp** button (only enabled when the inquiry has a `whatsapp_number`).
-- Opens `https://wa.me/<digits>?text=<prefilled>` in a new tab. Prefilled message references the inquirer's name and course interest, e.g.:
-  > "Hi {name}, this is Evogue Consulting following up on your inquiry about {course_interest or 'our programmes'}. How can we help?"
-- No API costs, no extra credentials.
+1. Open `/auth` on the preview (or published) site.
+2. Switch to the **Sign Up** tab.
+3. Use:
+   - Email: `peter@evogueacademy.com`
+   - Password: `Pass=123@`
+   - Fill any required fields (full name, WhatsApp number, etc.) — anything works for a test account.
+4. Submit. The trigger automatically:
+   - creates the matching `profiles` row (with a generated `EVG-YYYY-####` registration number)
+   - inserts `('student')` into `user_roles`
+5. If email confirmation is enabled, check the inbox for the confirmation link before logging in. (If you'd like, I can switch on auto-confirm so you can log in immediately without verifying email — just say the word.)
 
-### 4. CSV export
-- **Export CSV** button above the table. Exports the **currently filtered** rows (so admins can export e.g. unread scholarship inquiries only).
-- Columns: Name, Email, WhatsApp, Course Interest, Source, Read, Message, Created At (ISO).
-- Filename: `inquiries-YYYY-MM-DD.csv`.
+### Why not create it server-side
 
-### Technical notes
-- Email sending uses Lovable Emails via a server function called from the existing contact/scholarship submit paths; failures are logged but do not block the form submission for the user.
-- CSV export is client-side (no extra endpoint).
-- No database schema changes required — the `inquiries` table already has all needed columns.
+Lovable Cloud doesn't expose the service-role key to the agent, so I can't script an admin `auth.admin.createUser` call from here. The signup flow does exactly the same thing and is the supported path.
+
+### Optional follow-ups (only if you want)
+
+- Auto-confirm signups (so no email click needed for testing).
+- Promote this account to `instructor` or `admin` via a small migration after signup.
+
+Tell me if you'd like either of those, otherwise just sign up at `/auth` and you're in.
