@@ -312,6 +312,7 @@ function DashboardHome() {
           )}
         </div>
       </div>
+      <CapstoneTimelineDialog open={capstoneOpen} onOpenChange={setCapstoneOpen} status={capstoneStatus} detail={capstoneDetail} />
     </DashboardLayout>
   );
 }
