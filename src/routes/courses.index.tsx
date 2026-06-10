@@ -20,11 +20,12 @@ import aiImg from "@/assets/courses/ai-for-professionals.jpg";
 import dataImg from "@/assets/courses/data-analysis.jpg";
 import cyberImg from "@/assets/courses/cybersecurity.jpg";
 import vaImg from "@/assets/courses/virtual-assistant.jpg";
+import projectPlannerImg from "@/assets/courses/project-planner.jpg";
 
 type CourseCard = {
   slug: string;
   title: string;
-  category: "Management" | "Marketing" | "Technology" | "Data" | "Security";
+  category: "Management" | "Marketing" | "Technology" | "Data" | "Engineering" | "Security";
   duration: string;
   level: string;
   status: "live" | "soon";
@@ -41,6 +42,7 @@ const COURSE_CARDS: CourseCard[] = [
   { slug: "data-analysis", title: "Data Analysis", category: "Data", duration: "4 weeks", level: "Beginner", status: "live", href: "/courses/data-analysis", description: "Turn raw data into decisions with SQL, spreadsheets and visualisation.", image: dataImg },
   { slug: "cybersecurity", title: "Cybersecurity", category: "Security", duration: "4 weeks", level: "Intermediate", status: "soon", href: "/contact", description: "Defend systems and data. Threats, controls and modern security practice.", image: cyberImg },
   { slug: "virtual-assistant-programme", title: "Virtual Assistant Programme", category: "Management", duration: "4 weeks", level: "Beginner", status: "soon", href: "/contact", description: "Launch a remote VA career with the tools, workflows and client skills that pay.", image: vaImg },
+  { slug: "project-planner", title: "Project Planner", category: "Engineering", duration: "6 weeks", level: "Beginner \u2013 Intermediate", status: "soon", href: "/contact", description: "Master Primavera P6, critical path analysis and project controls. Built for engineers, graduates and career changers entering UK infrastructure.", image: projectPlannerImg },
 ];
 
 export const Route = createFileRoute("/courses/")({
@@ -55,7 +57,7 @@ export const Route = createFileRoute("/courses/")({
   component: CoursesPage,
 });
 
-const FILTERS = ["All", "Management", "Marketing", "Technology", "Data", "Security"] as const;
+const FILTERS = ["All", "Management", "Marketing", "Technology", "Data", "Engineering", "Security"] as const;
 
 const TRACK_PILLS = [
   "Project Management",
@@ -94,7 +96,7 @@ function CoursesPage() {
         <div className="courses-hero-inner">
           <span className="courses-badge">
             <span className="courses-badge-dot" />
-            8 Courses Available
+            9 Courses Available
           </span>
           <h1 className="courses-headline">
             Skills that get you<br />
