@@ -257,11 +257,8 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
               </button>
               {notifOpen && (
                 <div
-                  className="absolute overflow-hidden"
+                  className="fixed left-4 right-4 top-[72px] sm:absolute sm:right-0 sm:left-auto sm:top-[52px] sm:w-[320px] max-h-[calc(100vh-96px)] sm:max-h-[360px] overflow-hidden flex flex-col"
                   style={{
-                    top: "52px",
-                    right: 0,
-                    width: "320px",
                     background: "#fff",
                     borderRadius: "12px",
                     border: "1px solid rgba(10,46,26,0.08)",
@@ -270,7 +267,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                   }}
                 >
                   <div
-                    className="flex items-center justify-between"
+                    className="flex items-center justify-between shrink-0"
                     style={{ padding: "16px 20px", borderBottom: "1px solid rgba(10,46,26,0.08)" }}
                   >
                     <span style={{ fontSize: "14px", fontWeight: 600, color: "#0A2E1A" }}>Notifications</span>
@@ -291,7 +288,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                       </p>
                     </div>
                   ) : (
-                    <ul className="max-h-[360px] overflow-y-auto">
+                    <ul className="overflow-y-auto">
                       {notifications.map((n) => {
                         const Icon = n.type === "class" ? Video : n.type === "announcement" ? Megaphone : Award;
                         return (
@@ -342,6 +339,23 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                               <p style={{ fontSize: "12px", color: "rgba(10,46,26,0.55)", lineHeight: 1.5 }}>{n.body}</p>
                               <p style={{ fontSize: "11px", color: "rgba(10,46,26,0.35)", marginTop: "3px" }}>{n.time}</p>
                             </div>
+                            {!n.read && (
+                              <span
+                                className="shrink-0 self-center"
+                                style={{
+                                  fontSize: "10px",
+                                  fontWeight: 700,
+                                  color: "#1A8C4E",
+                                  background: "#EDF7F0",
+                                  padding: "2px 8px",
+                                  borderRadius: "6px",
+                                  textTransform: "uppercase",
+                                  letterSpacing: "0.04em",
+                                }}
+                              >
+                                New
+                              </span>
+                            )}
                           </li>
                         );
                       })}
