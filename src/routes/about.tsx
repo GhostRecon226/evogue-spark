@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Hammer, Globe2, TrendingUp } from "lucide-react";
+import { Globe2, TrendingUp, Wrench } from "lucide-react";
 import { PublicShell } from "@/components/PublicShell";
 
 export const Route = createFileRoute("/about")({
@@ -20,24 +20,6 @@ export const Route = createFileRoute("/about")({
   component: AboutPage,
 });
 
-const features = [
-  {
-    icon: Hammer,
-    title: "Practical Learning",
-    text: "Build real products from week one — no passive lectures.",
-  },
-  {
-    icon: Globe2,
-    title: "Global Standards",
-    text: "Curriculum benchmarked against the world's best companies.",
-  },
-  {
-    icon: TrendingUp,
-    title: "Career Growth",
-    text: "Portfolio reviews, interview prep, and a global hiring network.",
-  },
-];
-
 const stats = [
   { value: "500+", label: "Students trained" },
   { value: "94%", label: "Completion rate" },
@@ -45,20 +27,59 @@ const stats = [
   { value: "8", label: "Professional tracks" },
 ];
 
+const steps = [
+  {
+    title: "Apply",
+    desc: "Fill out a short application. Tell us your goals and which track interests you.",
+  },
+  {
+    title: "Join a Cohort",
+    desc: "Get enrolled in a live cohort with peers from around the world. Pay once. No hidden fees.",
+  },
+  {
+    title: "Learn & Build",
+    desc: "Attend live sessions with practitioners. Work on real projects from week one.",
+  },
+  {
+    title: "Get Certified",
+    desc: "Submit your capstone project. Receive your certificate and join our global hiring network.",
+  },
+];
+
+const values = [
+  {
+    icon: Wrench,
+    title: "Practical Learning",
+    desc: "Build real products from week one. No passive lectures, no shallow theory.",
+  },
+  {
+    icon: Globe2,
+    title: "Global Standards",
+    desc: "Curriculum benchmarked against the world's best tech companies, not just local markets.",
+  },
+  {
+    icon: TrendingUp,
+    title: "Career Growth",
+    desc: "Portfolio reviews, interview prep, and access to a global hiring network after you graduate.",
+  },
+];
+
+const eyebrowStyle: React.CSSProperties = {
+  color: "#1A8C4E",
+  fontSize: 11,
+  letterSpacing: "0.12em",
+  textTransform: "uppercase",
+  fontWeight: 500,
+};
+
 function AboutPage() {
   return (
     <PublicShell>
+      {/* Our Story */}
       <section className="py-14 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid gap-12 lg:grid-cols-2 items-center">
           <div>
-            <span
-              className="inline-block font-medium uppercase"
-              style={{
-                color: "#1A8C4E",
-                fontSize: 11,
-                letterSpacing: "0.12em",
-              }}
-            >
+            <span className="inline-block" style={eyebrowStyle}>
               OUR STORY
             </span>
             <h1
@@ -103,6 +124,7 @@ function AboutPage() {
         </div>
       </section>
 
+      {/* Stats strip */}
       <section
         className="w-full"
         style={{ backgroundColor: "#0A2E1A", padding: "48px 0" }}
@@ -137,37 +159,186 @@ function AboutPage() {
         </div>
       </section>
 
-      <section className="bg-mint-tint py-12 sm:py-16">
-        <div className="mx-auto max-w-4xl px-4 text-center">
-          <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-forest">
-            Our Mission
-          </h2>
-          <p className="mt-5 text-foreground/75 text-base sm:text-lg leading-relaxed">
-            To equip ambitious minds everywhere with the skills, mentorship and
-            confidence to compete and win on the global tech stage.
-          </p>
+      {/* Mission */}
+      <section style={{ backgroundColor: "#f4faf7", padding: "72px 48px" }}>
+        <div className="mx-auto max-w-4xl text-center">
+          <span
+            className="inline-block"
+            style={{ ...eyebrowStyle, marginBottom: 24 }}
+          >
+            OUR MISSION
+          </span>
+          <blockquote
+            style={{
+              fontFamily: '"Fraunces", serif',
+              fontSize: 32,
+              fontWeight: 400,
+              fontStyle: "italic",
+              color: "#0A2E1A",
+              lineHeight: 1.3,
+              maxWidth: 680,
+              margin: "0 auto",
+            }}
+          >
+            "To equip ambitious minds everywhere with the skills, mentorship and
+            confidence to compete and win on the global tech stage."
+          </blockquote>
         </div>
       </section>
 
-      <section className="py-12 sm:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center font-display text-3xl sm:text-4xl font-extrabold text-forest">
-            Our Values
+      {/* The Evogue Experience */}
+      <section style={{ backgroundColor: "#ffffff", padding: "64px 48px" }}>
+        <div className="mx-auto max-w-7xl">
+          <div className="text-center">
+            <span className="inline-block" style={eyebrowStyle}>
+              THE EVOGUE EXPERIENCE
+            </span>
+            <h2
+              className="mt-4"
+              style={{
+                fontFamily: '"Fraunces", serif',
+                fontSize: 30,
+                fontWeight: 400,
+                color: "#0A2E1A",
+              }}
+            >
+              Your journey, from zero to hired.
+            </h2>
+          </div>
+
+          <div className="relative mt-12">
+            {/* Connector line — visible on lg only */}
+            <div
+              className="hidden lg:block absolute h-px bg-[#1A8C4E]"
+              style={{
+                top: 28,
+                left: "12.5%",
+                right: "12.5%",
+              }}
+            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {steps.map((step, i) => {
+                const isLast = i === steps.length - 1;
+                return (
+                  <div
+                    key={step.title}
+                    className="flex flex-col items-center text-center"
+                  >
+                    <div
+                      className="relative flex items-center justify-center shrink-0"
+                      style={{
+                        width: 56,
+                        height: 56,
+                        borderRadius: "50%",
+                        backgroundColor: isLast ? "#1A8C4E" : "#0A2E1A",
+                        color: isLast ? "#ffffff" : "#00F5A0",
+                        fontFamily: '"Fraunces", serif',
+                        fontSize: 22,
+                        fontWeight: 700,
+                        zIndex: 1,
+                      }}
+                    >
+                      {i + 1}
+                    </div>
+                    <h4
+                      className="mt-5"
+                      style={{
+                        fontFamily: '"DM Sans", sans-serif',
+                        fontWeight: 600,
+                        fontSize: 14,
+                        color: "#0A2E1A",
+                      }}
+                    >
+                      {step.title}
+                    </h4>
+                    <p
+                      className="mt-2"
+                      style={{
+                        fontSize: 13,
+                        color: "#5a8070",
+                        lineHeight: 1.6,
+                        maxWidth: 240,
+                      }}
+                    >
+                      {step.desc}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Our Values */}
+      <section
+        style={{
+          backgroundColor: "#ffffff",
+          padding: "64px 48px",
+          borderTop: "0.5px solid #e0ede6",
+        }}
+      >
+        <div className="mx-auto max-w-7xl">
+          <span className="inline-block" style={eyebrowStyle}>
+            OUR VALUES
+          </span>
+          <h2
+            className="mt-4 mb-10"
+            style={{
+              fontFamily: '"Fraunces", serif',
+              fontSize: 30,
+              fontWeight: 400,
+              color: "#0A2E1A",
+            }}
+          >
+            What we stand for.
           </h2>
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map((f) => (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {values.map((v) => (
               <div
-                key={f.title}
-                className="rounded-2xl bg-background p-7 border border-border shadow-soft"
+                key={v.title}
+                style={{
+                  border: "0.5px solid #c8e3d4",
+                  borderRadius: 12,
+                  padding: 28,
+                  backgroundColor: "#ffffff",
+                }}
               >
-                <span className="inline-grid h-12 w-12 place-items-center rounded-xl bg-mint/30 text-secondary">
-                  <f.icon className="h-6 w-6" strokeWidth={2.25} />
-                </span>
-                <h3 className="mt-5 font-display text-xl font-bold text-forest">
-                  {f.title}
+                <div
+                  className="inline-flex items-center justify-center"
+                  style={{
+                    width: 40,
+                    height: 40,
+                    backgroundColor: "#e8f5ee",
+                    borderRadius: 8,
+                  }}
+                >
+                  <v.icon
+                    size={20}
+                    strokeWidth={2}
+                    style={{ color: "#1A8C4E" }}
+                  />
+                </div>
+                <h3
+                  className="mt-4"
+                  style={{
+                    fontFamily: '"DM Sans", sans-serif',
+                    fontWeight: 600,
+                    fontSize: 15,
+                    color: "#0A2E1A",
+                  }}
+                >
+                  {v.title}
                 </h3>
-                <p className="mt-2 text-foreground/70 leading-relaxed">
-                  {f.text}
+                <p
+                  className="mt-2"
+                  style={{
+                    fontSize: 13,
+                    color: "#5a8070",
+                    lineHeight: 1.65,
+                  }}
+                >
+                  {v.desc}
                 </p>
               </div>
             ))}
