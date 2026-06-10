@@ -237,50 +237,42 @@ function AdminOverview() {
 
       // Build activity feed
       const acts: ActivityItem[] = [];
-      (profRes.data ?? [])
-        .slice(0, 3)
-        .forEach((p) =>
-          acts.push({
-            id: `p-${p.id}`,
-            type: "student",
-            title: "New student registered",
-            meta: p.full_name || p.email || "",
-            at: p.created_at,
-          }),
-        );
-      (recentRes.data ?? [])
-        .slice(0, 3)
-        .forEach((r) =>
-          acts.push({
-            id: `e-${r.id}`,
-            type: "enrollment",
-            title: "New enrollment",
-            meta: `${r.profiles?.full_name || "Student"} → ${r.courses?.title || ""}`,
-            at: r.enrolled_at,
-          }),
-        );
-      capRows
-        .slice(0, 3)
-        .forEach((c) =>
-          acts.push({
-            id: `c-${c.id}`,
-            type: "capstone",
-            title: "Capstone submitted",
-            meta: c.student?.full_name || "—",
-            at: c.submitted_at,
-          }),
-        );
-      (certRes.data ?? [])
-        .slice(0, 2)
-        .forEach((c) =>
-          acts.push({
-            id: `cert-${c.id}`,
-            type: "certificate",
-            title: "Certificate issued",
-            meta: "",
-            at: c.issued_at,
-          }),
-        );
+      (profRes.data ?? []).slice(0, 3).forEach((p) =>
+        acts.push({
+          id: `p-${p.id}`,
+          type: "student",
+          title: "New student registered",
+          meta: p.full_name || p.email || "",
+          at: p.created_at,
+        }),
+      );
+      (recentRes.data ?? []).slice(0, 3).forEach((r) =>
+        acts.push({
+          id: `e-${r.id}`,
+          type: "enrollment",
+          title: "New enrollment",
+          meta: `${r.profiles?.full_name || "Student"} → ${r.courses?.title || ""}`,
+          at: r.enrolled_at,
+        }),
+      );
+      capRows.slice(0, 3).forEach((c) =>
+        acts.push({
+          id: `c-${c.id}`,
+          type: "capstone",
+          title: "Capstone submitted",
+          meta: c.student?.full_name || "—",
+          at: c.submitted_at,
+        }),
+      );
+      (certRes.data ?? []).slice(0, 2).forEach((c) =>
+        acts.push({
+          id: `cert-${c.id}`,
+          type: "certificate",
+          title: "Certificate issued",
+          meta: "",
+          at: c.issued_at,
+        }),
+      );
       acts.sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime());
       setActivity(acts.slice(0, 8));
 
