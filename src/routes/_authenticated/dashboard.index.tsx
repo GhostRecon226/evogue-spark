@@ -36,6 +36,12 @@ type Continue = {
 type Announcement = { id: string; title: string; message: string; created_at: string };
 type UpcomingLesson = { id: string; title: string; lesson_date: string; zoom_live_link: string | null; courseSlug: string };
 
+const RECOMMENDED_COURSES = [
+  { slug: "project-management-business-analysis", title: "Project Management & Business Analysis", cover: pmBaImg, duration: "10 weeks", level: "Beginner – Intermediate" },
+  { slug: "digital-marketing", title: "Digital Marketing", cover: dmImg, duration: "3 weeks", level: "Beginner" },
+  { slug: "ai-for-professionals", title: "AI for Professionals", cover: aiImg, duration: "3 weeks", level: "Beginner" },
+];
+
 function DashboardHome() {
   const { user, profile, isAdmin, isInstructor, loading: authLoading } = useAuth();
   const navigate = useNavigate();
