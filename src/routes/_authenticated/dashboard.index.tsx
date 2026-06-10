@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { BookOpen, Award, ArrowRight, Loader2, CheckCircle2, Flag, Megaphone, Video, Mail, Info, Clock, CheckCircle, XCircle, Upload, BarChart3 } from "lucide-react";
+import { BookOpen, Award, ArrowRight, Loader2, CheckCircle2, Flag, Megaphone, Video, Mail, Info, Clock, CheckCircle, XCircle, Upload, BarChart3, Check, X } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
