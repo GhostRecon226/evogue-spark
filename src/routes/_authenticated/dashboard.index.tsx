@@ -181,7 +181,8 @@ function DashboardHome() {
         <Stat icon={CheckCircle2} label="Lessons Completed" value={loading ? "…" : String(stats.completedLessons)}
           iconBg="bg-[#1A8C4E]" iconColor="text-white" accent="border-t-4 border-[#1A8C4E]" />
         <Stat icon={Flag} label="Capstone Status" value={loading ? "…" : capstoneLabel}
-          iconBg="bg-[#F59E0B]" iconColor="text-white" accent="border-t-4 border-[#F59E0B]" valueClassName="text-base" />
+          iconBg="bg-[#F59E0B]" iconColor="text-white" accent="border-t-4 border-[#F59E0B]" valueClassName="text-base"
+          tooltip="Your capstone project is the final assignment for your course. Once submitted and approved by the Evogue Academy team, your certificate will be issued." />
         <Stat icon={Award} label="Certificates Earned" value={loading ? "…" : String(stats.certificates)}
           iconBg="bg-[#0A2E1A]" iconColor="text-[#00F5A0]" accent="border-t-4 border-[#0A2E1A]" />
       </div>
