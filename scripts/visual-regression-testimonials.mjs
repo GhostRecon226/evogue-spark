@@ -38,7 +38,7 @@ const VIEWPORTS = [
   { name: "desktop-1280", width: 1280, height: 900 },
 ];
 
-function ensureDeps() {
+async function ensureDeps() {
   try {
     await import("playwright");
   } catch {
