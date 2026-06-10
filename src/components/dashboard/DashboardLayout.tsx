@@ -56,6 +56,24 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
     }
   }, [collapsed]);
 
+  // Notifications panel (placeholder data — wire up when notifications backend exists).
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [notifications, setNotifications] = useState<Array<{ id: string; type: "class" | "announcement" | "certificate"; title: string; body: string; time: string; read: boolean }>>([
+    { id: "n1", type: "class", title: "Class reminder", body: "Your next live class is tomorrow at 11:00am", time: "2h ago", read: false },
+    { id: "n2", type: "announcement", title: "New announcement", body: "New announcement from your instructor", time: "Yesterday", read: false },
+    { id: "n3", type: "certificate", title: "Certificate ready", body: "Your certificate is ready to download", time: "3 days ago", read: false },
+  ]);
+  const unreadCount = notifications.filter((n) => !n.read).length;
+  const notifRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!notifOpen) return;
+    const onDown = (e: MouseEvent) => {
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) setNotifOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [notifOpen]);
+
   const initials = (profile?.full_name || user?.user_metadata?.full_name || user?.email || "U")
     .split(/\s+/)
     .map((p: string) => p[0])
