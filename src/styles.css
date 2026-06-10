@@ -821,12 +821,12 @@
 .about-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  min-height: 480px;
+  min-height: 420px;
 }
 .about-left {
   background-color: #0A2E1A;
   background-image: radial-gradient(circle at 15% 50%, rgba(0,245,160,0.07) 0%, transparent 50%);
-  padding: 72px 56px;
+  padding: 56px 44px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -841,7 +841,7 @@
 }
 .about-headline {
   font-family: var(--font-display);
-  font-size: 36px;
+  font-size: 32px;
   font-weight: 900;
   color: #EDF7F0;
   line-height: 1.1;
@@ -852,9 +852,9 @@
   color: #00F5A0;
 }
 .about-body {
-  font-size: 14px;
+  font-size: 13px;
   color: rgba(237,247,240,0.65);
-  line-height: 1.8;
+  line-height: 1.7;
   max-width: 420px;
   margin-bottom: 32px;
 }
@@ -866,7 +866,7 @@
 }
 .about-stat-num {
   font-family: var(--font-display);
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 900;
   color: #EDF7F0;
   line-height: 1;
@@ -899,7 +899,7 @@
 .about-right {
   position: relative;
   overflow: hidden;
-  min-height: 480px;
+  min-height: 420px;
 }
 .about-image {
   width: 100%;
