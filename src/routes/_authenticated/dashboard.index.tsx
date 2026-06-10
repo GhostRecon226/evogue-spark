@@ -155,6 +155,7 @@ function DashboardHome() {
           certificates: certCount ?? 0,
         });
         setCapstoneStatus(capStatus);
+        setCapstoneDetail((latestCap as CapstoneDetail | undefined) ?? null);
         setNext(nextCourse);
         setAnnouncements(annRows);
         setUpcoming(nextLesson);
