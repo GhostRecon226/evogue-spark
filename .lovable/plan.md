@@ -1,23 +1,34 @@
-## Vercel Deployment Configuration
 
-### Problem
-The project is configured for Cloudflare Workers by default (via `@lovable.dev/vite-tanstack-config`). When deploying to Vercel, this causes a 404 because Vercel expects Nitro's Build Output API v3 format with the `vercel` preset.
+# End-to-End QA Test Plan
 
-### Changes
+I'll exercise the live preview in the browser, hit each route, verify rendering, key interactions, and backend calls. No code changes unless a bug is found (then I'll stop and report before fixing).
 
-1. **Update `vite.config.ts`**
-   - Add `nitro` configuration with `preset: "vercel"`
-   - Set `output.dir` to `.vercel/output`
-   - Set `output.serverDir` to `.vercel/output/functions/__server.func`
-   - Set `output.publicDir` to `.vercel/output/static`
+## Scope
 
-2. **Create `vercel.json`** in the project root:
-   - `buildCommand`: `npm run build`
-   - `outputDirectory`: `.vercel/output`
-   - `framework`: `null` (disables auto-detection so Vercel respects our config)
+**Public pages** (visual + nav + links + responsive 1280 / 390):
+- `/` (home)
+- `/about` — new sections (Our Story, stats strip, Mission, Why Evogue, Values, Graduate Voices, CTA)
+- `/courses`
+- `/scholarship` — incl. inquiry form submit (test row, will note it)
+- `/contact` — incl. contact form submit
+- `/auth` — loads, form validation only (no real signup)
 
-### Verification Step
-After the changes are applied, run `npm run build` locally and confirm that `.vercel/output/` is generated containing `config.json`, `functions/`, and `static/`.
+**Authenticated area** (only if a test session already exists in preview — I will not create accounts or log in without permission):
+- `/_authenticated/*` gate redirects unauthenticated users to `/auth`
 
-### Technical Details
-The `@lovable.dev/vite-tanstack-config` wrapper accepts a top-level `nitro` key that merges into the underlying Nitro plugin configuration. This overrides the default Cloudflare preset without duplicating plugins. The `vercel.json` tells the Vercel platform where to find the build artifacts and which command to run.
+**Cross-cutting checks**:
+- Navbar links, footer links, 404 route, console errors, failed network requests
+- OG/meta tags present on `/about`, `/courses`, `/scholarship`, `/contact`
+- Mobile reflow at 390px on `/about` (stats grid, two-column sections)
+
+## What I will NOT do
+
+- No destructive admin actions, no role changes, no deleting rows
+- No real user signup / Google OAuth
+- No edits to code unless I find a bug — I'll stop and report first
+
+## Deliverable
+
+A pass/fail summary per route + list of any issues found (with severity) and recommended fixes.
+
+Approve to run.
