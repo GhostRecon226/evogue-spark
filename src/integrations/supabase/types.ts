@@ -807,7 +807,36 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      academy_settings_public: {
+        Row: {
+          academy_name: string | null
+          contact_email: string | null
+          id: string | null
+          location: string | null
+          logo_url: string | null
+          updated_at: string | null
+          whatsapp_number: string | null
+        }
+        Insert: {
+          academy_name?: string | null
+          contact_email?: string | null
+          id?: string | null
+          location?: string | null
+          logo_url?: string | null
+          updated_at?: string | null
+          whatsapp_number?: string | null
+        }
+        Update: {
+          academy_name?: string | null
+          contact_email?: string | null
+          id?: string | null
+          location?: string | null
+          logo_url?: string | null
+          updated_at?: string | null
+          whatsapp_number?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       delete_email: {
