@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { BookOpen, Award, ArrowRight, Loader2, CheckCircle2, Flag, Megaphone, Video, Mail, Info, Clock, CheckCircle, XCircle, Upload, BarChart3 } from "lucide-react";
+import { BookOpen, Award, ArrowRight, Loader2, CheckCircle2, Flag, Megaphone, Video, Mail, Info, Clock, CheckCircle, XCircle, Upload, BarChart3, Check, X } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -359,8 +359,114 @@ function DashboardHome() {
           </div>
         )}
       </div>
+
+      {/* Row 5 — Coupon code */}
+      <CouponSection userId={user?.id} initialCode={profile?.applied_coupon_code ?? null} />
+
       <CapstoneTimelineDialog open={capstoneOpen} onOpenChange={setCapstoneOpen} status={capstoneStatus} detail={capstoneDetail} />
     </DashboardLayout>
+  );
+}
+
+function CouponSection({ userId, initialCode }: { userId: string | undefined; initialCode: string | null }) {
+  const [code, setCode] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [applied, setApplied] = useState<{ code: string; pct: number } | null>(null);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  useEffect(() => {
+    if (!initialCode) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("coupon_codes")
+        .select("code, discount_percentage")
+        .eq("code", initialCode)
+        .maybeSingle();
+      if (!cancelled && data) {
+        setApplied({ code: data.code, pct: data.discount_percentage });
+        setStatus("success");
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [initialCode]);
+
+  const handleApply = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!userId) return;
+    const trimmed = code.trim().toUpperCase();
+    if (!trimmed) return;
+    setStatus("loading");
+    setErrorMsg("");
+    const { data: coupon } = await supabase
+      .from("coupon_codes")
+      .select("code, discount_percentage, active")
+      .eq("code", trimmed)
+      .maybeSingle();
+
+    if (!coupon || !coupon.active) {
+      setStatus("error");
+      setErrorMsg("Invalid or expired code. Please check and try again.");
+      setApplied(null);
+      return;
+    }
+
+    const { error } = await supabase
+      .from("profiles")
+      .update({ applied_coupon_code: coupon.code, applied_coupon_at: new Date().toISOString() })
+      .eq("id", userId);
+
+    if (error) {
+      setStatus("error");
+      setErrorMsg("Something went wrong saving your code. Please try again.");
+      return;
+    }
+
+    setApplied({ code: coupon.code, pct: coupon.discount_percentage });
+    setStatus("success");
+    setCode("");
+  };
+
+  return (
+    <div className="mt-10">
+      <h2 className="text-[18px] font-semibold text-[#0A2E1A] mb-1">Got a discount code?</h2>
+      <p className="text-[13px] text-[rgba(10,46,26,0.5)] mb-5">Enter your coupon code below and we'll apply it to your next enrolment.</p>
+      <div className="bg-white rounded-xl border border-[rgba(10,46,26,0.08)] p-6 flex flex-col gap-4 max-w-[480px]">
+        <form onSubmit={handleApply} className="flex gap-[10px] items-center">
+          <input
+            type="text"
+            value={code}
+            onChange={(e) => setCode(e.target.value.toUpperCase())}
+            placeholder="ENTER CODE"
+            maxLength={32}
+            className="flex-1 px-4 py-[11px] border-[1.5px] border-[rgba(10,46,26,0.12)] rounded-lg text-sm text-[#0A2E1A] uppercase tracking-[0.08em] outline-none focus:border-[#1A8C4E] focus:shadow-[0_0_0_3px_rgba(26,140,78,0.08)] transition-all"
+          />
+          <button
+            type="submit"
+            disabled={status === "loading"}
+            className="bg-[#0A2E1A] text-white px-[22px] py-[11px] rounded-lg text-[13px] font-medium whitespace-nowrap transition-colors hover:bg-[#1A8C4E] disabled:opacity-60"
+          >
+            {status === "loading" ? "Applying…" : "Apply"}
+          </button>
+        </form>
+
+        {status === "success" && applied && (
+          <div className="flex items-start gap-2 bg-[rgba(0,245,160,0.08)] border border-[rgba(0,245,160,0.25)] rounded-lg px-4 py-3 text-[13px] text-[#0A5C2A] font-medium">
+            <Check className="h-4 w-4 mt-0.5 shrink-0 text-[#00F5A0]" strokeWidth={3} />
+            <span>
+              Code applied successfully. Your {applied.pct}% discount has been noted. Mention this code when you contact us to enrol.
+            </span>
+          </div>
+        )}
+
+        {status === "error" && (
+          <div className="flex items-start gap-2 bg-[rgba(220,38,38,0.06)] border border-[rgba(220,38,38,0.2)] rounded-lg px-4 py-3 text-[13px] text-[#991b1b] font-medium">
+            <X className="h-4 w-4 mt-0.5 shrink-0" strokeWidth={3} />
+            <span>{errorMsg}</span>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 
