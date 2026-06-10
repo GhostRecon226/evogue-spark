@@ -15,7 +15,7 @@ export const Route = createFileRoute("/_authenticated/dashboard/profile")({
 });
 
 function ProfilePage() {
-  const { user, profile, refreshProfile } = useAuth();
+  const { user, profile, refreshProfile, roles } = useAuth();
   const [loading, setLoading] = useState(false);
   const [pwLoading, setPwLoading] = useState(false);
   const [form, setForm] = useState({ full_name: "", email: "", whatsapp_number: "", avatar_url: "" });
