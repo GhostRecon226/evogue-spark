@@ -725,6 +725,48 @@ export type Database = {
         }
         Relationships: []
       }
+      role_change_requests: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          from_role: Database["public"]["Enums"]["app_role"]
+          id: string
+          reason: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          to_role: Database["public"]["Enums"]["app_role"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          from_role: Database["public"]["Enums"]["app_role"]
+          id?: string
+          reason: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          to_role: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          from_role?: Database["public"]["Enums"]["app_role"]
+          id?: string
+          reason?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          to_role?: Database["public"]["Enums"]["app_role"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       student_notes: {
         Row: {
           created_at: string
