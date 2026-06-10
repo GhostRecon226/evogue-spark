@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { BookOpen, Award, ArrowRight, Loader2, CheckCircle2, Flag, Megaphone, Video, Mail, Info, Clock, CheckCircle, XCircle, Upload } from "lucide-react";
+import { BookOpen, Award, ArrowRight, Loader2, CheckCircle2, Flag, Megaphone, Video, Mail, Info, Clock, CheckCircle, XCircle, Upload, BarChart3 } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -8,6 +8,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
+import pmBaImg from "@/assets/courses/project-management-business-analysis.jpg";
+import dmImg from "@/assets/courses/digital-marketing.jpg";
+import aiImg from "@/assets/courses/ai-for-professionals.jpg";
 
 type CapstoneDetail = {
   status: "pending" | "recommended" | "approved" | "rejected";
