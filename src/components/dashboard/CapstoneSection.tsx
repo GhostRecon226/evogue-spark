@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
-import { FileText, Upload, Loader2, CheckCircle2, AlertCircle, Clock, ExternalLink } from "lucide-react";
+import {
+  FileText,
+  Upload,
+  Loader2,
+  CheckCircle2,
+  AlertCircle,
+  Clock,
+  ExternalLink,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -36,16 +44,28 @@ export function CapstoneSection({ course }: { course: Course }) {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!user || !course.capstone_released) { setLoading(false); return; }
+    if (!user || !course.capstone_released) {
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
     (async () => {
       const { data } = await supabase
         .from("capstone_submissions")
-        .select("id, status, submission_text, file_url, submitted_at, reviewed_at, instructor_recommendation, instructor_note")
-        .eq("student_id", user.id).eq("course_id", course.id).maybeSingle();
-      if (!cancelled) { setSubmission(data as Submission | null); setLoading(false); }
+        .select(
+          "id, status, submission_text, file_url, submitted_at, reviewed_at, instructor_recommendation, instructor_note",
+        )
+        .eq("student_id", user.id)
+        .eq("course_id", course.id)
+        .maybeSingle();
+      if (!cancelled) {
+        setSubmission(data as Submission | null);
+        setLoading(false);
+      }
     })();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [user, course.id, course.capstone_released]);
 
   if (!course.capstone_released) return null;
@@ -53,15 +73,24 @@ export function CapstoneSection({ course }: { course: Course }) {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
-    if (text.trim().length < 20) { toast.error("Tell us a bit more about your project (at least 20 characters)."); return; }
+    if (text.trim().length < 20) {
+      toast.error("Tell us a bit more about your project (at least 20 characters).");
+      return;
+    }
     setSubmitting(true);
     try {
       let fileUrl: string | null = null;
       if (file) {
-        if (file.size > 25 * 1024 * 1024) { toast.error("File must be 25 MB or smaller."); setSubmitting(false); return; }
+        if (file.size > 25 * 1024 * 1024) {
+          toast.error("File must be 25 MB or smaller.");
+          setSubmitting(false);
+          return;
+        }
         const ext = file.name.split(".").pop() ?? "bin";
         const path = `${user.id}/${course.id}/${Date.now()}.${ext}`;
-        const { error: upErr } = await supabase.storage.from("capstones").upload(path, file, { upsert: false });
+        const { error: upErr } = await supabase.storage
+          .from("capstones")
+          .upload(path, file, { upsert: false });
         if (upErr) throw upErr;
         fileUrl = path;
       }
@@ -73,7 +102,9 @@ export function CapstoneSection({ course }: { course: Course }) {
           submission_text: text.trim(),
           file_url: fileUrl,
         })
-        .select("id, status, submission_text, file_url, submitted_at, reviewed_at, instructor_recommendation, instructor_note")
+        .select(
+          "id, status, submission_text, file_url, submitted_at, reviewed_at, instructor_recommendation, instructor_note",
+        )
         .single();
       if (error) throw error;
       setSubmission(data as Submission);
@@ -88,8 +119,13 @@ export function CapstoneSection({ course }: { course: Course }) {
 
   const downloadFile = async () => {
     if (!submission?.file_url) return;
-    const { data, error } = await supabase.storage.from("capstones").createSignedUrl(submission.file_url, 60);
-    if (error || !data) { toast.error("Could not get file link."); return; }
+    const { data, error } = await supabase.storage
+      .from("capstones")
+      .createSignedUrl(submission.file_url, 60);
+    if (error || !data) {
+      toast.error("Could not get file link.");
+      return;
+    }
     window.open(data.signedUrl, "_blank", "noreferrer");
   };
 
@@ -97,14 +133,28 @@ export function CapstoneSection({ course }: { course: Course }) {
     if (!submission) return null;
     const map = {
       pending: { icon: Clock, text: "Pending review", cls: "bg-star/15 text-star" },
-      recommended: { icon: CheckCircle2, text: "Recommended by instructor", cls: "bg-mint text-forest" },
-      approved: { icon: CheckCircle2, text: "Approved · Certificate issued", cls: "bg-secondary/15 text-secondary" },
-      rejected: { icon: AlertCircle, text: "Needs revision", cls: "bg-destructive/15 text-destructive" },
+      recommended: {
+        icon: CheckCircle2,
+        text: "Recommended by instructor",
+        cls: "bg-mint text-forest",
+      },
+      approved: {
+        icon: CheckCircle2,
+        text: "Approved · Certificate issued",
+        cls: "bg-secondary/15 text-secondary",
+      },
+      rejected: {
+        icon: AlertCircle,
+        text: "Needs revision",
+        cls: "bg-destructive/15 text-destructive",
+      },
     } as const;
     const s = map[submission.status];
     const Icon = s.icon;
     return (
-      <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${s.cls}`}>
+      <span
+        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${s.cls}`}
+      >
         <Icon className="h-3.5 w-3.5" /> {s.text}
       </span>
     );
@@ -115,8 +165,12 @@ export function CapstoneSection({ course }: { course: Course }) {
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div>
           <p className="text-xs uppercase tracking-wide text-secondary font-bold">Final Step</p>
-          <h2 className="mt-1 font-display text-2xl font-extrabold text-forest">Capstone Project</h2>
-          <p className="mt-1 text-sm text-foreground/65">Submit your final project to earn your certificate.</p>
+          <h2 className="mt-1 font-display text-2xl font-extrabold text-forest">
+            Capstone Project
+          </h2>
+          <p className="mt-1 text-sm text-foreground/65">
+            Submit your final project to earn your certificate.
+          </p>
         </div>
         {statusBadge()}
       </div>
@@ -127,7 +181,9 @@ export function CapstoneSection({ course }: { course: Course }) {
             <FileText className="h-4 w-4" /> Project Brief
           </h3>
           {course.capstone_brief && (
-            <p className="mt-2 text-sm text-foreground/80 whitespace-pre-wrap">{course.capstone_brief}</p>
+            <p className="mt-2 text-sm text-foreground/80 whitespace-pre-wrap">
+              {course.capstone_brief}
+            </p>
           )}
           {course.capstone_brief_url && (
             <Button asChild variant="outline" className="mt-3 rounded-full">
@@ -140,20 +196,38 @@ export function CapstoneSection({ course }: { course: Course }) {
       )}
 
       {loading ? (
-        <div className="mt-6 grid place-items-center py-8 text-foreground/50"><Loader2 className="h-5 w-5 animate-spin" /></div>
+        <div className="mt-6 grid place-items-center py-8 text-foreground/50">
+          <Loader2 className="h-5 w-5 animate-spin" />
+        </div>
       ) : submission ? (
         <div className="mt-6 rounded-2xl border border-border p-5">
           <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-foreground/55">
             <span>
-              Submitted {new Date(submission.submitted_at).toLocaleString(undefined, { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+              Submitted{" "}
+              {new Date(submission.submitted_at).toLocaleString(undefined, {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
             </span>
             {submission.reviewed_at && (
               <span>
-                Reviewed {new Date(submission.reviewed_at).toLocaleString(undefined, { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                Reviewed{" "}
+                {new Date(submission.reviewed_at).toLocaleString(undefined, {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
               </span>
             )}
           </div>
-          <p className="mt-2 text-sm text-foreground/80 whitespace-pre-wrap">{submission.submission_text}</p>
+          <p className="mt-2 text-sm text-foreground/80 whitespace-pre-wrap">
+            {submission.submission_text}
+          </p>
           {submission.file_url && (
             <Button onClick={downloadFile} variant="outline" className="mt-3 rounded-full">
               <FileText className="h-4 w-4 mr-1" /> View attached file
@@ -161,7 +235,9 @@ export function CapstoneSection({ course }: { course: Course }) {
           )}
           {submission.instructor_note && (
             <div className="mt-4 rounded-xl bg-mint-tint p-4">
-              <p className="text-xs font-bold uppercase tracking-wide text-secondary">Instructor note</p>
+              <p className="text-xs font-bold uppercase tracking-wide text-secondary">
+                Instructor note
+              </p>
               <p className="mt-1 text-sm text-foreground/80">{submission.instructor_note}</p>
             </div>
           )}
@@ -182,7 +258,9 @@ export function CapstoneSection({ course }: { course: Course }) {
             <p className="text-xs text-foreground/55">{text.length} / 5000 characters</p>
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="capstone-file">Project file (optional · PDF, ZIP, image — max 25 MB)</Label>
+            <Label htmlFor="capstone-file">
+              Project file (optional · PDF, ZIP, image — max 25 MB)
+            </Label>
             <Input
               id="capstone-file"
               type="file"
@@ -191,8 +269,16 @@ export function CapstoneSection({ course }: { course: Course }) {
             />
             {file && <p className="text-xs text-foreground/55">Selected: {file.name}</p>}
           </div>
-          <Button type="submit" disabled={submitting} className="rounded-full bg-forest text-mint hover:bg-forest/90 font-bold">
-            {submitting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Upload className="h-4 w-4 mr-2" />}
+          <Button
+            type="submit"
+            disabled={submitting}
+            className="rounded-full bg-forest text-mint hover:bg-forest/90 font-bold"
+          >
+            {submitting ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Upload className="h-4 w-4 mr-2" />
+            )}
             Submit Project
           </Button>
         </form>

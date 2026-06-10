@@ -56,7 +56,9 @@ function ResetPasswordPage() {
       return;
     }
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, sess) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, sess) => {
       if (event === "PASSWORD_RECOVERY" || (event === "SIGNED_IN" && sess)) {
         setStatus("ready");
       }
@@ -64,7 +66,8 @@ function ResetPasswordPage() {
 
     // Fallback: if the hash already created a session, getSession returns it.
     supabase.auth.getSession().then(({ data }) => {
-      const hasRecoveryHash = hashParams.get("type") === "recovery" || hashParams.has("access_token");
+      const hasRecoveryHash =
+        hashParams.get("type") === "recovery" || hashParams.has("access_token");
       if (data.session && hasRecoveryHash) {
         setStatus("ready");
       } else if (!hasRecoveryHash && !data.session) {
@@ -113,8 +116,14 @@ function ResetPasswordPage() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (passedCount < 4) { toast.error("Please meet at least 4 password requirements"); return; }
-    if (pw.password !== pw.confirm) { toast.error("Passwords don't match"); return; }
+    if (passedCount < 4) {
+      toast.error("Please meet at least 4 password requirements");
+      return;
+    }
+    if (pw.password !== pw.confirm) {
+      toast.error("Passwords don't match");
+      return;
+    }
     setLoading(true);
     const { error: err } = await supabase.auth.updateUser({ password: pw.password });
     setLoading(false);
@@ -136,12 +145,16 @@ function ResetPasswordPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-mint-tint px-4 py-10">
-      <Link to="/" className="mb-8"><Logo /></Link>
+      <Link to="/" className="mb-8">
+        <Logo />
+      </Link>
       <div className="w-full max-w-md rounded-3xl bg-background p-8 shadow-soft border border-border">
         {done ? (
           <div className="text-center">
             <CheckCircle2 className="h-12 w-12 text-secondary mx-auto" />
-            <h1 className="mt-4 font-display text-2xl font-extrabold text-forest">Password updated</h1>
+            <h1 className="mt-4 font-display text-2xl font-extrabold text-forest">
+              Password updated
+            </h1>
             <p className="mt-2 text-sm text-foreground/70">Taking you to your dashboard…</p>
           </div>
         ) : status === "expired" || status === "invalid" ? (
@@ -156,7 +169,10 @@ function ResetPasswordPage() {
               {linkError ?? "Please request a new password reset email to continue."}
             </p>
             <div className="mt-6 flex flex-col gap-2">
-              <Button asChild className="w-full rounded-full bg-forest text-mint hover:bg-forest/90">
+              <Button
+                asChild
+                className="w-full rounded-full bg-forest text-mint hover:bg-forest/90"
+              >
                 <Link to="/forgot-password">Request a new link</Link>
               </Button>
               <Button asChild variant="ghost" className="w-full rounded-full">
@@ -247,7 +263,11 @@ function ResetPasswordPage() {
                       confirmMatches ? "text-secondary" : "text-destructive"
                     }`}
                   >
-                    {confirmMatches ? <Check className="h-3.5 w-3.5" /> : <X className="h-3.5 w-3.5" />}
+                    {confirmMatches ? (
+                      <Check className="h-3.5 w-3.5" />
+                    ) : (
+                      <X className="h-3.5 w-3.5" />
+                    )}
                     {confirmMatches ? "Passwords match" : "Passwords don't match yet"}
                   </p>
                 )}

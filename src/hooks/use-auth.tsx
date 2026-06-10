@@ -39,15 +39,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [instructorCourseIds, setInstructorCourseIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const applyDerivedState = useCallback((next: {
-    profile: Profile | null;
-    roles: AppRole[];
-    instructorCourseIds: string[];
-  }) => {
-    setProfile(next.profile);
-    setRoles(next.roles);
-    setInstructorCourseIds(next.instructorCourseIds);
-  }, []);
+  const applyDerivedState = useCallback(
+    (next: { profile: Profile | null; roles: AppRole[]; instructorCourseIds: string[] }) => {
+      setProfile(next.profile);
+      setRoles(next.roles);
+      setInstructorCourseIds(next.instructorCourseIds);
+    },
+    [],
+  );
 
   const clearDerivedState = useCallback(() => {
     setProfile(null);
@@ -105,13 +104,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       clearDerivedState();
     };
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_evt, nextSession) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_evt, nextSession) => {
       // Do NOT mark ready here — wait for getSession() to settle so we never
       // briefly report `user = null` before the persisted session restores.
       applySession(nextSession, false);
     });
 
-    void supabase.auth.getSession()
+    void supabase.auth
+      .getSession()
       .then(({ data }) => {
         applySession(data.session, true);
       })

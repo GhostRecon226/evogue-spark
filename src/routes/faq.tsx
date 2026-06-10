@@ -11,9 +11,16 @@ export const Route = createFileRoute("/faq")({
   head: () => ({
     meta: [
       { title: "FAQ — Evogue Academy" },
-      { name: "description", content: "Answers about Evogue Academy courses, scholarships, cohorts, and admissions." },
+      {
+        name: "description",
+        content: "Answers about Evogue Academy courses, scholarships, cohorts, and admissions.",
+      },
       { property: "og:title", content: "FAQ — Evogue Academy" },
-      { property: "og:description", content: "Common questions about courses, scholarships, cohorts, and admissions at Evogue Academy." },
+      {
+        property: "og:description",
+        content:
+          "Common questions about courses, scholarships, cohorts, and admissions at Evogue Academy.",
+      },
     ],
   }),
   component: FaqPage,
@@ -114,7 +121,8 @@ function FaqPage() {
             Everything you wanted to know.
           </h1>
           <p className="mt-4 text-base sm:text-lg text-muted-foreground">
-            Answers to the questions we hear most about courses, scholarships, cohorts, and admissions. Still stuck?{" "}
+            Answers to the questions we hear most about courses, scholarships, cohorts, and
+            admissions. Still stuck?{" "}
             <Link to="/contact" className="text-primary underline underline-offset-4">
               Talk to our team
             </Link>

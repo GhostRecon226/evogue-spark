@@ -12,22 +12,42 @@ export const Route = createFileRoute("/_authenticated/instructor/")({
 function InstructorOverview() {
   const { instructorCourseIds } = useAuth();
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({ students: 0, lessons: 0, completionRate: 0, pendingCapstones: 0 });
+  const [stats, setStats] = useState({
+    students: 0,
+    lessons: 0,
+    completionRate: 0,
+    pendingCapstones: 0,
+  });
 
   useEffect(() => {
-    if (instructorCourseIds.length === 0) { setLoading(false); return; }
+    if (instructorCourseIds.length === 0) {
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
     (async () => {
-      const [{ data: enrol }, { data: lessons }, { data: progress }, { data: caps }] = await Promise.all([
-        supabase.from("enrollments").select("student_id, course_id").in("course_id", instructorCourseIds),
-        supabase.from("lessons").select("id, course_id").in("course_id", instructorCourseIds),
-        supabase.from("lesson_progress").select("student_id, course_id, completed").in("course_id", instructorCourseIds),
-        supabase.from("capstone_submissions").select("id, status").in("course_id", instructorCourseIds).in("status", ["pending", "recommended"]),
-      ]);
+      const [{ data: enrol }, { data: lessons }, { data: progress }, { data: caps }] =
+        await Promise.all([
+          supabase
+            .from("enrollments")
+            .select("student_id, course_id")
+            .in("course_id", instructorCourseIds),
+          supabase.from("lessons").select("id, course_id").in("course_id", instructorCourseIds),
+          supabase
+            .from("lesson_progress")
+            .select("student_id, course_id, completed")
+            .in("course_id", instructorCourseIds),
+          supabase
+            .from("capstone_submissions")
+            .select("id, status")
+            .in("course_id", instructorCourseIds)
+            .in("status", ["pending", "recommended"]),
+        ]);
       if (cancelled) return;
 
       const lessonsByCourse = new Map<string, number>();
-      for (const l of lessons ?? []) lessonsByCourse.set(l.course_id, (lessonsByCourse.get(l.course_id) ?? 0) + 1);
+      for (const l of lessons ?? [])
+        lessonsByCourse.set(l.course_id, (lessonsByCourse.get(l.course_id) ?? 0) + 1);
 
       const completedByPair = new Map<string, number>();
       for (const p of progress ?? []) {
@@ -56,14 +76,20 @@ function InstructorOverview() {
       });
       setLoading(false);
     })();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [instructorCourseIds.join(",")]);
 
   const cards = [
     { label: "Total Students", value: stats.students.toLocaleString(), icon: Users },
     { label: "Lessons Uploaded", value: stats.lessons.toLocaleString(), icon: FileText },
     { label: "Avg Completion Rate", value: `${stats.completionRate}%`, icon: TrendingUp },
-    { label: "Pending Capstone Reviews", value: stats.pendingCapstones.toLocaleString(), icon: ClipboardCheck },
+    {
+      label: "Pending Capstone Reviews",
+      value: stats.pendingCapstones.toLocaleString(),
+      icon: ClipboardCheck,
+    },
   ];
 
   return (
@@ -72,7 +98,9 @@ function InstructorOverview() {
       <p className="mt-1 text-foreground/65">Activity across the courses you teach.</p>
 
       {loading ? (
-        <div className="grid place-items-center py-20 text-foreground/50"><Loader2 className="h-6 w-6 animate-spin" /></div>
+        <div className="grid place-items-center py-20 text-foreground/50">
+          <Loader2 className="h-6 w-6 animate-spin" />
+        </div>
       ) : instructorCourseIds.length === 0 ? (
         <div className="mt-10 rounded-3xl border border-dashed border-border bg-background p-12 text-center text-foreground/60">
           You haven't been assigned to any courses yet. Ask an admin to assign you.
@@ -83,7 +111,9 @@ function InstructorOverview() {
             {cards.map((c) => (
               <div key={c.label} className="rounded-2xl border border-border bg-background p-5">
                 <div className="flex items-center justify-between">
-                  <p className="text-xs font-bold uppercase tracking-wide text-foreground/55">{c.label}</p>
+                  <p className="text-xs font-bold uppercase tracking-wide text-foreground/55">
+                    {c.label}
+                  </p>
                   <c.icon className="h-5 w-5 text-secondary" />
                 </div>
                 <p className="mt-3 font-display text-3xl font-extrabold text-forest">{c.value}</p>
@@ -92,20 +122,31 @@ function InstructorOverview() {
           </div>
 
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
-            <Link to="/instructor/courses" className="rounded-2xl border border-border bg-background p-5 hover:bg-mint-tint/30 transition">
+            <Link
+              to="/instructor/courses"
+              className="rounded-2xl border border-border bg-background p-5 hover:bg-mint-tint/30 transition"
+            >
               <BookOpen className="h-6 w-6 text-secondary" />
               <p className="mt-3 font-display font-bold text-forest">View My Courses</p>
               <p className="text-sm text-foreground/60">Per-course enrollment and progress.</p>
             </Link>
-            <Link to="/instructor/upload" className="rounded-2xl border border-border bg-background p-5 hover:bg-mint-tint/30 transition">
+            <Link
+              to="/instructor/upload"
+              className="rounded-2xl border border-border bg-background p-5 hover:bg-mint-tint/30 transition"
+            >
               <FileText className="h-6 w-6 text-secondary" />
               <p className="mt-3 font-display font-bold text-forest">Upload New Lesson</p>
               <p className="text-sm text-foreground/60">Add a lesson with PDF and Zoom links.</p>
             </Link>
-            <Link to="/instructor/capstones" className="rounded-2xl border border-border bg-background p-5 hover:bg-mint-tint/30 transition">
+            <Link
+              to="/instructor/capstones"
+              className="rounded-2xl border border-border bg-background p-5 hover:bg-mint-tint/30 transition"
+            >
               <ClipboardCheck className="h-6 w-6 text-secondary" />
               <p className="mt-3 font-display font-bold text-forest">Review Capstones</p>
-              <p className="text-sm text-foreground/60">{stats.pendingCapstones} awaiting your review.</p>
+              <p className="text-sm text-foreground/60">
+                {stats.pendingCapstones} awaiting your review.
+              </p>
             </Link>
           </div>
         </>

@@ -10,7 +10,11 @@ export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "Contact — Evogue Academy" },
-      { name: "description", content: "Get in touch with the Evogue Academy team in Lagos, Nigeria. No bots, no ticket queues — just us." },
+      {
+        name: "description",
+        content:
+          "Get in touch with the Evogue Academy team in Lagos, Nigeria. No bots, no ticket queues — just us.",
+      },
       { property: "og:title", content: "Contact — Evogue Academy" },
       { property: "og:description", content: "No bots. No ticket queues. Just us." },
     ],
@@ -79,35 +83,65 @@ function ContactPage() {
           <span
             aria-hidden
             className="hidden md:block absolute pointer-events-none rounded-full"
-            style={{ width: 240, height: 240, right: -60, bottom: -60, border: "1px solid rgba(0,245,160,0.08)" }}
+            style={{
+              width: 240,
+              height: 240,
+              right: -60,
+              bottom: -60,
+              border: "1px solid rgba(0,245,160,0.08)",
+            }}
           />
           <span
             aria-hidden
             className="hidden md:block absolute pointer-events-none rounded-full"
-            style={{ width: 160, height: 160, right: -30, bottom: -30, border: "1px solid rgba(0,245,160,0.12)" }}
+            style={{
+              width: 160,
+              height: 160,
+              right: -30,
+              bottom: -30,
+              border: "1px solid rgba(0,245,160,0.12)",
+            }}
           />
 
           <div className="relative">
-            <p className="text-[11px] font-semibold uppercase" style={{ letterSpacing: "0.18em", color: MINT }}>
+            <p
+              className="text-[11px] font-semibold uppercase"
+              style={{ letterSpacing: "0.18em", color: MINT }}
+            >
               Get in touch
             </p>
             <h1
               className="contact-headline mt-5 font-display font-black leading-[1.1]"
               style={{ color: CREAM }}
             >
-              No bots.<br />
-              No ticket queues.<br />
-              <span className="italic" style={{ color: MINT }}>Just us.</span>
+              No bots.
+              <br />
+              No ticket queues.
+              <br />
+              <span className="italic" style={{ color: MINT }}>
+                Just us.
+              </span>
             </h1>
             <p className="mt-5 text-sm" style={{ color: "rgba(237,247,240,0.6)", maxWidth: 300 }}>
-              Got a question about a course, a scholarship, or just not sure where to start? We read every message and we reply to every one.
+              Got a question about a course, a scholarship, or just not sure where to start? We read
+              every message and we reply to every one.
             </p>
           </div>
 
           <ul className="relative">
             {[
-              { Icon: Mail, label: "Email", value: "hello@evogueacademy.com", href: "mailto:hello@evogueacademy.com" },
-              { Icon: MessageCircle, label: "WhatsApp", value: "+44 7404 331835", href: "https://wa.me/447404331835" },
+              {
+                Icon: Mail,
+                label: "Email",
+                value: "hello@evogueacademy.com",
+                href: "mailto:hello@evogueacademy.com",
+              },
+              {
+                Icon: MessageCircle,
+                label: "WhatsApp",
+                value: "+44 7404 331835",
+                href: "https://wa.me/447404331835",
+              },
               { Icon: MapPin, label: "Location", value: "Online — Worldwide", href: "#" },
             ].map(({ Icon, label, value, href }, i) => (
               <li
@@ -138,7 +172,10 @@ function ContactPage() {
                     >
                       {label}
                     </span>
-                    <span className="mt-1 text-sm font-medium transition-colors group-hover:text-[#00F5A0]" style={{ color: CREAM }}>
+                    <span
+                      className="mt-1 text-sm font-medium transition-colors group-hover:text-[#00F5A0]"
+                      style={{ color: CREAM }}
+                    >
                       {value}
                     </span>
                   </span>
@@ -157,13 +194,20 @@ function ContactPage() {
                 padding: "14px 16px",
               }}
             >
-              <span className="shrink-0 rounded-full" style={{ width: 8, height: 8, background: MINT }} />
+              <span
+                className="shrink-0 rounded-full"
+                style={{ width: 8, height: 8, background: MINT }}
+              />
               <p className="text-[13px]">
-                <span style={{ color: CREAM, fontWeight: 500 }}>We usually reply within 24 hours</span>
-                <span style={{ color: "rgba(237,247,240,0.65)" }}> — weekdays via email or WhatsApp</span>
+                <span style={{ color: CREAM, fontWeight: 500 }}>
+                  We usually reply within 24 hours
+                </span>
+                <span style={{ color: "rgba(237,247,240,0.65)" }}>
+                  {" "}
+                  — weekdays via email or WhatsApp
+                </span>
               </p>
             </div>
-
           </div>
         </aside>
 
@@ -187,13 +231,19 @@ function ContactPage() {
               Tell us what you need.
             </h2>
             <p className="mt-3 text-sm leading-[1.6]" style={{ color: "#4a7a5a" }}>
-              No lengthy intake forms. No automated responses. Just tell us what's going on and we'll take it from there.
+              No lengthy intake forms. No automated responses. Just tell us what's going on and
+              we'll take it from there.
             </p>
 
             <form onSubmit={onSubmit} className="mt-6 space-y-5">
               <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                 <div>
-                  <label className="block text-[12px] font-semibold mb-1.5" style={{ color: FOREST }}>Full name</label>
+                  <label
+                    className="block text-[12px] font-semibold mb-1.5"
+                    style={{ color: FOREST }}
+                  >
+                    Full name
+                  </label>
                   <input
                     className={inputCls}
                     placeholder="Your name"
@@ -204,7 +254,12 @@ function ContactPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-[12px] font-semibold mb-1.5" style={{ color: FOREST }}>Email address</label>
+                  <label
+                    className="block text-[12px] font-semibold mb-1.5"
+                    style={{ color: FOREST }}
+                  >
+                    Email address
+                  </label>
                   <input
                     type="email"
                     className={inputCls}
@@ -218,7 +273,9 @@ function ContactPage() {
               </div>
 
               <div>
-                <label className="block text-[12px] font-semibold mb-1.5" style={{ color: FOREST }}>What's this about?</label>
+                <label className="block text-[12px] font-semibold mb-1.5" style={{ color: FOREST }}>
+                  What's this about?
+                </label>
                 <select
                   className={`${inputCls} contact-select`}
                   value={form.topic}
@@ -236,7 +293,9 @@ function ContactPage() {
               </div>
 
               <div>
-                <label className="block text-[12px] font-semibold mb-1.5" style={{ color: FOREST }}>Your message</label>
+                <label className="block text-[12px] font-semibold mb-1.5" style={{ color: FOREST }}>
+                  Your message
+                </label>
                 <textarea
                   className={inputCls}
                   style={{ minHeight: 120, resize: "vertical" }}
@@ -250,7 +309,8 @@ function ContactPage() {
 
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between items-start gap-3 sm:gap-4 mt-2">
                 <p className="text-[12px] leading-snug" style={{ color: "rgba(10,46,26,0.4)" }}>
-                  We never share your details.<br />
+                  We never share your details.
+                  <br />
                   No marketing emails. No spam.
                 </p>
                 <button
@@ -276,10 +336,15 @@ function ContactPage() {
                     e.currentTarget.style.transform = "translateY(0)";
                   }}
                 >
-                  {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : (<>Send message <ArrowRight size={16} /></>)}
+                  {loading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <>
+                      Send message <ArrowRight size={16} />
+                    </>
+                  )}
                 </button>
               </div>
-
             </form>
           </div>
         </section>

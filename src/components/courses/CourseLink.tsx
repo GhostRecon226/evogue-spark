@@ -39,22 +39,62 @@ type Props = {
 export function CourseLink({ slug, className, style, children }: Props) {
   switch (slug) {
     case "scrum-master":
-      return <Link to="/courses/scrum-master" className={className} style={style}>{children}</Link>;
+      return (
+        <Link to="/courses/scrum-master" className={className} style={style}>
+          {children}
+        </Link>
+      );
     case "digital-marketing":
-      return <Link to="/courses/digital-marketing" className={className} style={style}>{children}</Link>;
+      return (
+        <Link to="/courses/digital-marketing" className={className} style={style}>
+          {children}
+        </Link>
+      );
     case "product-management":
-      return <Link to="/courses/product-management" className={className} style={style}>{children}</Link>;
+      return (
+        <Link to="/courses/product-management" className={className} style={style}>
+          {children}
+        </Link>
+      );
     case "ai-for-professionals":
-      return <Link to="/courses/ai-for-professionals" className={className} style={style}>{children}</Link>;
+      return (
+        <Link to="/courses/ai-for-professionals" className={className} style={style}>
+          {children}
+        </Link>
+      );
     case "data-analysis":
-      return <Link to="/courses/data-analysis" className={className} style={style}>{children}</Link>;
+      return (
+        <Link to="/courses/data-analysis" className={className} style={style}>
+          {children}
+        </Link>
+      );
     case "cybersecurity":
-      return <Link to="/courses/cybersecurity" className={className} style={style}>{children}</Link>;
+      return (
+        <Link to="/courses/cybersecurity" className={className} style={style}>
+          {children}
+        </Link>
+      );
     case "virtual-assistant-programme":
-      return <Link to="/courses/virtual-assistant-programme" className={className} style={style}>{children}</Link>;
+      return (
+        <Link to="/courses/virtual-assistant-programme" className={className} style={style}>
+          {children}
+        </Link>
+      );
     case "project-management-business-analysis":
-      return <Link to="/courses/project-management-business-analysis" className={className} style={style}>{children}</Link>;
+      return (
+        <Link
+          to="/courses/project-management-business-analysis"
+          className={className}
+          style={style}
+        >
+          {children}
+        </Link>
+      );
     default:
-      return <a href={`/courses/${slug}`} className={className} style={style}>{children}</a>;
+      return (
+        <a href={`/courses/${slug}`} className={className} style={style}>
+          {children}
+        </a>
+      );
   }
 }

@@ -38,7 +38,7 @@ const VIEWPORTS = [
   { name: "desktop-1280", width: 1280, height: 900 },
 ];
 
-function ensureDeps() {
+async function ensureDeps() {
   try {
     await import("playwright");
   } catch {
@@ -77,7 +77,7 @@ async function main() {
   }
 
   [BASELINE_DIR, ACTUAL_DIR, DIFF_DIR].forEach(
-    (d) => existsSync(d) || mkdirSync(d, { recursive: true })
+    (d) => existsSync(d) || mkdirSync(d, { recursive: true }),
   );
 
   const browser = await playwright.chromium.launch();
@@ -111,27 +111,20 @@ async function main() {
     const actual = PNG.sync.read(buf);
     if (base.width !== actual.width || base.height !== actual.height) {
       failures.push(
-        `${file}: size mismatch baseline=${base.width}x${base.height} actual=${actual.width}x${actual.height}`
+        `${file}: size mismatch baseline=${base.width}x${base.height} actual=${actual.width}x${actual.height}`,
       );
       writeFileSync(join(DIFF_DIR, file), buf);
       await ctx.close();
       continue;
     }
     const diff = new PNG({ width: base.width, height: base.height });
-    const mismatched = pixelmatch(
-      base.data,
-      actual.data,
-      diff.data,
-      base.width,
-      base.height,
-      { threshold: 0.1 }
-    );
+    const mismatched = pixelmatch(base.data, actual.data, diff.data, base.width, base.height, {
+      threshold: 0.1,
+    });
     const ratio = mismatched / (base.width * base.height);
     if (ratio > THRESHOLD) {
       writeFileSync(join(DIFF_DIR, file), PNG.sync.write(diff));
-      failures.push(
-        `${file}: ${(ratio * 100).toFixed(2)}% pixels differ (>${THRESHOLD * 100}%)`
-      );
+      failures.push(`${file}: ${(ratio * 100).toFixed(2)}% pixels differ (>${THRESHOLD * 100}%)`);
     } else {
       console.log(`✓ ${file} (${(ratio * 100).toFixed(3)}% diff)`);
     }

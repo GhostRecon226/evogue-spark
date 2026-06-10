@@ -10,7 +10,12 @@ export function About() {
           Building the next generation of <em>global tech leaders</em>
         </h2>
         <p className="about-body">
-          Evogue Academy was built with a simple belief: where you start should never limit how far you go. We pair ambitious learners from anywhere in the world with world-class practitioners who have shipped at the best companies. Every cohort is intentionally small so students get direct feedback, dedicated mentors, and a curriculum built around real industry briefs. Our mission is simple: produce graduates who are job-ready, confident, and globally competitive from day one.
+          Evogue Academy was built with a simple belief: where you start should never limit how far
+          you go. We pair ambitious learners from anywhere in the world with world-class
+          practitioners who have shipped at the best companies. Every cohort is intentionally small
+          so students get direct feedback, dedicated mentors, and a curriculum built around real
+          industry briefs. Our mission is simple: produce graduates who are job-ready, confident,
+          and globally competitive from day one.
         </p>
         <div className="about-stats">
           <div className="about-stat">
@@ -28,7 +33,9 @@ export function About() {
             <div className="about-stat-label">Completion rate</div>
           </div>
         </div>
-        <Link to="/about" className="about-cta">Learn more about us</Link>
+        <Link to="/about" className="about-cta">
+          Learn more about us
+        </Link>
       </div>
       <div className="about-right">
         <img

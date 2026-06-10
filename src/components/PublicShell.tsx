@@ -3,7 +3,13 @@ import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { Toaster } from "@/components/ui/sonner";
 
-export function PublicShell({ children, className = "" }: { children: ReactNode; className?: string }) {
+export function PublicShell({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   return (
     <>
       <div className="bg-background text-foreground flex flex-col min-h-screen">

@@ -5,7 +5,13 @@ import { toast } from "sonner";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import { DataTable, type Column } from "@/components/admin/DataTable";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/admin/inquiries")({
@@ -41,36 +47,50 @@ function InquiriesPage() {
     })();
   }, []);
 
-  const filtered = useMemo(() =>
-    typeFilter === "all" ? rows : rows.filter((r) => (r.type || r.source) === typeFilter),
-    [rows, typeFilter]
+  const filtered = useMemo(
+    () => (typeFilter === "all" ? rows : rows.filter((r) => (r.type || r.source) === typeFilter)),
+    [rows, typeFilter],
   );
 
   const toggleRead = async (id: string, next: boolean) => {
     const prev = rows;
     setRows((rs) => rs.map((r) => (r.id === id ? { ...r, is_read: next } : r)));
     const { error } = await supabase.from("inquiries").update({ is_read: next }).eq("id", id);
-    if (error) { setRows(prev); toast.error(error.message); }
+    if (error) {
+      setRows(prev);
+      toast.error(error.message);
+    }
   };
 
   const columns: Column<Inquiry>[] = [
-    { key: "full_name", header: "Name",
+    {
+      key: "full_name",
+      header: "Name",
       accessor: (r) => r.full_name,
-      cell: (r) => (
-        <span className={r.is_read ? "" : "font-bold text-forest"}>
-          {r.full_name}
-        </span>
-      ) },
+      cell: (r) => <span className={r.is_read ? "" : "font-bold text-forest"}>{r.full_name}</span>,
+    },
     { key: "email", header: "Email", accessor: (r) => r.email },
     { key: "whatsapp_number", header: "WhatsApp", accessor: (r) => r.whatsapp_number ?? "—" },
     { key: "course_interest", header: "Course", accessor: (r) => r.course_interest ?? "—" },
-    { key: "message", header: "Message", accessor: (r) => r.message,
+    {
+      key: "message",
+      header: "Message",
+      accessor: (r) => r.message,
       cell: (r) => <span className="line-clamp-2 max-w-md inline-block">{r.message}</span>,
-      sortable: false },
-    { key: "type", header: "Type", accessor: (r) => r.type || r.source,
-      cell: (r) => <span className="capitalize">{r.type || r.source}</span> },
-    { key: "created_at", header: "Date", accessor: (r) => r.created_at,
-      cell: (r) => new Date(r.created_at).toLocaleDateString() },
+      sortable: false,
+    },
+    {
+      key: "type",
+      header: "Type",
+      accessor: (r) => r.type || r.source,
+      cell: (r) => <span className="capitalize">{r.type || r.source}</span>,
+    },
+    {
+      key: "created_at",
+      header: "Date",
+      accessor: (r) => r.created_at,
+      cell: (r) => new Date(r.created_at).toLocaleDateString(),
+    },
   ];
 
   return (
@@ -83,7 +103,9 @@ function InquiriesPage() {
 
       <div className="mt-6 flex flex-wrap gap-3">
         <Select value={typeFilter} onValueChange={setTypeFilter}>
-          <SelectTrigger className="w-44 rounded-full"><SelectValue placeholder="Type" /></SelectTrigger>
+          <SelectTrigger className="w-44 rounded-full">
+            <SelectValue placeholder="Type" />
+          </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All types</SelectItem>
             <SelectItem value="contact">Contact</SelectItem>
@@ -94,15 +116,32 @@ function InquiriesPage() {
 
       <div className="mt-6">
         {loading ? (
-          <div className="grid place-items-center py-20 text-foreground/50"><Loader2 className="h-6 w-6 animate-spin" /></div>
+          <div className="grid place-items-center py-20 text-foreground/50">
+            <Loader2 className="h-6 w-6 animate-spin" />
+          </div>
         ) : (
           <DataTable
-            rows={filtered} columns={columns} rowKey={(r) => r.id} pageSize={10}
+            rows={filtered}
+            columns={columns}
+            rowKey={(r) => r.id}
+            pageSize={10}
             emptyMessage="No inquiries match."
             actions={(r) => (
-              <Button size="sm" variant="outline" className="rounded-full"
-                onClick={() => toggleRead(r.id, !r.is_read)}>
-                {r.is_read ? <><EyeOff className="h-3.5 w-3.5 mr-1" /> Mark unread</> : <><Eye className="h-3.5 w-3.5 mr-1" /> Mark read</>}
+              <Button
+                size="sm"
+                variant="outline"
+                className="rounded-full"
+                onClick={() => toggleRead(r.id, !r.is_read)}
+              >
+                {r.is_read ? (
+                  <>
+                    <EyeOff className="h-3.5 w-3.5 mr-1" /> Mark unread
+                  </>
+                ) : (
+                  <>
+                    <Eye className="h-3.5 w-3.5 mr-1" /> Mark read
+                  </>
+                )}
               </Button>
             )}
           />

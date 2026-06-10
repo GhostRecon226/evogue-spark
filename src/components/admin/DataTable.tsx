@@ -24,10 +24,19 @@ type Props<T> = {
 };
 
 export function DataTable<T>({
-  rows, columns, pageSize = 10, emptyMessage = "No records found.", emptyState,
-  rowKey, initialSort, actions, alwaysShowHeader,
+  rows,
+  columns,
+  pageSize = 10,
+  emptyMessage = "No records found.",
+  emptyState,
+  rowKey,
+  initialSort,
+  actions,
+  alwaysShowHeader,
 }: Props<T>) {
-  const [sort, setSort] = useState<{ key: string; direction: "asc" | "desc" } | null>(initialSort ?? null);
+  const [sort, setSort] = useState<{ key: string; direction: "asc" | "desc" } | null>(
+    initialSort ?? null,
+  );
   const [page, setPage] = useState(0);
 
   const sorted = useMemo(() => {
@@ -42,7 +51,10 @@ export function DataTable<T>({
       if (av == null) return 1;
       if (bv == null) return -1;
       if (typeof av === "number" && typeof bv === "number") return av - bv;
-      return String(av).localeCompare(String(bv), undefined, { numeric: true, sensitivity: "base" });
+      return String(av).localeCompare(String(bv), undefined, {
+        numeric: true,
+        sensitivity: "base",
+      });
     });
     if (sort.direction === "desc") copy.reverse();
     return copy;
@@ -75,13 +87,19 @@ export function DataTable<T>({
                       className="inline-flex items-center gap-1 hover:text-secondary transition"
                     >
                       {c.header}
-                      {sort?.key === c.key
-                        ? sort.direction === "asc"
-                          ? <ArrowUp className="h-3.5 w-3.5" />
-                          : <ArrowDown className="h-3.5 w-3.5" />
-                        : <ArrowUpDown className="h-3.5 w-3.5 opacity-40" />}
+                      {sort?.key === c.key ? (
+                        sort.direction === "asc" ? (
+                          <ArrowUp className="h-3.5 w-3.5" />
+                        ) : (
+                          <ArrowDown className="h-3.5 w-3.5" />
+                        )
+                      ) : (
+                        <ArrowUpDown className="h-3.5 w-3.5 opacity-40" />
+                      )}
                     </button>
-                  ) : c.header}
+                  ) : (
+                    c.header
+                  )}
                 </th>
               ))}
               {actions && <th className="text-right font-bold px-4 py-3">Actions</th>}
@@ -90,7 +108,10 @@ export function DataTable<T>({
           <tbody>
             {slice.length === 0 ? (
               <tr>
-                <td colSpan={columns.length + (actions ? 1 : 0)} className="px-4 py-10 text-center text-foreground/55">
+                <td
+                  colSpan={columns.length + (actions ? 1 : 0)}
+                  className="px-4 py-10 text-center text-foreground/55"
+                >
                   {emptyState ?? emptyMessage}
                 </td>
               </tr>
@@ -112,16 +133,29 @@ export function DataTable<T>({
       {sorted.length > 0 && (
         <div className="flex items-center justify-between px-4 py-3 border-t border-border bg-background">
           <p className="text-xs text-foreground/60">
-            Showing {sorted.length === 0 ? 0 : safePage * pageSize + 1}–{Math.min(sorted.length, (safePage + 1) * pageSize)} of {sorted.length}
+            Showing {sorted.length === 0 ? 0 : safePage * pageSize + 1}–
+            {Math.min(sorted.length, (safePage + 1) * pageSize)} of {sorted.length}
           </p>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-foreground/60">Page {safePage + 1} of {totalPages}</span>
-            <Button variant="outline" size="sm" className="rounded-full"
-              onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={safePage === 0}>
+            <span className="text-xs text-foreground/60">
+              Page {safePage + 1} of {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-full"
+              onClick={() => setPage((p) => Math.max(0, p - 1))}
+              disabled={safePage === 0}
+            >
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="sm" className="rounded-full"
-              onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))} disabled={safePage >= totalPages - 1}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-full"
+              onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+              disabled={safePage >= totalPages - 1}
+            >
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
@@ -140,7 +174,11 @@ export function parsePrice(input: string | null | undefined): number {
 
 export function formatNaira(n: number): string {
   try {
-    return new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN", maximumFractionDigits: 0 }).format(n);
+    return new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency: "NGN",
+      maximumFractionDigits: 0,
+    }).format(n);
   } catch {
     return `₦${n.toLocaleString()}`;
   }

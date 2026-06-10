@@ -29,12 +29,17 @@ export function LessonNotes({ lessonId }: { lessonId: string }) {
       setSavedAt(data?.updated_at ?? null);
       setLoading(false);
     })();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [user, lessonId]);
 
   const save = async () => {
     if (!user) return;
-    if (text.length > 10000) { toast.error("Notes are limited to 10,000 characters."); return; }
+    if (text.length > 10000) {
+      toast.error("Notes are limited to 10,000 characters.");
+      return;
+    }
     setSaving(true);
     const { data, error } = await supabase
       .from("student_notes")
@@ -45,7 +50,10 @@ export function LessonNotes({ lessonId }: { lessonId: string }) {
       .select("updated_at")
       .single();
     setSaving(false);
-    if (error) { toast.error(error.message); return; }
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     setSavedAt(data?.updated_at ?? new Date().toISOString());
     toast.success("Notes saved");
   };
@@ -58,12 +66,20 @@ export function LessonNotes({ lessonId }: { lessonId: string }) {
         </h3>
         {savedAt && (
           <span className="text-xs text-foreground/55">
-            Saved {new Date(savedAt).toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+            Saved{" "}
+            {new Date(savedAt).toLocaleString(undefined, {
+              month: "short",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
           </span>
         )}
       </div>
       {loading ? (
-        <div className="grid place-items-center py-6 text-foreground/40"><Loader2 className="h-5 w-5 animate-spin" /></div>
+        <div className="grid place-items-center py-6 text-foreground/40">
+          <Loader2 className="h-5 w-5 animate-spin" />
+        </div>
       ) : (
         <>
           <Textarea
@@ -75,8 +91,16 @@ export function LessonNotes({ lessonId }: { lessonId: string }) {
             placeholder="Jot down ideas, questions, or key takeaways from this lesson…"
           />
           <div className="mt-3 flex justify-end">
-            <Button onClick={save} disabled={saving} className="rounded-full bg-forest text-mint hover:bg-forest/90">
-              {saving ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Save className="h-4 w-4 mr-2" />}
+            <Button
+              onClick={save}
+              disabled={saving}
+              className="rounded-full bg-forest text-mint hover:bg-forest/90"
+            >
+              {saving ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Save className="h-4 w-4 mr-2" />
+              )}
               Save Notes
             </Button>
           </div>

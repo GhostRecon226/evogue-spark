@@ -7,9 +7,7 @@ function DotCluster({ className }: { className?: string }) {
   const dots = [];
   for (let r = 0; r < 4; r++) {
     for (let c = 0; c < 4; c++) {
-      dots.push(
-        <circle key={`${r}-${c}`} cx={c * 12 + 2} cy={r * 12 + 2} r="2" fill="#00F5A0" />
-      );
+      dots.push(<circle key={`${r}-${c}`} cx={c * 12 + 2} cy={r * 12 + 2} r="2" fill="#00F5A0" />);
     }
   }
   return (
@@ -83,7 +81,8 @@ export function Hero() {
           </h1>
 
           <p className="mt-6 max-w-xl mx-auto lg:mx-0 text-base sm:text-lg text-foreground/70">
-            Real projects. Expert mentors. A community of builders from Lagos to London, Nairobi to New York.
+            Real projects. Expert mentors. A community of builders from Lagos to London, Nairobi to
+            New York.
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start">

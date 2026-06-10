@@ -82,12 +82,9 @@ describe.each([
     },
   );
 
-  it.each(soonCases)(
-    "soon card '$slug' → Join Waitlist routes to /contact",
-    async ({ slug }) => {
-      renderCta({ slug, status: "soon" });
-      const anchor = await findCtaAnchor(/join waitlist/i);
-      expect(anchor).toHaveAttribute("href", "/contact");
-    },
-  );
+  it.each(soonCases)("soon card '$slug' → Join Waitlist routes to /contact", async ({ slug }) => {
+    renderCta({ slug, status: "soon" });
+    const anchor = await findCtaAnchor(/join waitlist/i);
+    expect(anchor).toHaveAttribute("href", "/contact");
+  });
 });

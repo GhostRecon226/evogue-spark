@@ -41,10 +41,7 @@ export function Testimonials() {
           </h2>
         </div>
 
-        <ul
-          role="list"
-          className="mt-10 grid gap-5 md:grid-cols-3 list-none p-0"
-        >
+        <ul role="list" className="mt-10 grid gap-5 md:grid-cols-3 list-none p-0">
           {items.map((t) => (
             <li key={t.name} className="h-full">
               <figure className="h-full rounded-3xl bg-background p-6 border border-border shadow-soft flex flex-col">
@@ -55,11 +52,7 @@ export function Testimonials() {
                   aria-hidden="true"
                   focusable="false"
                 />
-                <div
-                  className="flex gap-0.5 mb-3"
-                  role="img"
-                  aria-label="Rated 5 out of 5 stars"
-                >
+                <div className="flex gap-0.5 mb-3" role="img" aria-label="Rated 5 out of 5 stars">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star
                       key={i}
