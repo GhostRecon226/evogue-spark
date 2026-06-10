@@ -57,7 +57,7 @@ export const Route = createFileRoute("/courses/")({
   component: CoursesPage,
 });
 
-const FILTERS = ["All", "Management", "Marketing", "Technology", "Data", "Security"] as const;
+const FILTERS = ["All", "Management", "Marketing", "Technology", "Data", "Engineering", "Security"] as const;
 
 const TRACK_PILLS = [
   "Project Management",
@@ -96,7 +96,7 @@ function CoursesPage() {
         <div className="courses-hero-inner">
           <span className="courses-badge">
             <span className="courses-badge-dot" />
-            8 Courses Available
+            9 Courses Available
           </span>
           <h1 className="courses-headline">
             Skills that get you<br />
