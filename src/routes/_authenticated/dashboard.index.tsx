@@ -329,14 +329,14 @@ function DashboardHome() {
         {loading ? (
           <div className="grid place-items-center py-8 text-foreground/50"><Loader2 className="h-5 w-5 animate-spin" /></div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:overflow-visible">
             {(() => {
               const enrolledTitles = new Set(progressList.map((p) => p.title));
               const recs = RECOMMENDED_COURSES.filter((c) => !enrolledTitles.has(c.title)).slice(0, 3);
               return recs.map((course) => (
                 <div
                   key={course.slug}
-                  className="bg-white rounded-xl border border-[rgba(10,46,26,0.08)] overflow-hidden flex flex-col transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(10,46,26,0.08)]"
+                  className="min-w-[260px] w-[260px] snap-start bg-white rounded-xl border border-[rgba(10,46,26,0.08)] overflow-hidden flex flex-col transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(10,46,26,0.08)] sm:min-w-0 sm:w-auto"
                 >
                   <img src={course.cover} alt={course.title} className="w-full h-[120px] object-cover" />
                   <div className="p-[14px_16px] flex flex-col flex-1">
