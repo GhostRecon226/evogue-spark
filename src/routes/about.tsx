@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Globe2, TrendingUp, Wrench } from "lucide-react";
 import { PublicShell } from "@/components/PublicShell";
 
