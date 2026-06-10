@@ -359,6 +359,10 @@ function DashboardHome() {
           </div>
         )}
       </div>
+
+      {/* Row 5 — Coupon code */}
+      <CouponSection userId={user?.id} initialCode={profile?.applied_coupon_code ?? null} />
+
       <CapstoneTimelineDialog open={capstoneOpen} onOpenChange={setCapstoneOpen} status={capstoneStatus} detail={capstoneDetail} />
     </DashboardLayout>
   );
