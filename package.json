@@ -16,7 +16,8 @@
     "check:visual:update": "node scripts/visual-regression-testimonials.mjs --update",
     "predeploy": "npm run check:css && npm run build",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prepare": "husky"
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.25.5",
