@@ -47,6 +47,7 @@ import { Route as AuthenticatedAdminLessonsRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminInquiriesRouteImport } from './routes/_authenticated/admin.inquiries'
 import { Route as AuthenticatedAdminEnrollmentsRouteImport } from './routes/_authenticated/admin.enrollments'
 import { Route as AuthenticatedAdminCoursesRouteImport } from './routes/_authenticated/admin.courses'
+import { Route as AuthenticatedAdminCouponsRouteImport } from './routes/_authenticated/admin.coupons'
 import { Route as AuthenticatedAdminCohortsRouteImport } from './routes/_authenticated/admin.cohorts'
 import { Route as AuthenticatedAdminCertificatesRouteImport } from './routes/_authenticated/admin.certificates'
 import { Route as AuthenticatedAdminCapstonesRouteImport } from './routes/_authenticated/admin.capstones'
@@ -263,6 +264,12 @@ const AuthenticatedAdminCoursesRoute =
     path: '/admin/courses',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAdminCouponsRoute =
+  AuthenticatedAdminCouponsRouteImport.update({
+    id: '/admin/coupons',
+    path: '/admin/coupons',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAdminCohortsRoute =
   AuthenticatedAdminCohortsRouteImport.update({
     id: '/admin/cohorts',
@@ -325,6 +332,7 @@ export interface FileRoutesByFullPath {
   '/admin/capstones': typeof AuthenticatedAdminCapstonesRoute
   '/admin/certificates': typeof AuthenticatedAdminCertificatesRoute
   '/admin/cohorts': typeof AuthenticatedAdminCohortsRoute
+  '/admin/coupons': typeof AuthenticatedAdminCouponsRoute
   '/admin/courses': typeof AuthenticatedAdminCoursesRoute
   '/admin/enrollments': typeof AuthenticatedAdminEnrollmentsRoute
   '/admin/inquiries': typeof AuthenticatedAdminInquiriesRoute
@@ -369,6 +377,7 @@ export interface FileRoutesByTo {
   '/admin/capstones': typeof AuthenticatedAdminCapstonesRoute
   '/admin/certificates': typeof AuthenticatedAdminCertificatesRoute
   '/admin/cohorts': typeof AuthenticatedAdminCohortsRoute
+  '/admin/coupons': typeof AuthenticatedAdminCouponsRoute
   '/admin/courses': typeof AuthenticatedAdminCoursesRoute
   '/admin/enrollments': typeof AuthenticatedAdminEnrollmentsRoute
   '/admin/inquiries': typeof AuthenticatedAdminInquiriesRoute
@@ -416,6 +425,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/capstones': typeof AuthenticatedAdminCapstonesRoute
   '/_authenticated/admin/certificates': typeof AuthenticatedAdminCertificatesRoute
   '/_authenticated/admin/cohorts': typeof AuthenticatedAdminCohortsRoute
+  '/_authenticated/admin/coupons': typeof AuthenticatedAdminCouponsRoute
   '/_authenticated/admin/courses': typeof AuthenticatedAdminCoursesRoute
   '/_authenticated/admin/enrollments': typeof AuthenticatedAdminEnrollmentsRoute
   '/_authenticated/admin/inquiries': typeof AuthenticatedAdminInquiriesRoute
@@ -463,6 +473,7 @@ export interface FileRouteTypes {
     | '/admin/capstones'
     | '/admin/certificates'
     | '/admin/cohorts'
+    | '/admin/coupons'
     | '/admin/courses'
     | '/admin/enrollments'
     | '/admin/inquiries'
@@ -507,6 +518,7 @@ export interface FileRouteTypes {
     | '/admin/capstones'
     | '/admin/certificates'
     | '/admin/cohorts'
+    | '/admin/coupons'
     | '/admin/courses'
     | '/admin/enrollments'
     | '/admin/inquiries'
@@ -553,6 +565,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/capstones'
     | '/_authenticated/admin/certificates'
     | '/_authenticated/admin/cohorts'
+    | '/_authenticated/admin/coupons'
     | '/_authenticated/admin/courses'
     | '/_authenticated/admin/enrollments'
     | '/_authenticated/admin/inquiries'
@@ -866,6 +879,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminCoursesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/coupons': {
+      id: '/_authenticated/admin/coupons'
+      path: '/admin/coupons'
+      fullPath: '/admin/coupons'
+      preLoaderRoute: typeof AuthenticatedAdminCouponsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/admin/cohorts': {
       id: '/_authenticated/admin/cohorts'
       path: '/admin/cohorts'
@@ -954,6 +974,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdminCapstonesRoute: typeof AuthenticatedAdminCapstonesRoute
   AuthenticatedAdminCertificatesRoute: typeof AuthenticatedAdminCertificatesRoute
   AuthenticatedAdminCohortsRoute: typeof AuthenticatedAdminCohortsRoute
+  AuthenticatedAdminCouponsRoute: typeof AuthenticatedAdminCouponsRoute
   AuthenticatedAdminCoursesRoute: typeof AuthenticatedAdminCoursesRoute
   AuthenticatedAdminEnrollmentsRoute: typeof AuthenticatedAdminEnrollmentsRoute
   AuthenticatedAdminInquiriesRoute: typeof AuthenticatedAdminInquiriesRoute
@@ -975,6 +996,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminCapstonesRoute: AuthenticatedAdminCapstonesRoute,
   AuthenticatedAdminCertificatesRoute: AuthenticatedAdminCertificatesRoute,
   AuthenticatedAdminCohortsRoute: AuthenticatedAdminCohortsRoute,
+  AuthenticatedAdminCouponsRoute: AuthenticatedAdminCouponsRoute,
   AuthenticatedAdminCoursesRoute: AuthenticatedAdminCoursesRoute,
   AuthenticatedAdminEnrollmentsRoute: AuthenticatedAdminEnrollmentsRoute,
   AuthenticatedAdminInquiriesRoute: AuthenticatedAdminInquiriesRoute,

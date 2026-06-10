@@ -371,8 +371,11 @@ function DashboardHome() {
 function CouponSection({ userId, initialCode }: { userId: string | undefined; initialCode: string | null }) {
   const [code, setCode] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [applied, setApplied] = useState<{ code: string; pct: number } | null>(null);
+  const [applied, setApplied] = useState<{ code: string; type: "percentage" | "fixed"; value: number } | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
+
+  const formatDiscount = (type: "percentage" | "fixed", value: number) =>
+    type === "fixed" ? `£${value}` : `${value}%`;
 
   useEffect(() => {
     if (!initialCode) return;
@@ -380,11 +383,15 @@ function CouponSection({ userId, initialCode }: { userId: string | undefined; in
     (async () => {
       const { data } = await supabase
         .from("coupon_codes")
-        .select("code, discount_percentage")
+        .select("code, discount_type, discount_value")
         .eq("code", initialCode)
         .maybeSingle();
       if (!cancelled && data) {
-        setApplied({ code: data.code, pct: data.discount_percentage });
+        setApplied({
+          code: data.code,
+          type: (data.discount_type as "percentage" | "fixed") ?? "percentage",
+          value: Number(data.discount_value ?? 0),
+        });
         setStatus("success");
       }
     })();
@@ -398,34 +405,26 @@ function CouponSection({ userId, initialCode }: { userId: string | undefined; in
     if (!trimmed) return;
     setStatus("loading");
     setErrorMsg("");
-    const { data: coupon } = await supabase
-      .from("coupon_codes")
-      .select("code, discount_percentage, active")
-      .eq("code", trimmed)
-      .maybeSingle();
 
-    if (!coupon || !coupon.active) {
+    const { data, error } = await supabase.rpc("redeem_coupon", { _code: trimmed });
+
+    if (error || !data || data.length === 0) {
       setStatus("error");
       setErrorMsg("Invalid or expired code. Please check and try again.");
       setApplied(null);
       return;
     }
 
-    const { error } = await supabase
-      .from("profiles")
-      .update({ applied_coupon_code: coupon.code, applied_coupon_at: new Date().toISOString() })
-      .eq("id", userId);
-
-    if (error) {
-      setStatus("error");
-      setErrorMsg("Something went wrong saving your code. Please try again.");
-      return;
-    }
-
-    setApplied({ code: coupon.code, pct: coupon.discount_percentage });
+    const row = data[0];
+    setApplied({
+      code: row.code,
+      type: (row.discount_type as "percentage" | "fixed") ?? "percentage",
+      value: Number(row.discount_value ?? 0),
+    });
     setStatus("success");
     setCode("");
   };
+
 
   return (
     <div className="mt-10">
@@ -454,7 +453,7 @@ function CouponSection({ userId, initialCode }: { userId: string | undefined; in
           <div className="flex items-start gap-2 bg-[rgba(0,245,160,0.08)] border border-[rgba(0,245,160,0.25)] rounded-lg px-4 py-3 text-[13px] text-[#0A5C2A] font-medium">
             <Check className="h-4 w-4 mt-0.5 shrink-0 text-[#00F5A0]" strokeWidth={3} />
             <span>
-              Code applied successfully. Your {applied.pct}% discount has been noted. Mention this code when you contact us to enrol.
+              Code applied successfully. Your {formatDiscount(applied.type, applied.value)} discount has been noted. Mention this code when you contact us to enrol.
             </span>
           </div>
         )}
