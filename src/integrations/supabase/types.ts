@@ -594,6 +594,42 @@ export type Database = {
           },
         ]
       }
+      enrolment_requests: {
+        Row: {
+          country: string
+          course: string
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          message: string | null
+          status: string
+          whatsapp: string
+        }
+        Insert: {
+          country: string
+          course: string
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          message?: string | null
+          status?: string
+          whatsapp: string
+        }
+        Update: {
+          country?: string
+          course?: string
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          message?: string | null
+          status?: string
+          whatsapp?: string
+        }
+        Relationships: []
+      }
       inquiries: {
         Row: {
           course_interest: string | null
