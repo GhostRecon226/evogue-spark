@@ -25,7 +25,7 @@ import projectPlannerImg from "@/assets/courses/project-planner.jpg";
 type CourseCard = {
   slug: string;
   title: string;
-  category: "Management" | "Marketing" | "Technology" | "Data" | "Security";
+  category: "Management" | "Marketing" | "Technology" | "Data" | "Engineering" | "Security";
   duration: string;
   level: string;
   status: "live" | "soon";
