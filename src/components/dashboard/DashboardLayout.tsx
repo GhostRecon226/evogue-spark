@@ -1,6 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, BookOpen, Award, User, LogOut, Menu, ArrowLeft, Shield, GraduationCap, ClipboardCheck, Users, Wallet, Mail, CalendarDays, PlayCircle, Megaphone, Settings as SettingsIcon, Bell, PanelLeftClose, PanelLeftOpen, UserCircle2 } from "lucide-react";
-import { useEffect, useState, type ReactNode } from "react";
+import { LayoutDashboard, BookOpen, Award, User, LogOut, Menu, ArrowLeft, Shield, GraduationCap, ClipboardCheck, Users, Wallet, Mail, CalendarDays, PlayCircle, Megaphone, Settings as SettingsIcon, Bell, PanelLeftClose, PanelLeftOpen, UserCircle2, Video } from "lucide-react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Logo } from "@/components/landing/Logo";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
