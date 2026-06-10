@@ -68,7 +68,7 @@ function DashboardHome() {
           .order("enrolled_at", { ascending: false }),
         supabase.from("certificates").select("id", { count: "exact", head: true }).eq("student_id", user.id),
         supabase.from("lesson_progress").select("id", { count: "exact", head: true }).eq("student_id", user.id).eq("completed", true),
-        supabase.from("capstone_submissions").select("status, submitted_at").eq("student_id", user.id).order("submitted_at", { ascending: false }).limit(1),
+        supabase.from("capstone_submissions").select("status, submitted_at, reviewed_at, instructor_recommendation, instructor_note").eq("student_id", user.id).order("submitted_at", { ascending: false }).limit(1),
       ]);
 
       const enrolled = enrollments ?? [];
