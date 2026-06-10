@@ -272,27 +272,80 @@ export type Database = {
           active: boolean
           code: string
           created_at: string
-          discount_percentage: number
+          description: string | null
+          discount_percentage: number | null
+          discount_type: string
+          discount_value: number
+          expiry_date: string | null
           id: string
+          times_used: number
           updated_at: string
+          usage_limit: number | null
         }
         Insert: {
           active?: boolean
           code: string
           created_at?: string
-          discount_percentage: number
+          description?: string | null
+          discount_percentage?: number | null
+          discount_type?: string
+          discount_value: number
+          expiry_date?: string | null
           id?: string
+          times_used?: number
           updated_at?: string
+          usage_limit?: number | null
         }
         Update: {
           active?: boolean
           code?: string
           created_at?: string
-          discount_percentage?: number
+          description?: string | null
+          discount_percentage?: number | null
+          discount_type?: string
+          discount_value?: number
+          expiry_date?: string | null
           id?: string
+          times_used?: number
           updated_at?: string
+          usage_limit?: number | null
         }
         Relationships: []
+      }
+      coupon_redemptions: {
+        Row: {
+          applied_at: string
+          coupon_code: string
+          discount_type: string
+          discount_value: number
+          id: string
+          student_id: string
+        }
+        Insert: {
+          applied_at?: string
+          coupon_code: string
+          discount_type: string
+          discount_value: number
+          id?: string
+          student_id: string
+        }
+        Update: {
+          applied_at?: string
+          coupon_code?: string
+          discount_type?: string
+          discount_value?: number
+          id?: string
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_redemptions_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       course_instructors: {
         Row: {
@@ -949,6 +1002,14 @@ export type Database = {
           message: Json
           msg_id: number
           read_ct: number
+        }[]
+      }
+      redeem_coupon: {
+        Args: { _code: string }
+        Returns: {
+          code: string
+          discount_type: string
+          discount_value: number
         }[]
       }
     }
