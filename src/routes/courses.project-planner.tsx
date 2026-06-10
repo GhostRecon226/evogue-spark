@@ -102,8 +102,8 @@ const FAQS = [
     a: "Graduates can pursue roles such as Project Planner, Planning Engineer, Project Controls Analyst, Scheduler and Project Coordinator across construction, rail, infrastructure, energy and defence sectors.",
   },
   {
-    q: "When does enrolment open?",
-    a: "We're finalising the programme details. Join the waitlist and we'll reach out as soon as enrolment opens.",
+    q: "Is there a payment plan?",
+    a: "Yes. Reach out to us at hello@evogueacademy.com and we'll work something out based on your situation.",
   },
 ];
 
@@ -208,7 +208,7 @@ function ProjectPlannerPage() {
                 cursor: "pointer", transition: "background 0.2s", textDecoration: "none",
                 display: "inline-flex", alignItems: "center", gap: 8,
               }}>
-                Join Waitlist <ArrowRight size={16} />
+                Enrol Now <ArrowRight size={16} />
               </Link>
               <Link to="/scholarship" style={{
                 fontSize: 14, color: "#1A8C4E", fontWeight: 500,
@@ -241,11 +241,15 @@ function ProjectPlannerPage() {
                 Programme Fee
               </div>
               <div className="sm-display" style={{ fontSize: 22, fontWeight: 700, color: "#0A2E1A", margin: "6px 0" }}>
-                Coming Soon
+                Contact us for pricing
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#1A8C4E", fontWeight: 500 }}>
+                <Check size={14} /> Scholarship available — up to 100% tuition coverage
               </div>
               <div style={{ borderTop: "1px solid rgba(10,46,26,0.06)", margin: "14px 0" }} />
               <div style={{ fontSize: 12, color: "#4a7a5a" }}>
-                Join the waitlist to be first in line when enrolment opens.
+                Flexible payment plans available.{" "}
+                <Link to="/contact" style={{ color: "#1A8C4E", fontWeight: 600 }}>Talk to us</Link>
               </div>
             </div>
           </div>
@@ -421,7 +425,7 @@ function ProjectPlannerPage() {
             Ready to plan your future?
           </div>
           <div style={{ fontSize: 13, color: "rgba(237,247,240,0.55)", marginTop: 4 }}>
-            Project Planning is one of the highest-demand specialist careers in UK and global infrastructure. Join the waitlist now.
+            Project Planning is one of the highest-demand specialist careers in UK and global infrastructure. Limited cohort spots available.
           </div>
         </div>
         <div style={{ display: "flex", gap: 12 }}>
@@ -429,7 +433,7 @@ function ProjectPlannerPage() {
             background: "#00F5A0", color: "#0A2E1A", fontWeight: 600,
             padding: "12px 24px", borderRadius: 8, fontSize: 14, textDecoration: "none",
           }}>
-            Join Waitlist
+            Enrol Now
           </Link>
           <Link to="/scholarship" style={{
             background: "transparent", border: "1.5px solid rgba(255,255,255,0.2)",

@@ -42,7 +42,7 @@ const COURSE_CARDS: CourseCard[] = [
   { slug: "data-analysis", title: "Data Analysis", category: "Data", duration: "4 weeks", level: "Beginner", status: "live", href: "/courses/data-analysis", description: "Turn raw data into decisions with SQL, spreadsheets and visualisation.", image: dataImg },
   { slug: "cybersecurity", title: "Cybersecurity", category: "Security", duration: "4 weeks", level: "Intermediate", status: "soon", href: "/contact", description: "Defend systems and data. Threats, controls and modern security practice.", image: cyberImg },
   { slug: "virtual-assistant-programme", title: "Virtual Assistant Programme", category: "Management", duration: "4 weeks", level: "Beginner", status: "soon", href: "/contact", description: "Launch a remote VA career with the tools, workflows and client skills that pay.", image: vaImg },
-  { slug: "project-planner", title: "Project Planner", category: "Engineering", duration: "6 weeks", level: "Beginner \u2013 Intermediate", status: "soon", href: "/contact", description: "Master Primavera P6, critical path analysis and project controls. Built for engineers, graduates and career changers entering UK infrastructure.", image: projectPlannerImg },
+  { slug: "project-planner", title: "Project Planner", category: "Engineering", duration: "6 weeks", level: "Beginner \u2013 Intermediate", status: "live", href: "/courses/project-planner", description: "Master Primavera P6, critical path analysis and project controls. Built for engineers, graduates and career changers entering UK infrastructure.", image: projectPlannerImg },
 ];
 
 export const Route = createFileRoute("/courses/")({
