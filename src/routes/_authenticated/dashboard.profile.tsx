@@ -118,7 +118,7 @@ function ProfilePage() {
     {
       const { error } = await supabase
         .from("lessons")
-        .insert({ course_id: "00000000-0000-0000-0000-000000000000", title: "__perm_probe__", order_index: -1 })
+        .insert({ course_id: "00000000-0000-0000-0000-000000000000", title: "__perm_probe__" })
         .select()
         .single();
       // Foreign-key / not-null errors mean we passed RLS but failed validation — count as access granted.
@@ -130,7 +130,7 @@ function ProfilePage() {
         detail: allowed ? "RLS allows insert" : error?.message,
       });
       // If we somehow inserted, clean up
-      if (!error) await supabase.from("lessons").delete().eq("title", "__perm_probe__").eq("order_index", -1);
+      if (!error) await supabase.from("lessons").delete().eq("title", "__perm_probe__");
     }
     // 4. Read all user_roles (admin only via RLS)
     {
