@@ -14,6 +14,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as EnrolRouteImport } from './routes/enrol'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AboutRouteImport } from './routes/about'
@@ -78,6 +79,11 @@ const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnrolRoute = EnrolRouteImport.update({
+  id: '/enrol',
+  path: '/enrol',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -312,6 +318,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/blog': typeof BlogRoute
   '/contact': typeof ContactRoute
+  '/enrol': typeof EnrolRoute
   '/faq': typeof FaqRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
@@ -358,6 +365,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/blog': typeof BlogRoute
   '/contact': typeof ContactRoute
+  '/enrol': typeof EnrolRoute
   '/faq': typeof FaqRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
@@ -405,6 +413,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/blog': typeof BlogRoute
   '/contact': typeof ContactRoute
+  '/enrol': typeof EnrolRoute
   '/faq': typeof FaqRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
@@ -453,6 +462,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/blog'
     | '/contact'
+    | '/enrol'
     | '/faq'
     | '/forgot-password'
     | '/login'
@@ -499,6 +509,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/blog'
     | '/contact'
+    | '/enrol'
     | '/faq'
     | '/forgot-password'
     | '/login'
@@ -545,6 +556,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/blog'
     | '/contact'
+    | '/enrol'
     | '/faq'
     | '/forgot-password'
     | '/login'
@@ -593,6 +605,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   BlogRoute: typeof BlogRoute
   ContactRoute: typeof ContactRoute
+  EnrolRoute: typeof EnrolRoute
   FaqRoute: typeof FaqRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
@@ -646,6 +659,13 @@ declare module '@tanstack/react-router' {
       path: '/faq'
       fullPath: '/faq'
       preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/enrol': {
+      id: '/enrol'
+      path: '/enrol'
+      fullPath: '/enrol'
+      preLoaderRoute: typeof EnrolRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -1022,6 +1042,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   BlogRoute: BlogRoute,
   ContactRoute: ContactRoute,
+  EnrolRoute: EnrolRoute,
   FaqRoute: FaqRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
