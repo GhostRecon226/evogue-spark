@@ -22,6 +22,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CoursesIndexRouteImport } from './routes/courses.index'
 import { Route as CoursesVirtualAssistantProgrammeRouteImport } from './routes/courses.virtual-assistant-programme'
 import { Route as CoursesScrumMasterRouteImport } from './routes/courses.scrum-master'
+import { Route as CoursesProjectPlannerRouteImport } from './routes/courses.project-planner'
 import { Route as CoursesProjectManagementBusinessAnalysisRouteImport } from './routes/courses.project-management-business-analysis'
 import { Route as CoursesProductManagementRouteImport } from './routes/courses.product-management'
 import { Route as CoursesDigitalMarketingRouteImport } from './routes/courses.digital-marketing'
@@ -116,6 +117,11 @@ const CoursesVirtualAssistantProgrammeRoute =
 const CoursesScrumMasterRoute = CoursesScrumMasterRouteImport.update({
   id: '/courses/scrum-master',
   path: '/courses/scrum-master',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoursesProjectPlannerRoute = CoursesProjectPlannerRouteImport.update({
+  id: '/courses/project-planner',
+  path: '/courses/project-planner',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CoursesProjectManagementBusinessAnalysisRoute =
@@ -311,6 +317,7 @@ export interface FileRoutesByFullPath {
   '/courses/digital-marketing': typeof CoursesDigitalMarketingRoute
   '/courses/product-management': typeof CoursesProductManagementRoute
   '/courses/project-management-business-analysis': typeof CoursesProjectManagementBusinessAnalysisRoute
+  '/courses/project-planner': typeof CoursesProjectPlannerRoute
   '/courses/scrum-master': typeof CoursesScrumMasterRoute
   '/courses/virtual-assistant-programme': typeof CoursesVirtualAssistantProgrammeRoute
   '/courses/': typeof CoursesIndexRoute
@@ -354,6 +361,7 @@ export interface FileRoutesByTo {
   '/courses/digital-marketing': typeof CoursesDigitalMarketingRoute
   '/courses/product-management': typeof CoursesProductManagementRoute
   '/courses/project-management-business-analysis': typeof CoursesProjectManagementBusinessAnalysisRoute
+  '/courses/project-planner': typeof CoursesProjectPlannerRoute
   '/courses/scrum-master': typeof CoursesScrumMasterRoute
   '/courses/virtual-assistant-programme': typeof CoursesVirtualAssistantProgrammeRoute
   '/courses': typeof CoursesIndexRoute
@@ -400,6 +408,7 @@ export interface FileRoutesById {
   '/courses/digital-marketing': typeof CoursesDigitalMarketingRoute
   '/courses/product-management': typeof CoursesProductManagementRoute
   '/courses/project-management-business-analysis': typeof CoursesProjectManagementBusinessAnalysisRoute
+  '/courses/project-planner': typeof CoursesProjectPlannerRoute
   '/courses/scrum-master': typeof CoursesScrumMasterRoute
   '/courses/virtual-assistant-programme': typeof CoursesVirtualAssistantProgrammeRoute
   '/courses/': typeof CoursesIndexRoute
@@ -446,6 +455,7 @@ export interface FileRouteTypes {
     | '/courses/digital-marketing'
     | '/courses/product-management'
     | '/courses/project-management-business-analysis'
+    | '/courses/project-planner'
     | '/courses/scrum-master'
     | '/courses/virtual-assistant-programme'
     | '/courses/'
@@ -489,6 +499,7 @@ export interface FileRouteTypes {
     | '/courses/digital-marketing'
     | '/courses/product-management'
     | '/courses/project-management-business-analysis'
+    | '/courses/project-planner'
     | '/courses/scrum-master'
     | '/courses/virtual-assistant-programme'
     | '/courses'
@@ -534,6 +545,7 @@ export interface FileRouteTypes {
     | '/courses/digital-marketing'
     | '/courses/product-management'
     | '/courses/project-management-business-analysis'
+    | '/courses/project-planner'
     | '/courses/scrum-master'
     | '/courses/virtual-assistant-programme'
     | '/courses/'
@@ -579,6 +591,7 @@ export interface RootRouteChildren {
   CoursesDigitalMarketingRoute: typeof CoursesDigitalMarketingRoute
   CoursesProductManagementRoute: typeof CoursesProductManagementRoute
   CoursesProjectManagementBusinessAnalysisRoute: typeof CoursesProjectManagementBusinessAnalysisRoute
+  CoursesProjectPlannerRoute: typeof CoursesProjectPlannerRoute
   CoursesScrumMasterRoute: typeof CoursesScrumMasterRoute
   CoursesVirtualAssistantProgrammeRoute: typeof CoursesVirtualAssistantProgrammeRoute
   CoursesIndexRoute: typeof CoursesIndexRoute
@@ -676,6 +689,13 @@ declare module '@tanstack/react-router' {
       path: '/courses/scrum-master'
       fullPath: '/courses/scrum-master'
       preLoaderRoute: typeof CoursesScrumMasterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/courses/project-planner': {
+      id: '/courses/project-planner'
+      path: '/courses/project-planner'
+      fullPath: '/courses/project-planner'
+      preLoaderRoute: typeof CoursesProjectPlannerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/courses/project-management-business-analysis': {
@@ -992,6 +1012,7 @@ const rootRouteChildren: RootRouteChildren = {
   CoursesProductManagementRoute: CoursesProductManagementRoute,
   CoursesProjectManagementBusinessAnalysisRoute:
     CoursesProjectManagementBusinessAnalysisRoute,
+  CoursesProjectPlannerRoute: CoursesProjectPlannerRoute,
   CoursesScrumMasterRoute: CoursesScrumMasterRoute,
   CoursesVirtualAssistantProgrammeRoute: CoursesVirtualAssistantProgrammeRoute,
   CoursesIndexRoute: CoursesIndexRoute,
@@ -1000,13 +1021,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
