@@ -15,7 +15,7 @@ export const Route = createFileRoute("/_authenticated/dashboard/profile")({
 });
 
 function ProfilePage() {
-  const { user, profile, refreshProfile } = useAuth();
+  const { user, profile, refreshProfile, roles } = useAuth();
   const [loading, setLoading] = useState(false);
   const [pwLoading, setPwLoading] = useState(false);
   const [form, setForm] = useState({ full_name: "", email: "", whatsapp_number: "", avatar_url: "" });
@@ -86,7 +86,7 @@ function ProfilePage() {
       <h1 className="font-display text-3xl font-extrabold text-forest">Profile</h1>
       <p className="mt-1 text-foreground/65">Manage your personal details and account security.</p>
 
-      {/* Student ID — prominent read-only highlight */}
+      {/* Role + Student ID — prominent read-only highlight */}
       <div className="mt-6 max-w-4xl rounded-2xl border-2 border-mint bg-mint/15 p-5 flex items-center justify-between gap-4 flex-wrap">
         <div>
           <p className="text-[11px] uppercase tracking-[0.18em] font-bold text-secondary">Student ID</p>
@@ -94,14 +94,34 @@ function ProfilePage() {
             {profile?.registration_number ?? "—"}
           </p>
         </div>
-        {accountCreated && (
-          <p className="text-xs text-foreground/60">
-            Student since{" "}
-            <span className="font-semibold text-forest">
-              {new Date(accountCreated).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
-            </span>
-          </p>
-        )}
+        <div className="flex items-center gap-3">
+          {roles.length > 0 && (
+            <div className="flex gap-2">
+              {roles.map((role) => (
+                <span
+                  key={role}
+                  className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider ${
+                    role === "admin"
+                      ? "bg-amber-100 text-amber-800"
+                      : role === "instructor"
+                      ? "bg-sky-100 text-sky-800"
+                      : "bg-emerald-100 text-emerald-800"
+                  }`}
+                >
+                  {role}
+                </span>
+              ))}
+            </div>
+          )}
+          {accountCreated && (
+            <p className="text-xs text-foreground/60">
+              Member since{" "}
+              <span className="font-semibold text-forest">
+                {new Date(accountCreated).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
+              </span>
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Section 1 — Personal Details */}
