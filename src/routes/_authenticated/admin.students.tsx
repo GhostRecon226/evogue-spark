@@ -17,7 +17,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
-import { createStudent, setStudentActive, markEnrollmentPaid } from "@/lib/admin.functions";
+import { createStudent, setStudentActive, setEnrollmentPaymentStatus } from "@/lib/admin.functions";
 import { formatUSD, getCoursePriceUSD } from "@/lib/coursePricing";
 
 export const Route = createFileRoute("/_authenticated/admin/students")({
@@ -371,7 +371,7 @@ function StudentProfileDialog({
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
-  const markPaidFn = useServerFn(markEnrollmentPaid);
+  const setStatusFn = useServerFn(setEnrollmentPaymentStatus);
 
   const fetchData = async (id: string) => {
     setLoading(true);
@@ -400,11 +400,15 @@ function StudentProfileDialog({
     void fetchData(studentId);
   }, [studentId]);
 
-  const handleMarkPaid = async (enrollmentId: string) => {
+  const handleSetStatus = async (
+    enrollmentId: string,
+    status: PaymentState,
+    successMsg: string,
+  ) => {
     setBusyId(enrollmentId);
     try {
-      await markPaidFn({ data: { enrollment_id: enrollmentId } });
-      toast.success("Marked as paid");
+      await setStatusFn({ data: { enrollment_id: enrollmentId, status } });
+      toast.success(successMsg);
       if (studentId) await fetchData(studentId);
       onChanged?.();
     } catch (err: any) {
@@ -481,27 +485,63 @@ function StudentProfileDialog({
                           </p>
                         </div>
                       </div>
-                      {state !== "paid" && (
-                        <button
-                          onClick={() => handleMarkPaid(en.id)}
-                          disabled={busyId === en.id}
-                          style={{
-                            background: "#1A8C4E",
-                            color: "#ffffff",
-                            padding: "10px 20px",
-                            borderRadius: 8,
-                            fontWeight: 600,
-                            fontSize: 14,
-                          }}
-                          className="inline-flex items-center justify-center disabled:opacity-60"
-                        >
-                          {busyId === en.id ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            "Mark as Paid"
-                          )}
-                        </button>
-                      )}
+                      <div className="flex flex-wrap gap-2 justify-end">
+                        {state !== "paid" && (
+                          <button
+                            onClick={() => handleSetStatus(en.id, "paid", "Marked as paid")}
+                            disabled={busyId === en.id}
+                            style={{
+                              background: "#1A8C4E",
+                              color: "#ffffff",
+                              padding: "10px 20px",
+                              borderRadius: 8,
+                              fontWeight: 600,
+                              fontSize: 14,
+                            }}
+                            className="inline-flex items-center justify-center disabled:opacity-60"
+                          >
+                            {busyId === en.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              "Mark as Paid"
+                            )}
+                          </button>
+                        )}
+                        {state !== "pending" && (
+                          <button
+                            onClick={() => handleSetStatus(en.id, "pending", "Marked as pending")}
+                            disabled={busyId === en.id}
+                            style={{
+                              background: "#fef9e7",
+                              color: "#b7860b",
+                              padding: "10px 20px",
+                              borderRadius: 8,
+                              fontWeight: 600,
+                              fontSize: 14,
+                            }}
+                            className="inline-flex items-center justify-center disabled:opacity-60"
+                          >
+                            Mark as Pending
+                          </button>
+                        )}
+                        {state === "paid" && (
+                          <button
+                            onClick={() => handleSetStatus(en.id, "unpaid", "Reverted to unpaid")}
+                            disabled={busyId === en.id}
+                            style={{
+                              background: "#fdecea",
+                              color: "#c0392b",
+                              padding: "10px 20px",
+                              borderRadius: 8,
+                              fontWeight: 600,
+                              fontSize: 14,
+                            }}
+                            className="inline-flex items-center justify-center disabled:opacity-60"
+                          >
+                            Unmark Paid
+                          </button>
+                        )}
+                      </div>
                     </li>
                   );
                 })}
