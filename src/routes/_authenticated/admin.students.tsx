@@ -42,6 +42,7 @@ function StudentsPage() {
   const [rows, setRows] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
+  const [payFilter, setPayFilter] = useState<"all" | PaymentState>("all");
   const [open, setOpen] = useState(false);
   const [profileId, setProfileId] = useState<string | null>(null);
   const createFn = useServerFn(createStudent);
