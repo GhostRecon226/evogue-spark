@@ -24,6 +24,8 @@ export const Route = createFileRoute("/_authenticated/admin/students")({
   component: StudentsPage,
 });
 
+type PaymentState = "paid" | "pending" | "unpaid";
+
 type Student = {
   id: string;
   full_name: string;
@@ -33,6 +35,7 @@ type Student = {
   is_active: boolean;
   created_at: string;
   enrolled_count: number;
+  payment_state: PaymentState;
 };
 
 function StudentsPage() {
@@ -54,14 +57,19 @@ function StudentsPage() {
         )
         .eq("role", "student")
         .order("created_at", { ascending: false }),
-      supabase.from("enrollments").select("student_id"),
+      supabase.from("enrollments").select("student_id, payment_status"),
       supabase.from("user_roles").select("user_id, role").in("role", ["admin", "instructor"]),
     ]);
     const excluded = new Set<string>();
     for (const r of rolesRes.data ?? []) excluded.add(r.user_id);
     const counts = new Map<string, number>();
-    for (const e of enrolRes.data ?? [])
+    const pay = new Map<string, PaymentState>();
+    for (const e of enrolRes.data ?? []) {
       counts.set(e.student_id, (counts.get(e.student_id) ?? 0) + 1);
+      const prev = pay.get(e.student_id);
+      if (e.payment_status === "paid") pay.set(e.student_id, "paid");
+      else if (prev !== "paid") pay.set(e.student_id, "pending");
+    }
     setRows(
       (profilesRes.data ?? [])
         .filter((p) => p.role === "student" && !excluded.has(p.id))
@@ -74,6 +82,7 @@ function StudentsPage() {
           is_active: p.is_active,
           created_at: p.created_at,
           enrolled_count: counts.get(p.id) ?? 0,
+          payment_state: pay.get(p.id) ?? "unpaid",
         })),
     );
     setLoading(false);
