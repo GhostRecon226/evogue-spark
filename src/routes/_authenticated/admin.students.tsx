@@ -17,11 +17,14 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
-import { createStudent, setStudentActive } from "@/lib/admin.functions";
+import { createStudent, setStudentActive, markEnrollmentPaid } from "@/lib/admin.functions";
+import { formatUSD, getCoursePriceUSD } from "@/lib/coursePricing";
 
 export const Route = createFileRoute("/_authenticated/admin/students")({
   component: StudentsPage,
 });
+
+type PaymentState = "paid" | "pending" | "unpaid";
 
 type Student = {
   id: string;
@@ -32,6 +35,7 @@ type Student = {
   is_active: boolean;
   created_at: string;
   enrolled_count: number;
+  payment_state: PaymentState;
 };
 
 function StudentsPage() {
@@ -53,14 +57,19 @@ function StudentsPage() {
         )
         .eq("role", "student")
         .order("created_at", { ascending: false }),
-      supabase.from("enrollments").select("student_id"),
+      supabase.from("enrollments").select("student_id, payment_status"),
       supabase.from("user_roles").select("user_id, role").in("role", ["admin", "instructor"]),
     ]);
     const excluded = new Set<string>();
     for (const r of rolesRes.data ?? []) excluded.add(r.user_id);
     const counts = new Map<string, number>();
-    for (const e of enrolRes.data ?? [])
+    const pay = new Map<string, PaymentState>();
+    for (const e of enrolRes.data ?? []) {
       counts.set(e.student_id, (counts.get(e.student_id) ?? 0) + 1);
+      const prev = pay.get(e.student_id);
+      if (e.payment_status === "paid") pay.set(e.student_id, "paid");
+      else if (prev !== "paid") pay.set(e.student_id, "pending");
+    }
     setRows(
       (profilesRes.data ?? [])
         .filter((p) => p.role === "student" && !excluded.has(p.id))
@@ -73,6 +82,7 @@ function StudentsPage() {
           is_active: p.is_active,
           created_at: p.created_at,
           enrolled_count: counts.get(p.id) ?? 0,
+          payment_state: pay.get(p.id) ?? "unpaid",
         })),
     );
     setLoading(false);
@@ -131,6 +141,12 @@ function StudentsPage() {
           {r.is_active ? "Active" : "Suspended"}
         </span>
       ),
+    },
+    {
+      key: "payment_state",
+      header: "Payment Status",
+      accessor: (r) => r.payment_state,
+      cell: (r) => <PaymentPill state={r.payment_state} />,
     },
   ];
 
@@ -215,8 +231,26 @@ function StudentsPage() {
         )}
       </div>
 
-      <StudentProfileDialog studentId={profileId} onClose={() => setProfileId(null)} />
+      <StudentProfileDialog studentId={profileId} onClose={() => setProfileId(null)} onChanged={() => void load()} />
     </AdminGuard>
+  );
+}
+
+function PaymentPill({ state }: { state: PaymentState }) {
+  const styles =
+    state === "paid"
+      ? { background: "#e8f5ee", color: "#1A8C4E" }
+      : state === "pending"
+        ? { background: "#fef9e7", color: "#b7860b" }
+        : { background: "#fdecea", color: "#c0392b" };
+  const label = state === "paid" ? "Paid" : state === "pending" ? "Pending" : "Unpaid";
+  return (
+    <span
+      className="inline-flex rounded-full px-2.5 py-0.5 text-xs font-bold"
+      style={styles}
+    >
+      {label}
+    </span>
   );
 }
 
@@ -307,41 +341,61 @@ function NewStudentDialog({
 function StudentProfileDialog({
   studentId,
   onClose,
+  onChanged,
 }: {
   studentId: string | null;
   onClose: () => void;
+  onChanged?: () => void;
 }) {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const markPaidFn = useServerFn(markEnrollmentPaid);
+
+  const fetchData = async (id: string) => {
+    setLoading(true);
+    const [p, e, c] = await Promise.all([
+      supabase.from("profiles").select("*").eq("id", id).maybeSingle(),
+      supabase
+        .from("enrollments")
+        .select(
+          "id, payment_status, enrolled_at, paid_at, courses:course_id(title, slug), cohorts:cohort_id(name)",
+        )
+        .eq("student_id", id),
+      supabase
+        .from("certificates")
+        .select("id, issued_at, courses:course_id(title)")
+        .eq("student_id", id),
+    ]);
+    setData({ profile: p.data, enrollments: e.data ?? [], certificates: c.data ?? [] });
+    setLoading(false);
+  };
 
   useEffect(() => {
     if (!studentId) {
       setData(null);
       return;
     }
-    setLoading(true);
-    (async () => {
-      const [p, e, c] = await Promise.all([
-        supabase.from("profiles").select("*").eq("id", studentId).maybeSingle(),
-        supabase
-          .from("enrollments")
-          .select(
-            "id, payment_status, enrolled_at, courses:course_id(title), cohorts:cohort_id(name)",
-          )
-          .eq("student_id", studentId),
-        supabase
-          .from("certificates")
-          .select("id, issued_at, courses:course_id(title)")
-          .eq("student_id", studentId),
-      ]);
-      setData({ profile: p.data, enrollments: e.data ?? [], certificates: c.data ?? [] });
-      setLoading(false);
-    })();
+    void fetchData(studentId);
   }, [studentId]);
+
+  const handleMarkPaid = async (enrollmentId: string) => {
+    setBusyId(enrollmentId);
+    try {
+      await markPaidFn({ data: { enrollment_id: enrollmentId } });
+      toast.success("Marked as paid");
+      if (studentId) await fetchData(studentId);
+      onChanged?.();
+    } catch (err: any) {
+      toast.error(err?.message ?? "Failed");
+    } finally {
+      setBusyId(null);
+    }
+  };
 
   return (
     <Dialog open={!!studentId} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-display text-forest">Student profile</DialogTitle>
         </DialogHeader>
@@ -362,28 +416,74 @@ function StudentProfileDialog({
                 value={new Date(data.profile?.created_at).toLocaleDateString()}
               />
             </div>
+
             <div>
               <h3 className="font-display font-bold text-forest mb-2">
-                Enrolled courses ({data.enrollments.length})
+                Payment Details ({data.enrollments.length})
               </h3>
               <ul className="divide-y divide-border rounded-xl border border-border">
                 {data.enrollments.length === 0 && (
                   <li className="p-3 text-foreground/55">No enrollments.</li>
                 )}
-                {data.enrollments.map((en: any) => (
-                  <li key={en.id} className="p-3 flex justify-between items-center">
-                    <div>
-                      <p className="font-bold text-forest">{en.courses?.title ?? "—"}</p>
-                      <p className="text-xs text-foreground/55">
-                        {en.cohorts?.name ?? "No cohort"} ·{" "}
-                        {new Date(en.enrolled_at).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <span className="text-xs font-bold capitalize text-secondary">
-                      {en.payment_status}
-                    </span>
-                  </li>
-                ))}
+                {data.enrollments.map((en: any) => {
+                  const fee = getCoursePriceUSD({
+                    slug: en.courses?.slug ?? null,
+                    title: en.courses?.title ?? null,
+                  });
+                  const state: PaymentState =
+                    en.payment_status === "paid"
+                      ? "paid"
+                      : en.payment_status === "pending"
+                        ? "pending"
+                        : "unpaid";
+                  return (
+                    <li key={en.id} className="p-3 grid gap-2 sm:grid-cols-[1fr_auto] sm:items-center">
+                      <div className="grid sm:grid-cols-4 gap-2 text-xs">
+                        <div>
+                          <p className="text-[10px] uppercase font-bold text-forest/60">Course</p>
+                          <p className="font-bold text-forest text-sm">
+                            {en.courses?.title ?? "—"}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] uppercase font-bold text-forest/60">Fee</p>
+                          <p className="font-bold text-forest text-sm">{formatUSD(fee)}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] uppercase font-bold text-forest/60">Status</p>
+                          <PaymentPill state={state} />
+                        </div>
+                        <div>
+                          <p className="text-[10px] uppercase font-bold text-forest/60">Paid on</p>
+                          <p className="text-foreground/80">
+                            {en.paid_at ? new Date(en.paid_at).toLocaleDateString() : "—"}
+                          </p>
+                        </div>
+                      </div>
+                      {state !== "paid" && (
+                        <button
+                          onClick={() => handleMarkPaid(en.id)}
+                          disabled={busyId === en.id}
+                          style={{
+                            background: "#1A8C4E",
+                            color: "#ffffff",
+                            padding: "10px 20px",
+                            borderRadius: 8,
+                            fontWeight: 600,
+                            fontSize: 14,
+                          }}
+                          className="inline-flex items-center justify-center disabled:opacity-60"
+                        >
+                          {busyId === en.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            "Mark as Paid"
+                          )}
+                        </button>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
             <div>

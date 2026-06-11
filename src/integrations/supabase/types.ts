@@ -546,6 +546,7 @@ export type Database = {
           enrolled_at: string
           enrolled_by: string | null
           id: string
+          paid_at: string | null
           payment_reference: string | null
           payment_status: Database["public"]["Enums"]["payment_status"]
           student_id: string
@@ -556,6 +557,7 @@ export type Database = {
           enrolled_at?: string
           enrolled_by?: string | null
           id?: string
+          paid_at?: string | null
           payment_reference?: string | null
           payment_status?: Database["public"]["Enums"]["payment_status"]
           student_id: string
@@ -566,6 +568,7 @@ export type Database = {
           enrolled_at?: string
           enrolled_by?: string | null
           id?: string
+          paid_at?: string | null
           payment_reference?: string | null
           payment_status?: Database["public"]["Enums"]["payment_status"]
           student_id?: string
