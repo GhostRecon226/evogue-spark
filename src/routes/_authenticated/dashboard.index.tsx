@@ -121,7 +121,7 @@ function DashboardHome() {
   const [capstoneOpen, setCapstoneOpen] = useState(false);
 
   useEffect(() => {
-    if (!user || isAdmin || isInstructor) return;
+    if (authLoading || !user || isAdmin || isInstructor) return;
     let cancelled = false;
     (async () => {
       setLoading(true);
