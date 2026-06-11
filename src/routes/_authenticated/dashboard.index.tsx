@@ -600,16 +600,13 @@ function CouponSection({
     if (!initialCode) return;
     let cancelled = false;
     (async () => {
-      const { data } = await supabase
-        .from("coupon_codes")
-        .select("code, discount_type, discount_value")
-        .eq("code", initialCode)
-        .maybeSingle();
-      if (!cancelled && data) {
+      const { data } = await supabase.rpc("get_coupon_preview", { _code: initialCode });
+      const row = Array.isArray(data) ? data[0] : null;
+      if (!cancelled && row) {
         setApplied({
-          code: data.code,
-          type: (data.discount_type as "percentage" | "fixed") ?? "percentage",
-          value: Number(data.discount_value ?? 0),
+          code: row.code,
+          type: (row.discount_type as "percentage" | "fixed") ?? "percentage",
+          value: Number(row.discount_value ?? 0),
         });
         setStatus("success");
       }
