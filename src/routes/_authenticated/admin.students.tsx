@@ -142,6 +142,12 @@ function StudentsPage() {
         </span>
       ),
     },
+    {
+      key: "payment_state",
+      header: "Payment Status",
+      accessor: (r) => r.payment_state,
+      cell: (r) => <PaymentPill state={r.payment_state} />,
+    },
   ];
 
   return (
@@ -225,8 +231,26 @@ function StudentsPage() {
         )}
       </div>
 
-      <StudentProfileDialog studentId={profileId} onClose={() => setProfileId(null)} />
+      <StudentProfileDialog studentId={profileId} onClose={() => setProfileId(null)} onChanged={() => void load()} />
     </AdminGuard>
+  );
+}
+
+function PaymentPill({ state }: { state: PaymentState }) {
+  const styles =
+    state === "paid"
+      ? { background: "#e8f5ee", color: "#1A8C4E" }
+      : state === "pending"
+        ? { background: "#fef9e7", color: "#b7860b" }
+        : { background: "#fdecea", color: "#c0392b" };
+  const label = state === "paid" ? "Paid" : state === "pending" ? "Pending" : "Unpaid";
+  return (
+    <span
+      className="inline-flex rounded-full px-2.5 py-0.5 text-xs font-bold"
+      style={styles}
+    >
+      {label}
+    </span>
   );
 }
 
