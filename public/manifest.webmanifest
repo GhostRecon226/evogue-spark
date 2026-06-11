@@ -1,0 +1,13 @@
+{
+  "name": "Evogue Academy",
+  "short_name": "Evogue",
+  "description": "Built in Africa. Open to the world. A global design & tech academy.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0A2E1A",
+  "icons": [
+    { "src": "/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
