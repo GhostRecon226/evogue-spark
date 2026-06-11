@@ -1012,6 +1012,14 @@ export type Database = {
         Returns: number
       }
       generate_registration_number: { Args: never; Returns: string }
+      get_coupon_preview: {
+        Args: { _code: string }
+        Returns: {
+          code: string
+          discount_type: string
+          discount_value: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
