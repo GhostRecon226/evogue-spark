@@ -25,7 +25,6 @@ import {
   Legend,
 } from "recharts";
 import { AdminGuard } from "@/components/admin/AdminGuard";
-import { formatNaira, parsePrice } from "@/components/admin/DataTable";
 import { formatUSD, getCoursePriceUSD } from "@/lib/coursePricing";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -420,7 +419,7 @@ function AdminOverview() {
                     Enrollment & Revenue Trends
                   </h2>
                   <p className="text-xs text-foreground/55">
-                    Last 6 months · revenue in ₦ thousands
+                    Last 6 months · revenue in USD
                   </p>
                 </div>
                 <div className="inline-flex rounded-full border border-border p-1 text-xs font-semibold">
