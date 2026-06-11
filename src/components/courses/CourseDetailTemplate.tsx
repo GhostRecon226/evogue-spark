@@ -253,7 +253,7 @@ export function CourseDetailTemplate(cfg: CourseDetailConfig) {
             </div>
 
             {cfg.price && (
-              <div style={{ marginBottom: 20 }}>
+              <div style={{ marginBottom: 8 }}>
                 <div
                   style={{
                     fontSize: 11,
@@ -288,6 +288,29 @@ export function CourseDetailTemplate(cfg: CourseDetailConfig) {
                 </div>
               </div>
             )}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                margin: "8px 0",
+                fontSize: 12,
+                color: "#5a8070",
+                fontFamily: "'DM Sans', sans-serif",
+              }}
+            >
+              <CreditCard size={14} color="#1A8C4E" />
+              <span>
+                Installment payment available.{" "}
+                <a
+                  href="mailto:hello@evogueacademy.com"
+                  style={{ color: "#1A8C4E", fontWeight: 600, textDecoration: "underline" }}
+                >
+                  Contact us
+                </a>{" "}
+                to arrange a payment plan.
+              </span>
+            </div>
             <div className="sm-cta-row" style={{ display: "flex", alignItems: "center", gap: 16 }}>
               <Link
                 to={enrolHref}
