@@ -79,29 +79,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const currentVersion = ++sessionVersion;
 
       setSession(nextSession);
-      if (markReady) {
-        initialSessionResolved = true;
-        setLoading(false);
-      } else if (initialSessionResolved) {
-        // After the initial session has resolved, subsequent auth events
-        // (sign-in, sign-out, token refresh) should not re-enter loading.
-        setLoading(false);
-      }
 
       if (nextSession?.user) {
+        // Keep loading=true until profile/roles are loaded for this session,
+        // so consumers never see user-present with roles-empty (which would
+        // briefly classify an admin as a student).
         void loadProfile(nextSession.user.id)
           .then((nextDerivedState) => {
             if (!active || currentVersion !== sessionVersion) return;
             applyDerivedState(nextDerivedState);
+            if (markReady) initialSessionResolved = true;
+            setLoading(false);
           })
           .catch(() => {
             if (!active || currentVersion !== sessionVersion) return;
             clearDerivedState();
+            if (markReady) initialSessionResolved = true;
+            setLoading(false);
           });
         return;
       }
 
       clearDerivedState();
+      if (markReady) initialSessionResolved = true;
+      setLoading(false);
     };
 
     const {

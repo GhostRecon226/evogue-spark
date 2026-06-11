@@ -1,33 +1,35 @@
-### Goal
-Turn the existing Evogue Academy logo into a full favicon & PWA icon set and wire it into the site.
+## Problem
 
-### Steps
+When an admin (or instructor) opens `/dashboard`, the student dashboard briefly renders and starts fetching student data before the redirect to `/admin` (or `/instructor`) fires. The visible "conflict" is the student UI flashing over — and in some cases racing with — the admin shell.
 
-1. **Generate a favicon-friendly square icon** from `src/assets/logo.png` using `imagegen--edit_image`. The logo is text-based, so the edit will create a simplified, square-format version that remains readable at 16×16 and 32×32.
+## Root cause
 
-2. **Batch-resize the generated icon** with a Python/PIL script into all standard sizes and save them to `public/`:
-   - `favicon.ico` (multi-resolution: 16×16, 32×32)
-   - `favicon-16x16.png`
-   - `favicon-32x32.png`
-   - `apple-touch-icon.png` (180×180)
-   - `android-chrome-192x192.png`
-   - `android-chrome-512x512.png`
+In `src/hooks/use-auth.tsx`, `loading` is flipped to `false` as soon as `supabase.auth.getSession()` resolves — but `profile`, `roles`, and `instructorCourseIds` are fetched in a separate async call (`loadProfile`) that finishes later. So for one or more renders:
 
-3. **Create `public/manifest.webmanifest`** with:
-   - `name`: "Evogue Academy"
-   - `short_name`: "Evogue"
-   - `theme_color`: "#0A2E1A" (the site's dark green)
-   - `background_color`: "#ffffff"
-   - `display`: "standalone"
-   - Icon references for 192×192 and 512×192
+- `authLoading === false`
+- `user` is set
+- `roles === []` → `isAdmin === false`, `isInstructor === false`
 
-4. **Update `src/routes/__root.tsx`** head links/meta to include:
-   - `<link rel="icon" type="image/x-icon" href="/favicon.ico">`
-   - `<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">`
-   - `<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">`
-   - `<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">`
-   - `<link rel="manifest" href="/manifest.webmanifest">`
-   - `<meta name="theme-color" content="#0A2E1A">`
+`dashboard.index.tsx` therefore treats the admin as a student: it renders the student dashboard, kicks off all the student queries, and only redirects on a later effect tick when roles finally arrive. That's the conflict the user is seeing.
 
-### No changes to
-Navbar, footer, page content, routes, or auth logic.
+## Fix
+
+Keep `loading` true until BOTH the session is resolved AND the profile/roles fetch for that session has completed. Components already gate on `authLoading`, so once it accurately reflects "roles known", the redirect in `dashboard.index.tsx` runs before any student UI mounts.
+
+### Technical changes
+
+1. `src/hooks/use-auth.tsx`
+   - Stop setting `loading = false` inside `applySession` when a user exists.
+   - Set `loading = false` only after `loadProfile` resolves (or rejects) for the active session version. For a signed-out session, set `loading = false` immediately.
+   - Keep the existing `sessionVersion` guard so a stale profile fetch can't flip loading for a newer session.
+
+2. `src/routes/_authenticated/dashboard.index.tsx`
+   - Guard the student data effect on `!authLoading` in addition to the existing `isAdmin`/`isInstructor` checks, so it never fires for an admin/instructor mid-load.
+   - Return a lightweight loading placeholder (not the student layout) while `authLoading` is true, so nothing student-specific paints before the redirect.
+
+No database or RLS changes. No routing/file restructure.
+
+## Out of scope
+
+- Admin and instructor dashboards themselves — they already gate correctly once roles are known.
+- Sign-out flow — already correct.

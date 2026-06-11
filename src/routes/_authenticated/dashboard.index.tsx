@@ -121,7 +121,7 @@ function DashboardHome() {
   const [capstoneOpen, setCapstoneOpen] = useState(false);
 
   useEffect(() => {
-    if (!user || isAdmin || isInstructor) return;
+    if (authLoading || !user || isAdmin || isInstructor) return;
     let cancelled = false;
     (async () => {
       setLoading(true);
@@ -262,10 +262,11 @@ function DashboardHome() {
     return () => {
       cancelled = true;
     };
-  }, [user, isAdmin, isInstructor]);
+  }, [user, isAdmin, isInstructor, authLoading]);
 
-  // While redirecting non-students away, render nothing to avoid flashing student UI.
-  if (isAdmin || isInstructor) return null;
+  // While auth/role resolution is in flight, or while redirecting a non-student
+  // away, render nothing so student UI never flashes for admins/instructors.
+  if (authLoading || isAdmin || isInstructor) return null;
 
   const capstoneLabel =
     capstoneStatus === "approved"
