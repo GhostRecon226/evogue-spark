@@ -40,6 +40,7 @@ export const Route = createFileRoute("/courses/product-management")({
       category="Management"
       description="Define strategy, own the roadmap and ship products that users actually want to use. This programme teaches you how to think like a PM, work cross-functionally and deliver with confidence."
       pills={{ weeks: "4 weeks", level: "Intermediate" }}
+      price="$199"
       imageGradient="linear-gradient(135deg, #0a1e3a, #1a4a8c, #0d2e5a)"
       imageSrc={img}
       outcomes={[

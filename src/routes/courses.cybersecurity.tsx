@@ -34,6 +34,7 @@ export const Route = createFileRoute("/courses/cybersecurity")({
       category="Security"
       description="Defend systems, audit networks and respond to real threats like a trained security professional. This programme builds the technical and strategic skills behind modern cybersecurity practice."
       pills={{ weeks: "4 weeks", level: "Intermediate" }}
+      price="$199"
       imageGradient="linear-gradient(135deg, #2a0a0a, #5a1a1a, #3a0d0d)"
       imageSrc={img}
       mode="waitlist"

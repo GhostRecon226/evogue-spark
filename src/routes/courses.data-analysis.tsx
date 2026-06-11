@@ -34,6 +34,7 @@ export const Route = createFileRoute("/courses/data-analysis")({
       category="Data"
       description="Turn raw, messy data into clear business insights. Learn the tools and thinking behind great data analysis and build the confidence to present your findings to any room."
       pills={{ weeks: "4 weeks", level: "Beginner" }}
+      price="$199"
       imageGradient="linear-gradient(135deg, #0a2e3a, #1a6a8c, #0d3a5a)"
       imageSrc={img}
       outcomes={[
