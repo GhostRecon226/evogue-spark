@@ -103,7 +103,7 @@ function AdminOverview() {
           supabase
             .from("enrollments")
             .select("id, payment_status, course_id, enrolled_at, cohort_id"),
-          supabase.from("courses").select("id, price, title"),
+          supabase.from("courses").select("id, price, title, slug"),
           supabase
             .from("enrollments")
             .select(
