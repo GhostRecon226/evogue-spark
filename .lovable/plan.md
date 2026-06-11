@@ -1,34 +1,33 @@
+### Goal
+Turn the existing Evogue Academy logo into a full favicon & PWA icon set and wire it into the site.
 
-# End-to-End QA Test Plan
+### Steps
 
-I'll exercise the live preview in the browser, hit each route, verify rendering, key interactions, and backend calls. No code changes unless a bug is found (then I'll stop and report before fixing).
+1. **Generate a favicon-friendly square icon** from `src/assets/logo.png` using `imagegen--edit_image`. The logo is text-based, so the edit will create a simplified, square-format version that remains readable at 16×16 and 32×32.
 
-## Scope
+2. **Batch-resize the generated icon** with a Python/PIL script into all standard sizes and save them to `public/`:
+   - `favicon.ico` (multi-resolution: 16×16, 32×32)
+   - `favicon-16x16.png`
+   - `favicon-32x32.png`
+   - `apple-touch-icon.png` (180×180)
+   - `android-chrome-192x192.png`
+   - `android-chrome-512x512.png`
 
-**Public pages** (visual + nav + links + responsive 1280 / 390):
-- `/` (home)
-- `/about` — new sections (Our Story, stats strip, Mission, Why Evogue, Values, Graduate Voices, CTA)
-- `/courses`
-- `/scholarship` — incl. inquiry form submit (test row, will note it)
-- `/contact` — incl. contact form submit
-- `/auth` — loads, form validation only (no real signup)
+3. **Create `public/manifest.webmanifest`** with:
+   - `name`: "Evogue Academy"
+   - `short_name`: "Evogue"
+   - `theme_color`: "#0A2E1A" (the site's dark green)
+   - `background_color`: "#ffffff"
+   - `display`: "standalone"
+   - Icon references for 192×192 and 512×192
 
-**Authenticated area** (only if a test session already exists in preview — I will not create accounts or log in without permission):
-- `/_authenticated/*` gate redirects unauthenticated users to `/auth`
+4. **Update `src/routes/__root.tsx`** head links/meta to include:
+   - `<link rel="icon" type="image/x-icon" href="/favicon.ico">`
+   - `<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">`
+   - `<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">`
+   - `<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">`
+   - `<link rel="manifest" href="/manifest.webmanifest">`
+   - `<meta name="theme-color" content="#0A2E1A">`
 
-**Cross-cutting checks**:
-- Navbar links, footer links, 404 route, console errors, failed network requests
-- OG/meta tags present on `/about`, `/courses`, `/scholarship`, `/contact`
-- Mobile reflow at 390px on `/about` (stats grid, two-column sections)
-
-## What I will NOT do
-
-- No destructive admin actions, no role changes, no deleting rows
-- No real user signup / Google OAuth
-- No edits to code unless I find a bug — I'll stop and report first
-
-## Deliverable
-
-A pass/fail summary per route + list of any issues found (with severity) and recommended fixes.
-
-Approve to run.
+### No changes to
+Navbar, footer, page content, routes, or auth logic.
