@@ -11,6 +11,7 @@ import {
   ArrowRight,
   ClipboardList,
   FileCheck2,
+  CreditCard,
 } from "lucide-react";
 import { PublicShell } from "@/components/PublicShell";
 import scrumImg from "@/assets/courses/scrum-master.jpg";
