@@ -17,7 +17,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
-import { createStudent, setStudentActive, markEnrollmentPaid } from "@/lib/admin.functions";
+import { createStudent, setStudentActive, setEnrollmentPaymentStatus } from "@/lib/admin.functions";
 import { formatUSD, getCoursePriceUSD } from "@/lib/coursePricing";
 
 export const Route = createFileRoute("/_authenticated/admin/students")({
@@ -42,6 +42,7 @@ function StudentsPage() {
   const [rows, setRows] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState("");
+  const [payFilter, setPayFilter] = useState<"all" | PaymentState>("all");
   const [open, setOpen] = useState(false);
   const [profileId, setProfileId] = useState<string | null>(null);
   const createFn = useServerFn(createStudent);
@@ -94,14 +95,17 @@ function StudentsPage() {
 
   const filtered = useMemo(() => {
     const s = q.trim().toLowerCase();
-    if (!s) return rows;
-    return rows.filter(
-      (r) =>
-        r.full_name.toLowerCase().includes(s) ||
-        r.email.toLowerCase().includes(s) ||
-        (r.registration_number ?? "").toLowerCase().includes(s),
-    );
-  }, [rows, q]);
+    let out = rows;
+    if (payFilter !== "all") out = out.filter((r) => r.payment_state === payFilter);
+    if (s)
+      out = out.filter(
+        (r) =>
+          r.full_name.toLowerCase().includes(s) ||
+          r.email.toLowerCase().includes(s) ||
+          (r.registration_number ?? "").toLowerCase().includes(s),
+      );
+    return out;
+  }, [rows, q, payFilter]);
 
   const onSuspend = async (id: string, next: boolean) => {
     try {
@@ -174,14 +178,31 @@ function StudentsPage() {
       </div>
       <p className="mt-1 text-foreground/65">All registered students.</p>
 
-      <div className="mt-6 relative max-w-md">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/45" />
-        <Input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Search by name, email, or Student ID…"
-          className="pl-9 rounded-full"
-        />
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative max-w-md flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/45" />
+          <Input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Search by name, email, or Student ID…"
+            className="pl-9 rounded-full"
+          />
+        </div>
+        <div className="inline-flex rounded-full border border-border bg-white p-1 text-xs font-semibold self-start">
+          {(["all", "paid", "pending", "unpaid"] as const).map((f) => (
+            <button
+              key={f}
+              onClick={() => setPayFilter(f)}
+              className={`rounded-full px-3 py-1.5 capitalize transition ${
+                payFilter === f
+                  ? "bg-[#0A2E1A] text-[#00F5A0]"
+                  : "text-foreground/60 hover:text-foreground"
+              }`}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="mt-6">
@@ -350,7 +371,7 @@ function StudentProfileDialog({
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
-  const markPaidFn = useServerFn(markEnrollmentPaid);
+  const setStatusFn = useServerFn(setEnrollmentPaymentStatus);
 
   const fetchData = async (id: string) => {
     setLoading(true);
@@ -379,11 +400,15 @@ function StudentProfileDialog({
     void fetchData(studentId);
   }, [studentId]);
 
-  const handleMarkPaid = async (enrollmentId: string) => {
+  const handleSetStatus = async (
+    enrollmentId: string,
+    status: PaymentState,
+    successMsg: string,
+  ) => {
     setBusyId(enrollmentId);
     try {
-      await markPaidFn({ data: { enrollment_id: enrollmentId } });
-      toast.success("Marked as paid");
+      await setStatusFn({ data: { enrollment_id: enrollmentId, status } });
+      toast.success(successMsg);
       if (studentId) await fetchData(studentId);
       onChanged?.();
     } catch (err: any) {
@@ -460,27 +485,63 @@ function StudentProfileDialog({
                           </p>
                         </div>
                       </div>
-                      {state !== "paid" && (
-                        <button
-                          onClick={() => handleMarkPaid(en.id)}
-                          disabled={busyId === en.id}
-                          style={{
-                            background: "#1A8C4E",
-                            color: "#ffffff",
-                            padding: "10px 20px",
-                            borderRadius: 8,
-                            fontWeight: 600,
-                            fontSize: 14,
-                          }}
-                          className="inline-flex items-center justify-center disabled:opacity-60"
-                        >
-                          {busyId === en.id ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            "Mark as Paid"
-                          )}
-                        </button>
-                      )}
+                      <div className="flex flex-wrap gap-2 justify-end">
+                        {state !== "paid" && (
+                          <button
+                            onClick={() => handleSetStatus(en.id, "paid", "Marked as paid")}
+                            disabled={busyId === en.id}
+                            style={{
+                              background: "#1A8C4E",
+                              color: "#ffffff",
+                              padding: "10px 20px",
+                              borderRadius: 8,
+                              fontWeight: 600,
+                              fontSize: 14,
+                            }}
+                            className="inline-flex items-center justify-center disabled:opacity-60"
+                          >
+                            {busyId === en.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              "Mark as Paid"
+                            )}
+                          </button>
+                        )}
+                        {state !== "pending" && (
+                          <button
+                            onClick={() => handleSetStatus(en.id, "pending", "Marked as pending")}
+                            disabled={busyId === en.id}
+                            style={{
+                              background: "#fef9e7",
+                              color: "#b7860b",
+                              padding: "10px 20px",
+                              borderRadius: 8,
+                              fontWeight: 600,
+                              fontSize: 14,
+                            }}
+                            className="inline-flex items-center justify-center disabled:opacity-60"
+                          >
+                            Mark as Pending
+                          </button>
+                        )}
+                        {state === "paid" && (
+                          <button
+                            onClick={() => handleSetStatus(en.id, "unpaid", "Reverted to unpaid")}
+                            disabled={busyId === en.id}
+                            style={{
+                              background: "#fdecea",
+                              color: "#c0392b",
+                              padding: "10px 20px",
+                              borderRadius: 8,
+                              fontWeight: 600,
+                              fontSize: 14,
+                            }}
+                            className="inline-flex items-center justify-center disabled:opacity-60"
+                          >
+                            Unmark Paid
+                          </button>
+                        )}
+                      </div>
                     </li>
                   );
                 })}

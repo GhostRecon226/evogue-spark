@@ -115,6 +115,31 @@ export const adminCreateEnrollment = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const setEnrollmentPaymentStatus = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z
+      .object({
+        enrollment_id: z.string().uuid(),
+        status: z.enum(["paid", "pending", "unpaid"]),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.userId);
+    const patch = {
+      payment_status: data.status,
+      paid_at: data.status === "paid" ? new Date().toISOString() : null,
+    };
+    const { error } = await supabaseAdmin
+      .from("enrollments")
+      .update(patch as never)
+      .eq("id", data.enrollment_id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+// Back-compat wrapper
 export const markEnrollmentPaid = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input) =>
