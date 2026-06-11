@@ -127,11 +127,13 @@ export const setEnrollmentPaymentStatus = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     await assertAdmin(context.userId);
-    const patch: Record<string, unknown> = { payment_status: data.status };
-    patch.paid_at = data.status === "paid" ? new Date().toISOString() : null;
+    const patch = {
+      payment_status: data.status,
+      paid_at: data.status === "paid" ? new Date().toISOString() : null,
+    };
     const { error } = await supabaseAdmin
       .from("enrollments")
-      .update(patch)
+      .update(patch as never)
       .eq("id", data.enrollment_id);
     if (error) throw new Error(error.message);
     return { ok: true };
