@@ -13,6 +13,7 @@ import {
   FileCheck2,
   Crown,
   Briefcase,
+  CreditCard,
 } from "lucide-react";
 import { PublicShell } from "@/components/PublicShell";
 
