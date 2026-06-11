@@ -114,3 +114,18 @@ export const adminCreateEnrollment = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+export const markEnrollmentPaid = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z.object({ enrollment_id: z.string().uuid() }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.userId);
+    const { error } = await supabaseAdmin
+      .from("enrollments")
+      .update({ payment_status: "paid", paid_at: new Date().toISOString() })
+      .eq("id", data.enrollment_id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
