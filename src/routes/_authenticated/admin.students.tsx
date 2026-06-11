@@ -178,14 +178,31 @@ function StudentsPage() {
       </div>
       <p className="mt-1 text-foreground/65">All registered students.</p>
 
-      <div className="mt-6 relative max-w-md">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/45" />
-        <Input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Search by name, email, or Student ID…"
-          className="pl-9 rounded-full"
-        />
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative max-w-md flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/45" />
+          <Input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Search by name, email, or Student ID…"
+            className="pl-9 rounded-full"
+          />
+        </div>
+        <div className="inline-flex rounded-full border border-border bg-white p-1 text-xs font-semibold self-start">
+          {(["all", "paid", "pending", "unpaid"] as const).map((f) => (
+            <button
+              key={f}
+              onClick={() => setPayFilter(f)}
+              className={`rounded-full px-3 py-1.5 capitalize transition ${
+                payFilter === f
+                  ? "bg-[#0A2E1A] text-[#00F5A0]"
+                  : "text-foreground/60 hover:text-foreground"
+              }`}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="mt-6">
