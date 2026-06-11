@@ -95,14 +95,17 @@ function StudentsPage() {
 
   const filtered = useMemo(() => {
     const s = q.trim().toLowerCase();
-    if (!s) return rows;
-    return rows.filter(
-      (r) =>
-        r.full_name.toLowerCase().includes(s) ||
-        r.email.toLowerCase().includes(s) ||
-        (r.registration_number ?? "").toLowerCase().includes(s),
-    );
-  }, [rows, q]);
+    let out = rows;
+    if (payFilter !== "all") out = out.filter((r) => r.payment_state === payFilter);
+    if (s)
+      out = out.filter(
+        (r) =>
+          r.full_name.toLowerCase().includes(s) ||
+          r.email.toLowerCase().includes(s) ||
+          (r.registration_number ?? "").toLowerCase().includes(s),
+      );
+    return out;
+  }, [rows, q, payFilter]);
 
   const onSuspend = async (id: string, next: boolean) => {
     try {
