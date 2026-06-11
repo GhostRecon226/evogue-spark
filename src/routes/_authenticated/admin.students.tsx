@@ -17,7 +17,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
-import { createStudent, setStudentActive } from "@/lib/admin.functions";
+import { createStudent, setStudentActive, markEnrollmentPaid } from "@/lib/admin.functions";
+import { formatUSD, getCoursePriceUSD } from "@/lib/coursePricing";
 
 export const Route = createFileRoute("/_authenticated/admin/students")({
   component: StudentsPage,
