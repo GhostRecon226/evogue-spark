@@ -37,6 +37,7 @@ export const Route = createFileRoute("/courses/digital-marketing")({
       category="Marketing"
       description="Learn to run campaigns that actually convert. From paid ads to organic content, this programme gives you the full picture of modern digital marketing and the skills to execute it across every channel."
       pills={{ weeks: "3 weeks", level: "Beginner" }}
+      price="$149"
       imageGradient="linear-gradient(135deg, #1a2e0a, #4a7a1a, #2a4a0d)"
       imageSrc={img}
       outcomes={[

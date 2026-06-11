@@ -42,6 +42,7 @@ export const Route = createFileRoute("/courses/virtual-assistant-programme")({
       category="Management"
       description="Build the skills to work remotely for global clients, manage schedules and deliver exceptional professional support from anywhere in the world."
       pills={{ weeks: "4 weeks", level: "Beginner" }}
+      price="$149"
       imageGradient="linear-gradient(135deg, #0a1a3a, #1a3a7a, #0d2050)"
       imageSrc={img}
       mode="waitlist"

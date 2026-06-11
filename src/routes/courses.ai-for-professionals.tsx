@@ -39,6 +39,7 @@ export const Route = createFileRoute("/courses/ai-for-professionals")({
       category="Technology"
       description="Use AI tools to work smarter, automate repetitive tasks and stay ahead in your industry. No coding required. Just practical skills you can apply from week one."
       pills={{ weeks: "3 weeks", level: "Beginner" }}
+      price="$149"
       imageGradient="linear-gradient(135deg, #1a0a3a, #5a1a8c, #2a0d5a)"
       imageSrc={img}
       outcomes={[

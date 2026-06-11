@@ -72,6 +72,7 @@ export const Route = createFileRoute("/courses/project-management-business-analy
       imageGradient="linear-gradient(135deg, #0a2e1a, #1a6b3a, #0d3a20)"
       imageSrc={img}
       mode="elite"
+      price="$249"
       priceBannerText="Our flagship programme. Covers two full disciplines."
       outcomes={[
         "Plan, execute and close projects using Agile and Waterfall",

@@ -56,6 +56,8 @@ export type CourseDetailConfig = {
   mode?: "default" | "waitlist" | "elite";
   // price card
   priceLabel?: string; // default "Contact us for pricing"
+  // price above CTA
+  price?: string;
   // bottom CTA overrides (elite)
   bottomHeadline?: string;
   bottomSubtext?: string;
@@ -249,6 +251,42 @@ export function CourseDetailTemplate(cfg: CourseDetailConfig) {
               ))}
             </div>
 
+            {cfg.price && (
+              <div style={{ marginBottom: 20 }}>
+                <div
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    letterSpacing: "0.12em",
+                    color: "#1A8C4E",
+                    textTransform: "uppercase",
+                    fontFamily: "'DM Sans', sans-serif",
+                  }}
+                >
+                  COURSE FEE
+                </div>
+                <div
+                  style={{
+                    fontSize: 32,
+                    fontWeight: 700,
+                    color: "#0A2E1A",
+                    margin: "6px 0",
+                    fontFamily: "Fraunces, Georgia, serif",
+                  }}
+                >
+                  {cfg.price}
+                </div>
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: "#5a8070",
+                    fontFamily: "'DM Sans', sans-serif",
+                  }}
+                >
+                  One-time payment. Includes all materials and certificate.
+                </div>
+              </div>
+            )}
             <div className="sm-cta-row" style={{ display: "flex", alignItems: "center", gap: 16 }}>
               <Link
                 to={enrolHref}

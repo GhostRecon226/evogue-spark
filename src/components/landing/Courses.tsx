@@ -113,6 +113,23 @@ export function CourseCard({ course }: { course: Course }) {
               inactive ? "" : "group-hover:scale-105"
             }`}
           />
+          {course.slug === "project-management-business-analysis" && (
+            <span
+              className="absolute top-4 left-4"
+              style={{
+                background: "#00F5A0",
+                color: "#0A2E1A",
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: "0.08em",
+                padding: "4px 10px",
+                borderRadius: 20,
+                textTransform: "uppercase",
+              }}
+            >
+              Most Popular
+            </span>
+          )}
           {inactive && (
             <span className="absolute top-4 right-4 rounded-full bg-forest/90 text-mint text-xs font-semibold px-3 py-1.5">
               Coming Soon
