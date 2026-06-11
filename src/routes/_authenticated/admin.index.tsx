@@ -26,6 +26,7 @@ import {
 } from "recharts";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import { formatNaira, parsePrice } from "@/components/admin/DataTable";
+import { formatUSD, getCoursePriceUSD } from "@/lib/coursePricing";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 
@@ -148,7 +149,10 @@ function AdminOverview() {
 
       const revenue = enrolRows
         .filter((e) => e.payment_status === "paid")
-        .reduce((sum, e) => sum + parsePrice(courseMap.get(e.course_id)?.price ?? null), 0);
+        .reduce((sum, e) => {
+          const c = courseMap.get(e.course_id);
+          return sum + getCoursePriceUSD({ slug: (c as any)?.slug ?? null, title: c?.title ?? null });
+        }, 0);
 
       const pendingCount = capRows.filter((c) => c.status === "pending").length;
 
@@ -205,8 +209,11 @@ function AdminOverview() {
         );
         const rev = monthEnrols
           .filter((e) => e.payment_status === "paid")
-          .reduce((sum, e) => sum + parsePrice(courseMap.get(e.course_id)?.price ?? null), 0);
-        return { month: m.label, enrollments: monthEnrols.length, revenue: Math.round(rev / 1000) };
+          .reduce((sum, e) => {
+            const c = courseMap.get(e.course_id);
+            return sum + getCoursePriceUSD({ slug: (c as any)?.slug ?? null, title: c?.title ?? null });
+          }, 0);
+        return { month: m.label, enrollments: monthEnrols.length, revenue: Math.round(rev) };
       });
       setChartData(series);
 
@@ -310,7 +317,7 @@ function AdminOverview() {
     },
     {
       label: "Total Revenue",
-      value: formatNaira(stats.revenue),
+      value: formatUSD(stats.revenue),
       trend: trends.revenue,
       icon: Wallet,
       bg: "bg-[#DCFCE7]",
