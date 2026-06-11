@@ -56,6 +56,8 @@ export type CourseDetailConfig = {
   mode?: "default" | "waitlist" | "elite";
   // price card
   priceLabel?: string; // default "Contact us for pricing"
+  // price above CTA
+  price?: string;
   // bottom CTA overrides (elite)
   bottomHeadline?: string;
   bottomSubtext?: string;
