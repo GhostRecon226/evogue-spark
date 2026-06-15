@@ -404,6 +404,21 @@ function AdminOverview() {
         </div>
         <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
           <TestEnrollmentEmailsButton />
+          <div className="inline-flex rounded-full border border-border bg-white p-1 text-xs font-semibold self-start">
+            {(["USD", "NGN"] as const).map((c) => (
+              <button
+                key={c}
+                onClick={() => setCurrency(c)}
+                className={`rounded-full px-3 py-1.5 transition ${
+                  currency === c
+                    ? "bg-[#0A2E1A] text-[#00F5A0]"
+                    : "text-foreground/60 hover:text-foreground"
+                }`}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
           <div className="relative w-full md:w-72">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground/40" />
             <input
