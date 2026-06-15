@@ -88,50 +88,95 @@ export type Database = {
           },
         ]
       }
+      applications: {
+        Row: {
+          country: string | null
+          course_slug: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          message: string | null
+          status: string
+          whatsapp: string | null
+        }
+        Insert: {
+          country?: string | null
+          course_slug?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          message?: string | null
+          status?: string
+          whatsapp?: string | null
+        }
+        Update: {
+          country?: string | null
+          course_slug?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          message?: string | null
+          status?: string
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
       capstone_submissions: {
         Row: {
           admin_feedback: string | null
           cohort_id: string | null
           course_id: string
+          created_at: string
           file_url: string | null
           id: string
           instructor_note: string | null
           instructor_recommendation: boolean
+          notes: string | null
           reviewed_at: string | null
           reviewed_by: string | null
           status: Database["public"]["Enums"]["capstone_status"]
           student_id: string
           submission_text: string
+          submission_url: string | null
           submitted_at: string
         }
         Insert: {
           admin_feedback?: string | null
           cohort_id?: string | null
           course_id: string
+          created_at?: string
           file_url?: string | null
           id?: string
           instructor_note?: string | null
           instructor_recommendation?: boolean
+          notes?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           status?: Database["public"]["Enums"]["capstone_status"]
           student_id: string
           submission_text: string
+          submission_url?: string | null
           submitted_at?: string
         }
         Update: {
           admin_feedback?: string | null
           cohort_id?: string | null
           course_id?: string
+          created_at?: string
           file_url?: string | null
           id?: string
           instructor_note?: string | null
           instructor_recommendation?: boolean
+          notes?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           status?: Database["public"]["Enums"]["capstone_status"]
           student_id?: string
           submission_text?: string
+          submission_url?: string | null
           submitted_at?: string
         }
         Relationships: [
@@ -270,6 +315,7 @@ export type Database = {
       coupon_codes: {
         Row: {
           active: boolean
+          applicable_courses: string[] | null
           code: string
           created_at: string
           description: string | null
@@ -284,6 +330,7 @@ export type Database = {
         }
         Insert: {
           active?: boolean
+          applicable_courses?: string[] | null
           code: string
           created_at?: string
           description?: string | null
@@ -298,6 +345,7 @@ export type Database = {
         }
         Update: {
           active?: boolean
+          applicable_courses?: string[] | null
           code?: string
           created_at?: string
           description?: string | null
@@ -316,28 +364,53 @@ export type Database = {
         Row: {
           applied_at: string
           coupon_code: string
+          coupon_id: string | null
+          course_slug: string | null
+          discount_applied: number | null
           discount_type: string
           discount_value: number
+          final_amount: number | null
           id: string
+          original_amount: number | null
+          student_email: string | null
           student_id: string
         }
         Insert: {
           applied_at?: string
           coupon_code: string
+          coupon_id?: string | null
+          course_slug?: string | null
+          discount_applied?: number | null
           discount_type: string
           discount_value: number
+          final_amount?: number | null
           id?: string
+          original_amount?: number | null
+          student_email?: string | null
           student_id: string
         }
         Update: {
           applied_at?: string
           coupon_code?: string
+          coupon_id?: string | null
+          course_slug?: string | null
+          discount_applied?: number | null
           discount_type?: string
           discount_value?: number
+          final_amount?: number | null
           id?: string
+          original_amount?: number | null
+          student_email?: string | null
           student_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "coupon_redemptions_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupon_codes"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "coupon_redemptions_student_id_fkey"
             columns: ["student_id"]
@@ -380,10 +453,14 @@ export type Database = {
           duration: string | null
           id: string
           instructor_id: string | null
+          is_active: boolean
           is_published: boolean
           level: string | null
           price: string | null
+          price_ngn: number | null
+          price_usd: number | null
           slug: string
+          status: string | null
           title: string
           updated_at: string
         }
@@ -398,10 +475,14 @@ export type Database = {
           duration?: string | null
           id?: string
           instructor_id?: string | null
+          is_active?: boolean
           is_published?: boolean
           level?: string | null
           price?: string | null
+          price_ngn?: number | null
+          price_usd?: number | null
           slug: string
+          status?: string | null
           title: string
           updated_at?: string
         }
@@ -416,10 +497,14 @@ export type Database = {
           duration?: string | null
           id?: string
           instructor_id?: string | null
+          is_active?: boolean
           is_published?: boolean
           level?: string | null
           price?: string | null
+          price_ngn?: number | null
+          price_usd?: number | null
           slug?: string
+          status?: string | null
           title?: string
           updated_at?: string
         }
@@ -549,6 +634,7 @@ export type Database = {
           paid_at: string | null
           payment_reference: string | null
           payment_status: Database["public"]["Enums"]["payment_status"]
+          status: string
           student_id: string
         }
         Insert: {
@@ -560,6 +646,7 @@ export type Database = {
           paid_at?: string | null
           payment_reference?: string | null
           payment_status?: Database["public"]["Enums"]["payment_status"]
+          status?: string
           student_id: string
         }
         Update: {
@@ -571,6 +658,7 @@ export type Database = {
           paid_at?: string | null
           payment_reference?: string | null
           payment_status?: Database["public"]["Enums"]["payment_status"]
+          status?: string
           student_id?: string
         }
         Relationships: [
@@ -783,6 +871,72 @@ export type Database = {
           },
           {
             foreignKeyName: "lessons_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payments: {
+        Row: {
+          amount: number
+          coupon_id: string | null
+          course_id: string
+          created_at: string
+          currency: string
+          discount_applied: number
+          flutterwave_tx_id: string | null
+          id: string
+          original_amount: number | null
+          paid_at: string | null
+          payment_method: string | null
+          payment_status: string
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          coupon_id?: string | null
+          course_id: string
+          created_at?: string
+          currency: string
+          discount_applied?: number
+          flutterwave_tx_id?: string | null
+          id?: string
+          original_amount?: number | null
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_status?: string
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          coupon_id?: string | null
+          course_id?: string
+          created_at?: string
+          currency?: string
+          discount_applied?: number
+          flutterwave_tx_id?: string | null
+          id?: string
+          original_amount?: number | null
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_status?: string
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupon_codes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_course_id_fkey"
             columns: ["course_id"]
             isOneToOne: false
             referencedRelation: "courses"
