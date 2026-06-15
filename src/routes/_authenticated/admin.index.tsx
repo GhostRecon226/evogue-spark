@@ -338,6 +338,15 @@ function AdminOverview() {
     return chartRange === "month" ? chartData.slice(-1) : chartData;
   }, [chartData, chartRange]);
 
+  const revenueDisplay =
+    currency === "USD"
+      ? formatUSD(stats.revenueUSD + stats.revenueNGN / (usdToNgn || 1600))
+      : new Intl.NumberFormat("en-NG", {
+          style: "currency",
+          currency: "NGN",
+          maximumFractionDigits: 0,
+        }).format(stats.revenueNGN + stats.revenueUSD * (usdToNgn || 1600));
+
   const cards = [
     {
       label: "Total Students",
@@ -350,8 +359,8 @@ function AdminOverview() {
       trendBg: "bg-[#00F5A0]/15 text-[#00F5A0]",
     },
     {
-      label: "Total Enrollments",
-      value: stats.enrollments.toLocaleString(),
+      label: "Active Enrollments",
+      value: stats.activeEnrollments.toLocaleString(),
       trend: trends.enrollments,
       icon: ClipboardCheck,
       bg: "bg-[#ECFDF5]",
@@ -360,8 +369,8 @@ function AdminOverview() {
       trendBg: "bg-[#1A8C4E]/10 text-[#1A8C4E]",
     },
     {
-      label: "Total Revenue",
-      value: formatUSD(stats.revenue),
+      label: `Total Revenue (${currency})`,
+      value: revenueDisplay,
       trend: trends.revenue,
       icon: Wallet,
       bg: "bg-[#DCFCE7]",
@@ -370,9 +379,9 @@ function AdminOverview() {
       trendBg: "bg-[#1A8C4E]/10 text-[#1A8C4E]",
     },
     {
-      label: "Pending Capstones",
-      value: stats.pendingCapstones.toLocaleString(),
-      trend: trends.capstones,
+      label: "Pending Applications",
+      value: stats.pendingApplications.toLocaleString(),
+      trend: trends.applications,
       icon: Clock,
       bg: "bg-[#FFFBEB]",
       text: "text-[#0A2E1A]",
