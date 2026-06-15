@@ -257,6 +257,50 @@ export const generateCertificate = createServerFn({ method: "POST" })
       .from("certificates")
       .createSignedUrl(storagePath, 60 * 60 * 24 * 7);
 
+    // Fire-and-forget certificate-ready email. Failures are logged, never thrown.
+    try {
+      const { data: userRes } = await supabaseAdmin.auth.admin.getUserById(studentId);
+      const recipient = userRes?.user?.email;
+      if (recipient) {
+        const host =
+          getRequestHeader("x-forwarded-host") ??
+          getRequestHeader("host") ??
+          "localhost";
+        const proto = getRequestHeader("x-forwarded-proto") ?? "https";
+        const authHeader = getRequestHeader("authorization") ?? "";
+        const dashboardUrl = `${proto}://${host}/dashboard/certificate`;
+        const body = {
+          templateName: "certificate-ready",
+          recipientEmail: recipient,
+          idempotencyKey: `cert-ready-${cert.id}`,
+          templateData: {
+            fullName: studentName,
+            courseName: courseTitle,
+            certId,
+            issuedAt: new Date(issuedAt).toLocaleDateString(undefined, {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            }),
+            certificateUrl: dashboardUrl,
+          },
+        };
+        const res = await fetch(`${proto}://${host}/lovable/email/transactional/send`, {
+          method: "POST",
+          headers: { "content-type": "application/json", authorization: authHeader },
+          body: JSON.stringify(body),
+        });
+        if (!res.ok) {
+          console.error("[certificate-ready] email send failed", {
+            status: res.status,
+            text: await res.text().catch(() => ""),
+          });
+        }
+      }
+    } catch (err) {
+      console.error("[certificate-ready] email dispatch error", err);
+    }
+
     return {
       certificateId: cert.id,
       certId,
