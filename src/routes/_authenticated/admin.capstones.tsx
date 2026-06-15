@@ -62,6 +62,9 @@ function AdminCapstones() {
   const [courseFilter, setCourseFilter] = useState("all");
   const [cohortFilter, setCohortFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [rejectTarget, setRejectTarget] = useState<Row | null>(null);
+  const [rejectReason, setRejectReason] = useState("");
+  const [rejectSubmitting, setRejectSubmitting] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -113,20 +116,37 @@ function AdminCapstones() {
       .eq("id", id);
     if (error) {
       toast.error(error.message);
-      return;
+      return { ok: false } as const;
     }
-    toast.success(status === "approved" ? "Approved · certificate issued" : `Marked ${status}`);
+    if (status === "approved") {
+      toast.success("Capstone approved. Certificate generation triggered.");
+    } else if (status === "rejected") {
+      toast.success("Submission rejected. Student has been notified.");
+    } else {
+      toast.success(`Marked ${status}`);
+    }
     void load();
+    return { ok: true } as const;
   };
 
-  const rejectWithReason = async (id: string) => {
-    const reason = window.prompt("Reason for rejection (visible to the student):");
-    if (reason === null) return; // cancelled
-    if (!reason.trim()) {
-      toast.error("Please enter a rejection reason.");
+  const openReject = (row: Row) => {
+    setRejectTarget(row);
+    setRejectReason("");
+  };
+
+  const confirmReject = async () => {
+    if (!rejectTarget) return;
+    if (!rejectReason.trim()) {
+      toast.error("Please provide feedback for the student.");
       return;
     }
-    await setStatus(id, "rejected", reason);
+    setRejectSubmitting(true);
+    const res = await setStatus(rejectTarget.id, "rejected", rejectReason);
+    setRejectSubmitting(false);
+    if (res.ok) {
+      setRejectTarget(null);
+      setRejectReason("");
+    }
   };
 
   const viewFile = async (path: string) => {
