@@ -47,7 +47,7 @@ const studentItems: NavItem[] = [
   { label: "Dashboard", to: "/dashboard", icon: LayoutDashboard },
   { label: "My Courses", to: "/dashboard/courses", icon: BookOpen },
   { label: "Capstone", to: "/dashboard/capstone", icon: GraduationCap },
-  { label: "Certificates", to: "/dashboard/certificates", icon: Award },
+  { label: "Certificate", to: "/dashboard/certificate", icon: Award },
   { label: "Profile", to: "/dashboard/profile", icon: User },
 ];
 const adminItems: NavItem[] = [

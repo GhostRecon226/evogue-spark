@@ -23,6 +23,8 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
+import { generateCertificate } from "@/lib/certificates.functions";
+import { useServerFn } from "@tanstack/react-start";
 
 export const Route = createFileRoute("/_authenticated/admin/capstones")({
   component: AdminCapstones,
@@ -36,6 +38,7 @@ type Row = {
   file_url: string | null;
   instructor_recommendation: boolean;
   instructor_note: string | null;
+  student_id: string;
   course_id: string;
   cohort_id: string | null;
   registration_number: string | null;
@@ -57,6 +60,7 @@ const statusStyles: Record<Row["status"], string> = {
 
 function AdminCapstones() {
   const { isAdmin, loading: authLoading } = useAuth();
+  const generateCert = useServerFn(generateCertificate);
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [courseFilter, setCourseFilter] = useState("all");
@@ -71,7 +75,7 @@ function AdminCapstones() {
     const { data } = await supabase
       .from("capstone_submissions")
       .select(
-        "id, status, submitted_at, submission_text, file_url, instructor_recommendation, instructor_note, course_id, cohort_id, student:profiles!capstone_submissions_student_id_fkey(full_name, email, registration_number), course:courses!capstone_submissions_course_id_fkey(title), cohort:cohorts!capstone_submissions_cohort_id_fkey(name)",
+        "id, status, submitted_at, submission_text, file_url, instructor_recommendation, instructor_note, student_id, course_id, cohort_id, student:profiles!capstone_submissions_student_id_fkey(full_name, email, registration_number), course:courses!capstone_submissions_course_id_fkey(title), cohort:cohorts!capstone_submissions_cohort_id_fkey(name)",
       )
       .order("submitted_at", { ascending: false });
     setRows(
@@ -99,7 +103,7 @@ function AdminCapstones() {
     };
   }, [isAdmin]);
 
-  const setStatus = async (id: string, status: Row["status"], reason?: string) => {
+  const setStatus = async (row: Row, status: Row["status"], reason?: string) => {
     const { data: userRes } = await supabase.auth.getUser();
     const reviewer = userRes?.user?.id ?? null;
     const patch: Record<string, unknown> = {
@@ -113,13 +117,24 @@ function AdminCapstones() {
     const { error } = await supabase
       .from("capstone_submissions")
       .update(patch as never)
-      .eq("id", id);
+      .eq("id", row.id);
     if (error) {
       toast.error(error.message);
       return { ok: false } as const;
     }
     if (status === "approved") {
       toast.success("Capstone approved. Certificate generation triggered.");
+      // Fire-and-forget cert generation
+      void (async () => {
+        try {
+          await generateCert({
+            data: { studentId: row.student_id, courseId: row.course_id },
+          });
+          toast.success("Certificate generated.");
+        } catch (e) {
+          toast.error(`Certificate generation failed: ${(e as Error).message}`);
+        }
+      })();
     } else if (status === "rejected") {
       toast.success("Submission rejected. Student has been notified.");
     } else {
@@ -141,7 +156,7 @@ function AdminCapstones() {
       return;
     }
     setRejectSubmitting(true);
-    const res = await setStatus(rejectTarget.id, "rejected", rejectReason);
+    const res = await setStatus(rejectTarget, "rejected", rejectReason);
     setRejectSubmitting(false);
     if (res.ok) {
       setRejectTarget(null);
@@ -365,7 +380,7 @@ function AdminCapstones() {
                   <Button
                     size="sm"
                     className="rounded-full bg-forest text-mint hover:bg-forest/90"
-                    onClick={() => setStatus(r.id, "approved")}
+                    onClick={() => setStatus(r, "approved")}
                   >
                     Approve
                   </Button>
@@ -378,6 +393,25 @@ function AdminCapstones() {
                     onClick={() => openReject(r)}
                   >
                     Reject
+                  </Button>
+                )}
+                {r.status === "approved" && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="rounded-full"
+                    onClick={async () => {
+                      try {
+                        await generateCert({
+                          data: { studentId: r.student_id, courseId: r.course_id },
+                        });
+                        toast.success("Certificate generated.");
+                      } catch (e) {
+                        toast.error(`Failed: ${(e as Error).message}`);
+                      }
+                    }}
+                  >
+                    Generate Certificate
                   </Button>
                 )}
               </div>

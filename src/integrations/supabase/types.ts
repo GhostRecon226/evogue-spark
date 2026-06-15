@@ -191,6 +191,7 @@ export type Database = {
       }
       certificates: {
         Row: {
+          cert_id: string | null
           certificate_url: string | null
           cohort_id: string | null
           course_id: string
@@ -200,6 +201,7 @@ export type Database = {
           student_id: string
         }
         Insert: {
+          cert_id?: string | null
           certificate_url?: string | null
           cohort_id?: string | null
           course_id: string
@@ -209,6 +211,7 @@ export type Database = {
           student_id: string
         }
         Update: {
+          cert_id?: string | null
           certificate_url?: string | null
           cohort_id?: string | null
           course_id?: string
