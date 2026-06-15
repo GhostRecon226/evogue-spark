@@ -592,49 +592,200 @@ function DashboardHome() {
         </div>
       </div>
 
-      {/* Row 3 — My Progress (full width) */}
-      <div className="mt-10">
-        <h2 className="font-display text-xl font-bold text-forest">My Progress</h2>
-        <div className="mt-4 rounded-3xl bg-background border border-border p-6">
-          {loading ? (
-            <div className="grid place-items-center py-8 text-foreground/50">
-              <Loader2 className="h-5 w-5 animate-spin" />
-            </div>
-          ) : progressList.length === 0 ? (
-            <p className="text-sm text-foreground/60 text-center py-6">
-              Enroll in a course to start tracking your progress.
-            </p>
-          ) : (
-            <ul className="space-y-5">
-              {progressList.map((p) => {
-                const pct = p.total > 0 ? Math.round((p.done / p.total) * 100) : 0;
-                return (
-                  <li key={p.slug}>
-                    <div className="flex items-center justify-between gap-3 flex-wrap">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <Link
-                          to="/dashboard/courses/$slug"
-                          params={{ slug: p.slug }}
-                          className="font-display font-bold text-forest hover:underline truncate"
-                        >
-                          {p.title}
-                        </Link>
-                        {p.capstoneReleased && (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-800 border border-amber-300 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
-                            <Flag className="h-3 w-3" /> Capstone Available
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-xs text-foreground/55">
-                        {p.done} of {p.total} lessons complete
-                      </p>
-                    </div>
-                    <Progress value={pct} className="mt-2" />
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+      {/* Row 3 — Payment Summary + Capstone Submission (full width) */}
+      <div className="mt-10 grid gap-6 lg:grid-cols-2">
+        {/* Payment Summary */}
+        <div>
+          <h2 className="font-display text-xl font-bold text-forest">Payment Summary</h2>
+          <div className="mt-4 rounded-3xl bg-background border border-border p-6">
+            {loading ? (
+              <div className="grid place-items-center py-8 text-foreground/50">
+                <Loader2 className="h-5 w-5 animate-spin" />
+              </div>
+            ) : !latestPayment ? (
+              <div className="py-6 text-center">
+                <p className="font-display font-bold text-forest">No payment record found.</p>
+                <p className="mt-1 text-sm text-foreground/60">
+                  Contact us at{" "}
+                  <a
+                    href="mailto:hello@evogueacademy.com"
+                    className="text-secondary font-semibold underline"
+                  >
+                    hello@evogueacademy.com
+                  </a>
+                </p>
+              </div>
+            ) : (
+              <dl className="space-y-3 text-sm">
+                <Row label="Course" value={latestPayment.course_title} />
+                <Row
+                  label="Original amount"
+                  value={fmtMoney(
+                    latestPayment.original_amount ?? latestPayment.amount,
+                    latestPayment.currency,
+                  )}
+                />
+                {latestPayment.coupon ? (
+                  <Row
+                    label="Coupon"
+                    value={
+                      <span>
+                        <span className="font-mono text-xs">{latestPayment.coupon.code}</span>{" "}
+                        <span className="text-foreground/60">
+                          (-{fmtMoney(latestPayment.discount_applied, latestPayment.currency)})
+                        </span>
+                      </span>
+                    }
+                  />
+                ) : (
+                  <Row label="Coupon" value={<span className="text-foreground/50">None</span>} />
+                )}
+                <Row
+                  label="Final amount"
+                  value={
+                    <span className="font-bold text-forest">
+                      {fmtMoney(latestPayment.amount, latestPayment.currency)}
+                    </span>
+                  }
+                />
+                <Row
+                  label="Payment method"
+                  value={latestPayment.payment_method ?? "—"}
+                />
+                <Row
+                  label="Reference"
+                  value={
+                    latestPayment.flutterwave_tx_id ? (
+                      <span className="font-mono text-xs">
+                        {latestPayment.flutterwave_tx_id}
+                      </span>
+                    ) : (
+                      "—"
+                    )
+                  }
+                />
+                <Row
+                  label="Date paid"
+                  value={
+                    latestPayment.paid_at
+                      ? new Date(latestPayment.paid_at).toLocaleDateString()
+                      : (
+                          <span className="text-amber-700 font-semibold">Awaiting payment</span>
+                        )
+                  }
+                />
+                <div className="pt-3 mt-3 border-t border-border">
+                  <span
+                    className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-bold capitalize ${
+                      latestPayment.payment_status === "paid"
+                        ? "bg-emerald-100 text-emerald-700"
+                        : latestPayment.payment_status === "pending"
+                          ? "bg-amber-100 text-amber-700"
+                          : "bg-red-100 text-red-700"
+                    }`}
+                  >
+                    {latestPayment.payment_status}
+                  </span>
+                  {latestPayment.payment_status !== "paid" && (
+                    <p className="mt-3 text-xs text-foreground/65">
+                      Installment payment available. Contact us at{" "}
+                      <a
+                        href="mailto:hello@evogueacademy.com"
+                        className="text-secondary font-semibold underline"
+                      >
+                        hello@evogueacademy.com
+                      </a>
+                      .
+                    </p>
+                  )}
+                </div>
+              </dl>
+            )}
+          </div>
+        </div>
+
+        {/* Capstone Submission */}
+        <div>
+          <h2 className="font-display text-xl font-bold text-forest">Capstone Submission</h2>
+          <div className="mt-4 rounded-3xl bg-background border border-border p-6 min-h-[200px]">
+            {loading ? (
+              <div className="grid place-items-center py-8 text-foreground/50">
+                <Loader2 className="h-5 w-5 animate-spin" />
+              </div>
+            ) : !capstoneDetail ? (
+              <div className="py-8 text-center">
+                <div className="mx-auto h-12 w-12 grid place-items-center rounded-full bg-foreground/5 text-foreground/40">
+                  <Lock className="h-5 w-5" />
+                </div>
+                <p className="mt-3 font-display font-bold text-forest">No submission yet</p>
+                <p className="mt-1 text-sm text-foreground/60">
+                  Your capstone project will appear here once your cohort begins.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3 text-sm">
+                <Row
+                  label="Submitted"
+                  value={new Date(capstoneDetail.submitted_at).toLocaleDateString()}
+                />
+                {capstoneDetail.file_url && (
+                  <Row
+                    label="File"
+                    value={
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          if (!capstoneDetail.file_url) return;
+                          const { data } = await supabase.storage
+                            .from("capstones")
+                            .createSignedUrl(capstoneDetail.file_url, 60);
+                          if (data?.signedUrl) window.open(data.signedUrl, "_blank", "noreferrer");
+                        }}
+                        className="text-secondary font-semibold underline"
+                      >
+                        View submission
+                      </button>
+                    }
+                  />
+                )}
+                <div className="pt-3 mt-3 border-t border-border">
+                  <span
+                    className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-bold capitalize ${
+                      capstoneStatus === "approved"
+                        ? "bg-emerald-100 text-emerald-700"
+                        : capstoneStatus === "rejected"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-amber-100 text-amber-700"
+                    }`}
+                  >
+                    {capstoneLabel}
+                  </span>
+                </div>
+                {capstoneStatus === "approved" && (
+                  <div className="mt-3 rounded-xl bg-emerald-50 border border-emerald-200 p-3 flex items-start gap-2">
+                    <CheckCircle className="h-4 w-4 mt-0.5 text-emerald-600 shrink-0" />
+                    <p className="text-sm text-emerald-900">
+                      Your capstone has been approved. Your certificate is on its way.
+                    </p>
+                  </div>
+                )}
+                {capstoneStatus === "rejected" && (
+                  <div className="mt-3 rounded-xl bg-red-50 border border-red-200 p-3">
+                    <p className="text-xs font-bold uppercase tracking-wider text-red-700">
+                      Feedback
+                    </p>
+                    <p className="mt-1 text-sm text-red-900 whitespace-pre-wrap">
+                      {capstoneDetail.notes || capstoneDetail.instructor_note ||
+                        "Your submission needs revision."}
+                    </p>
+                    <p className="mt-2 text-xs text-foreground/65">
+                      Please review the feedback and resubmit.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
