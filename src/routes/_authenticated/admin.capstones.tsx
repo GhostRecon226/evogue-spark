@@ -380,7 +380,7 @@ function AdminCapstones() {
                   <Button
                     size="sm"
                     className="rounded-full bg-forest text-mint hover:bg-forest/90"
-                    onClick={() => setStatus(r.id, "approved")}
+                    onClick={() => setStatus(r, "approved")}
                   >
                     Approve
                   </Button>
