@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { createStudent, setStudentActive, setEnrollmentPaymentStatus } from "@/lib/admin.functions";
+import { sendEnrollmentEmails } from "@/lib/enrollment-emails.functions";
 import { formatUSD, getCoursePriceUSD } from "@/lib/coursePricing";
 
 export const Route = createFileRoute("/_authenticated/admin/students")({
