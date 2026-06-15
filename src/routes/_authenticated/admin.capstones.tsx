@@ -395,6 +395,25 @@ function AdminCapstones() {
                     Reject
                   </Button>
                 )}
+                {r.status === "approved" && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="rounded-full"
+                    onClick={async () => {
+                      try {
+                        await generateCert({
+                          data: { studentId: r.student_id, courseId: r.course_id },
+                        });
+                        toast.success("Certificate generated.");
+                      } catch (e) {
+                        toast.error(`Failed: ${(e as Error).message}`);
+                      }
+                    }}
+                  >
+                    Generate Certificate
+                  </Button>
+                )}
               </div>
             )}
           />
