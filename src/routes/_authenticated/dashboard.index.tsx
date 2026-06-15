@@ -344,10 +344,42 @@ function DashboardHome() {
       : capstoneStatus === "recommended"
         ? "Recommended"
         : capstoneStatus === "pending"
-          ? "Submitted"
+          ? "Pending Review"
           : capstoneStatus === "rejected"
-            ? "Revise"
-            : "Not Started";
+            ? "Rejected"
+            : "Not Submitted";
+
+  // Most recent payment that matches the enrolled course (else fall back to most recent payment).
+  const latestPayment: PaymentRow | null =
+    payments.find((p) => enrolledCourse && p.course_title === enrolledCourse.title) ??
+    payments[0] ??
+    null;
+  const paymentStatusKey =
+    latestPayment?.payment_status === "paid"
+      ? "paid"
+      : latestPayment?.payment_status === "pending"
+        ? "pending"
+        : "unpaid";
+  const paymentLabel =
+    paymentStatusKey === "paid" ? "Paid" : paymentStatusKey === "pending" ? "Pending" : "Unpaid";
+  const paymentValueClass =
+    paymentStatusKey === "paid"
+      ? "text-[#1A8C4E] text-base"
+      : paymentStatusKey === "pending"
+        ? "text-[#B45309] text-base"
+        : "text-[#B91C1C] text-base";
+  const capstoneValueClass =
+    capstoneStatus === "approved"
+      ? "text-[#1A8C4E] text-base"
+      : capstoneStatus === "rejected"
+        ? "text-[#B91C1C] text-base"
+        : capstoneStatus === "pending" || capstoneStatus === "recommended"
+          ? "text-[#B45309] text-base"
+          : "text-foreground/55 text-base";
+  const courseProgressPct = next?.progress ?? 0;
+  const courseProgressValue = enrolledCourse
+    ? `${courseProgressPct}%`
+    : "—";
 
   return (
     <DashboardLayout>
@@ -371,40 +403,66 @@ function DashboardHome() {
       <div className="mt-8 grid gap-4 sm:gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <Stat
           icon={BookOpen}
-          label="Enrolled Courses"
-          value={loading ? "…" : String(stats.enrolled)}
+          label="My Course"
+          value={loading ? "…" : (enrolledCourse?.title ?? "No course")}
           iconBg="bg-[#00F5A0]"
           iconColor="text-[#0A2E1A]"
           accent="border-t-4 border-[#00F5A0]"
+          valueClassName="text-base"
         />
         <Stat
-          icon={CheckCircle2}
-          label="Lessons Completed"
-          value={loading ? "…" : String(stats.completedLessons)}
-          iconBg="bg-[#1A8C4E]"
+          icon={Wallet}
+          label="Payment Status"
+          value={loading ? "…" : paymentLabel}
+          iconBg={
+            paymentStatusKey === "paid"
+              ? "bg-[#1A8C4E]"
+              : paymentStatusKey === "pending"
+                ? "bg-[#F59E0B]"
+                : "bg-[#B91C1C]"
+          }
           iconColor="text-white"
-          accent="border-t-4 border-[#1A8C4E]"
+          accent={
+            paymentStatusKey === "paid"
+              ? "border-t-4 border-[#1A8C4E]"
+              : paymentStatusKey === "pending"
+                ? "border-t-4 border-[#F59E0B]"
+                : "border-t-4 border-[#B91C1C]"
+          }
+          valueClassName={paymentValueClass}
+        />
+        <Stat
+          icon={BarChart3}
+          label="Course Progress"
+          value={loading ? "…" : courseProgressValue}
+          iconBg="bg-[#0A2E1A]"
+          iconColor="text-[#00F5A0]"
+          accent="border-t-4 border-[#0A2E1A]"
+          tooltip={courseProgressPct === 0 ? "Classes not started yet" : undefined}
         />
         <Stat
           icon={Flag}
           label="Capstone Status"
           value={loading ? "…" : capstoneLabel}
-          iconBg="bg-[#F59E0B]"
+          iconBg={
+            capstoneStatus === "approved"
+              ? "bg-[#1A8C4E]"
+              : capstoneStatus === "rejected"
+                ? "bg-[#B91C1C]"
+                : "bg-[#F59E0B]"
+          }
           iconColor="text-white"
-          accent="border-t-4 border-[#F59E0B]"
-          valueClassName="text-base"
+          accent={
+            capstoneStatus === "approved"
+              ? "border-t-4 border-[#1A8C4E]"
+              : capstoneStatus === "rejected"
+                ? "border-t-4 border-[#B91C1C]"
+                : "border-t-4 border-[#F59E0B]"
+          }
+          valueClassName={capstoneValueClass}
           tooltip="Your capstone project is the final assignment for your course. Once submitted and approved by the Evogue Academy team, your certificate will be issued."
           actionLabel="View details"
           onAction={() => setCapstoneOpen(true)}
-        />
-
-        <Stat
-          icon={Award}
-          label="Certificates Earned"
-          value={loading ? "…" : String(stats.certificates)}
-          iconBg="bg-[#0A2E1A]"
-          iconColor="text-[#00F5A0]"
-          accent="border-t-4 border-[#0A2E1A]"
         />
       </div>
 
