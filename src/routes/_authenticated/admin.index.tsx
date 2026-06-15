@@ -28,6 +28,9 @@ import { AdminGuard } from "@/components/admin/AdminGuard";
 import { formatUSD, getCoursePriceUSD } from "@/lib/coursePricing";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { useServerFn } from "@tanstack/react-start";
+import { sendEnrollmentEmails } from "@/lib/enrollment-emails.functions";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
   component: AdminOverview,
@@ -348,13 +351,16 @@ function AdminOverview() {
             A snapshot of activity across the academy.
           </p>
         </div>
-        <div className="relative w-full md:w-72">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground/40" />
-          <input
-            type="search"
-            placeholder="Search students, courses…"
-            className="w-full rounded-full border border-border bg-white pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#00F5A0]/40"
-          />
+        <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+          <TestEnrollmentEmailsButton />
+          <div className="relative w-full md:w-72">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground/40" />
+            <input
+              type="search"
+              placeholder="Search students, courses…"
+              className="w-full rounded-full border border-border bg-white pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#00F5A0]/40"
+            />
+          </div>
         </div>
       </div>
 
@@ -632,5 +638,69 @@ export function PaymentBadge({ status }: { status: string }) {
     >
       {status}
     </span>
+  );
+}
+
+function TestEnrollmentEmailsButton() {
+  const send = useServerFn(sendEnrollmentEmails);
+  const [loading, setLoading] = useState(false);
+
+  async function onClick() {
+    setLoading(true);
+    try {
+      const { data: userRes } = await supabase.auth.getUser();
+      const adminEmail = userRes.user?.email;
+      if (!adminEmail) {
+        toast.error("You must be signed in to send a test email.");
+        return;
+      }
+      const res = await send({
+        data: {
+          fullName: "Test Student",
+          studentEmail: adminEmail,
+          whatsapp: "+44 7404 331835",
+          country: "United Kingdom",
+          studentId: "EVG-2026-TEST",
+          tempPassword: "Evogue!Test12",
+          courseName: "Product Management",
+          courseDuration: "12 weeks",
+          amount: 450,
+          currency: "USD",
+          originalAmount: 500,
+          discountPercent: 10,
+          couponCode: "EVOGUE10",
+          paymentReference: `TEST-${Date.now()}`,
+          enrolledAt: new Date().toISOString(),
+        },
+      });
+      const w = (res as any)?.summary?.welcome;
+      const a = (res as any)?.summary?.admin;
+      const allOk = w === "queued" && a === "queued";
+      if (allOk) {
+        toast.success(
+          `Test emails queued — welcome → ${adminEmail}, admin → evogueconsulting@gmail.com`,
+        );
+      } else {
+        toast.warning(
+          `Welcome: ${w} • Admin: ${a}. Check Cloud → Emails for details.`,
+        );
+      }
+    } catch (e: any) {
+      toast.error(e?.message ?? "Failed to send test emails");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <Button
+      type="button"
+      variant="outline"
+      onClick={onClick}
+      disabled={loading}
+      className="whitespace-nowrap"
+    >
+      {loading ? "Sending…" : "Send test enrollment emails"}
+    </Button>
   );
 }
