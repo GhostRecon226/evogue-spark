@@ -64,6 +64,7 @@ type Coupon = {
   expiry_date: string | null;
   active: boolean;
   description: string | null;
+  applicable_courses: string[] | null;
   created_at: string;
 };
 
@@ -76,6 +77,10 @@ type Redemption = {
   applied_at: string;
   student_name: string;
   student_reg: string | null;
+  student_email: string | null;
+  course_slug: string | null;
+  original_amount: number | null;
+  final_amount: number | null;
   enrolment_status: "Pending" | "Enrolled" | "Not enrolled";
 };
 
@@ -87,7 +92,22 @@ type FormState = {
   expiry_date: Date | undefined;
   active: boolean;
   description: string;
+  applicable_courses: string[];
 };
+
+const COURSE_OPTIONS: { slug: string; name: string }[] = [
+  { slug: "project-management-business-analysis", name: "Project Management & Business Analysis" },
+  { slug: "scrum-master", name: "Scrum Master" },
+  { slug: "digital-marketing", name: "Digital Marketing" },
+  { slug: "product-management", name: "Product Management" },
+  { slug: "ai-for-professionals", name: "AI for Professionals" },
+  { slug: "data-analysis", name: "Data Analysis" },
+  { slug: "cybersecurity", name: "Cybersecurity" },
+  { slug: "virtual-assistant-programme", name: "Virtual Assistant Programme" },
+];
+
+const courseNameFor = (slug: string) =>
+  COURSE_OPTIONS.find((c) => c.slug === slug)?.name ?? slug;
 
 const emptyForm: FormState = {
   code: "",
@@ -97,6 +117,7 @@ const emptyForm: FormState = {
   expiry_date: undefined,
   active: true,
   description: "",
+  applicable_courses: [],
 };
 
 const isExpired = (c: Coupon) =>
@@ -131,18 +152,21 @@ function CouponsInner() {
       supabase
         .from("coupon_codes")
         .select(
-          "id, code, discount_type, discount_value, usage_limit, times_used, expiry_date, active, description, created_at",
+          "id, code, discount_type, discount_value, usage_limit, times_used, expiry_date, active, description, applicable_courses, created_at",
         )
         .order("created_at", { ascending: false }),
       supabase
         .from("coupon_redemptions")
-        .select("id, student_id, coupon_code, discount_type, discount_value, applied_at")
+        .select(
+          "id, student_id, coupon_code, discount_type, discount_value, applied_at, student_email, course_slug, original_amount, final_amount",
+        )
         .order("applied_at", { ascending: false }),
     ]);
 
     const couponList = (c ?? []).map((row) => ({
       ...row,
       discount_value: Number(row.discount_value ?? 0),
+      applicable_courses: row.applicable_courses ?? null,
     })) as Coupon[];
 
     const studentIds = Array.from(new Set((r ?? []).map((x) => x.student_id)));
@@ -176,6 +200,10 @@ function CouponsInner() {
         applied_at: row.applied_at,
         student_name: p?.name ?? "Unknown",
         student_reg: p?.reg ?? null,
+        student_email: row.student_email ?? null,
+        course_slug: row.course_slug ?? null,
+        original_amount: row.original_amount != null ? Number(row.original_amount) : null,
+        final_amount: row.final_amount != null ? Number(row.final_amount) : null,
         enrolment_status: enrolled ? "Enrolled" : "Pending",
       };
     });
@@ -247,6 +275,7 @@ function CouponsInner() {
       expiry_date: form.expiry_date ? format(form.expiry_date, "yyyy-MM-dd") : null,
       active: form.active,
       description: form.description.trim() || null,
+      applicable_courses: form.applicable_courses.length > 0 ? form.applicable_courses : null,
     });
     setSubmitting(false);
     if (error) {
@@ -274,6 +303,13 @@ function CouponsInner() {
 
   const handleDelete = async () => {
     if (!toDelete) return;
+    if ((toDelete.times_used ?? 0) > 0) {
+      toast.error(
+        "This code has been used and cannot be deleted. You can deactivate it instead.",
+      );
+      setToDelete(null);
+      return;
+    }
     const { error } = await supabase.from("coupon_codes").delete().eq("id", toDelete.id);
     if (error) {
       toast.error("Could not delete coupon.");
@@ -294,6 +330,7 @@ function CouponsInner() {
       expiry_date: c.expiry_date ? new Date(c.expiry_date) : undefined,
       active: c.active,
       description: c.description ?? "",
+      applicable_courses: c.applicable_courses ?? [],
     });
   };
 
@@ -316,6 +353,8 @@ function CouponsInner() {
         expiry_date: editForm.expiry_date ? format(editForm.expiry_date, "yyyy-MM-dd") : null,
         active: editForm.active,
         description: editForm.description.trim() || null,
+        applicable_courses:
+          editForm.applicable_courses.length > 0 ? editForm.applicable_courses : null,
       })
       .eq("id", editing.id);
     if (error) {
@@ -362,6 +401,31 @@ function CouponsInner() {
       ),
     },
     {
+      key: "courses",
+      header: "Courses",
+      accessor: (r) => (r.applicable_courses ?? []).join(","),
+      cell: (r) => {
+        const list = r.applicable_courses ?? [];
+        if (list.length === 0)
+          return <span className="text-[12px] text-foreground/55">All courses</span>;
+        return (
+          <div className="flex flex-wrap gap-1 max-w-[260px]">
+            {list.slice(0, 2).map((s) => (
+              <span
+                key={s}
+                className="inline-flex items-center rounded-full border border-[rgba(10,46,26,0.15)] bg-[#F5FAF6] px-2 py-0.5 text-[11px] text-[#0A2E1A]"
+              >
+                {courseNameFor(s)}
+              </span>
+            ))}
+            {list.length > 2 && (
+              <span className="text-[11px] text-foreground/55">+{list.length - 2}</span>
+            )}
+          </div>
+        );
+      },
+    },
+    {
       key: "expiry",
       header: "Expiry",
       sortable: true,
@@ -392,15 +456,30 @@ function CouponsInner() {
       cell: (r) => (
         <div className="min-w-0">
           <p className="font-medium text-[#0A2E1A] truncate">{r.student_name}</p>
-          {r.student_reg && (
+          {r.student_email && (
+            <p className="text-[11px] text-foreground/55 truncate">{r.student_email}</p>
+          )}
+          {!r.student_email && r.student_reg && (
             <p className="text-[11px] text-foreground/55 font-mono">{r.student_reg}</p>
           )}
         </div>
       ),
     },
     {
+      key: "course",
+      header: "Course",
+      sortable: true,
+      accessor: (r) => r.course_slug ?? "",
+      cell: (r) =>
+        r.course_slug ? (
+          <span className="text-[13px]">{courseNameFor(r.course_slug)}</span>
+        ) : (
+          <span className="text-[12px] text-foreground/40">—</span>
+        ),
+    },
+    {
       key: "code",
-      header: "Code Used",
+      header: "Code",
       sortable: true,
       accessor: (r) => r.coupon_code,
       cell: (r) => <span className="font-mono font-semibold">{r.coupon_code}</span>,
@@ -413,26 +492,36 @@ function CouponsInner() {
       cell: (r) => <span>{formatDiscount(r.discount_type, r.discount_value)}</span>,
     },
     {
+      key: "original",
+      header: "Original",
+      accessor: (r) => r.original_amount ?? 0,
+      cell: (r) =>
+        r.original_amount != null ? (
+          <span className="text-foreground/60">${r.original_amount.toFixed(2)}</span>
+        ) : (
+          <span className="text-foreground/40">—</span>
+        ),
+    },
+    {
+      key: "final",
+      header: "Final",
+      accessor: (r) => r.final_amount ?? 0,
+      cell: (r) =>
+        r.final_amount != null ? (
+          <span className="font-semibold text-[#0A2E1A]">${r.final_amount.toFixed(2)}</span>
+        ) : (
+          <span className="text-foreground/40">—</span>
+        ),
+    },
+    {
       key: "applied_at",
       header: "Applied On",
       sortable: true,
       accessor: (r) => r.applied_at,
       cell: (r) => <span>{format(new Date(r.applied_at), "PP")}</span>,
     },
-    {
-      key: "enrol",
-      header: "Enrolment Status",
-      accessor: (r) => r.enrolment_status,
-      cell: (r) =>
-        r.enrolment_status === "Enrolled" ? (
-          <Pill tone="green">Enrolled</Pill>
-        ) : r.enrolment_status === "Pending" ? (
-          <Pill tone="amber">Pending</Pill>
-        ) : (
-          <Pill tone="grey">Not enrolled</Pill>
-        ),
-    },
   ];
+
 
   return (
     <div>
@@ -596,6 +685,17 @@ function CouponsInner() {
               </div>
             }
           />
+          <div className="sm:col-span-2">
+            <FormFieldRow
+              label="Applicable Courses"
+              input={
+                <CourseMultiSelect
+                  value={form.applicable_courses}
+                  onChange={(v) => setForm({ ...form, applicable_courses: v })}
+                />
+              }
+            />
+          </div>
           <div className="sm:col-span-2">
             <FormFieldRow
               label="Description (internal note)"
@@ -835,6 +935,17 @@ function CouponsInner() {
             />
             <div className="sm:col-span-2">
               <FormFieldRow
+                label="Applicable Courses"
+                input={
+                  <CourseMultiSelect
+                    value={editForm.applicable_courses}
+                    onChange={(v) => setEditForm({ ...editForm, applicable_courses: v })}
+                  />
+                }
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <FormFieldRow
                 label="Description (internal note)"
                 input={
                   <Input
@@ -943,5 +1054,46 @@ function Pill({
     >
       {children}
     </span>
+  );
+}
+
+function CourseMultiSelect({
+  value,
+  onChange,
+}: {
+  value: string[];
+  onChange: (v: string[]) => void;
+}) {
+  const toggle = (slug: string) => {
+    if (value.includes(slug)) onChange(value.filter((s) => s !== slug));
+    else onChange([...value, slug]);
+  };
+  return (
+    <div>
+      <div className="flex flex-wrap gap-2 rounded-md border border-input bg-background p-2.5 min-h-[44px]">
+        {COURSE_OPTIONS.map((c) => {
+          const active = value.includes(c.slug);
+          return (
+            <button
+              type="button"
+              key={c.slug}
+              onClick={() => toggle(c.slug)}
+              className={`text-[12px] rounded-full px-3 py-1 border transition-colors ${
+                active
+                  ? "bg-[#0A2E1A] text-white border-[#0A2E1A]"
+                  : "bg-[#F5FAF6] text-[#0A2E1A] border-[rgba(10,46,26,0.12)] hover:border-[#1A8C4E]"
+              }`}
+            >
+              {c.name}
+            </button>
+          );
+        })}
+      </div>
+      <p className="text-[11px] text-foreground/55 mt-1.5">
+        {value.length === 0
+          ? "No courses selected — code will apply to all courses."
+          : `${value.length} course${value.length === 1 ? "" : "s"} selected.`}
+      </p>
+    </div>
   );
 }
