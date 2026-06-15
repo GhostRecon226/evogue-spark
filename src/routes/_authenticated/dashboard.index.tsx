@@ -1215,3 +1215,24 @@ function CapstoneTimelineDialog({
     </Dialog>
   );
 }
+
+function Row({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div className="flex items-start justify-between gap-3">
+      <dt className="text-xs uppercase tracking-wider font-semibold text-foreground/55">{label}</dt>
+      <dd className="text-right text-foreground/85">{value}</dd>
+    </div>
+  );
+}
+
+function fmtMoney(amount: number, currency: string) {
+  try {
+    return new Intl.NumberFormat(currency === "NGN" ? "en-NG" : "en-US", {
+      style: "currency",
+      currency,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  } catch {
+    return `${currency} ${amount.toLocaleString()}`;
+  }
+}
