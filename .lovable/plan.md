@@ -1,24 +1,71 @@
-## Goal
-Replace the 5 imported local images on the home page with real Unsplash photographs matching the queries you provided, keeping all existing layout, sizing, border-radius, and aspect ratios intact.
+## Flutterwave Integration Plan
 
-## Images to replace
+### Prerequisites — needed from you before build
+1. **Three secrets** to add via the secure secrets form (I'll trigger the form once you approve):
+   - `FLUTTERWAVE_PUBLIC_KEY`
+   - `FLUTTERWAVE_SECRET_KEY`
+   - `FLUTTERWAVE_WEBHOOK_SECRET`
+2. **Course pricing in DB.** Most courses currently have `price` as text. I'll need to populate `price_usd` and `price_ngn` (numeric) on each course row, or fall back to the hard-coded values in `src/lib/coursePricing.ts`. Tell me which: (a) use existing `coursePricing.ts`, (b) seed numeric prices into `courses` now, or (c) ask you for a price sheet.
 
-| # | File | Current import | Unsplash query |
-|---|------|----------------|----------------|
-| 1 | `src/components/landing/Hero.tsx` | `@/assets/hero-designer.jpg` | black woman smiling working laptop office professional |
-| 2 | `src/components/landing/Values.tsx` | `@/assets/card-collaborative.jpg` | black and white people laughing working together laptop |
-| 3 | `src/components/landing/Values.tsx` | `@/assets/card-handson.jpg` | diverse hands working desk documents planning |
-| 4 | `src/components/landing/Values.tsx` | `@/assets/card-mentorship.jpg` | black man white woman professional mentorship conversation office |
-| 5 | `src/components/landing/About.tsx` | `@/assets/about-collaboration.jpg` | diverse team african caucasian professionals meeting table |
+### Stack note
+TanStack Start project — I'll use `createServerFn` for verify-payment (called from browser) and a TanStack server route at `/api/public/flutterwave-webhook` for the webhook (NOT a Supabase Edge Function — TanStack handles server work here). The user prompt says "Supabase Edge Function" but our stack uses TanStack server functions; behavior is identical and the URL is stable.
 
-## Approach
-1. For each query, search Unsplash (via web search) and shortlist candidates. Skip anything that looks AI-generated, overly posed, or like a stock cliché. Pick the most natural-looking result.
-2. Download the chosen photo, upload via `lovable-assets` CLI, and write the resulting `.asset.json` pointer into `src/assets/` (replacing the existing file). This keeps the existing import paths working — no component logic changes, just the underlying asset bytes.
-3. Delete the original local `.jpg` (the `.asset.json` pointer takes its place) so the import resolves to the CDN URL.
-4. Verify by viewing the home page in the preview after rebuild.
+### What gets built
 
-Nothing else on the page changes — no markup, classes, alt text edits, or layout tweaks.
+**1. `/order-summary` page** (`src/routes/order-summary.tsx`)
+- Reads student details + course slug from query params (passed from `/enrol` on submit).
+- Currency toggle: defaults to NGN when `country === 'Nigeria'`, USD otherwise.
+- Coupon input with Apply button → calls existing `redeem_coupon` RPC (preview via `get_coupon_preview`) to compute discounted total.
+- "Proceed to Payment" loads Flutterwave inline script (`https://checkout.flutterwave.com/v3.js`) and opens checkout.
+- Installment note below button.
+- Brand: forest #0A2E1A bg, mint #00F5A0 accent, Fraunces headings, DM Sans body.
 
-## Confirm before I start
-- OK to host the Unsplash photos on the Lovable CDN (recommended — fast, cached, survives Unsplash URL changes)? Alternative is referencing `images.unsplash.com` URLs directly in the components.
-- Want me to show you my 5 picks (with thumbnails / Unsplash links) for approval before swapping, or just pick and swap in one go?
+**2. `/enrol` form update (minimal)**
+- On submit, instead of inserting straight into `enrolment_requests` only, also navigate to `/order-summary?course=<slug>&name=...&email=...&whatsapp=...&country=...`.
+- I will also still write the lead row to `applications` (newly created table) so admins see the pending application.
+
+**3. Verify-payment server function** (`src/lib/payments.functions.ts`)
+- POST, takes `{ transaction_id, tx_ref, expected_amount, expected_currency, course_slug, student: {name,email,whatsapp,country}, coupon_code? }`.
+- Calls `https://api.flutterwave.com/v3/transactions/<id>/verify` with `FLUTTERWAVE_SECRET_KEY`.
+- Asserts `status==='successful'`, amount + currency match, tx_ref matches.
+- On success → runs the account-creation/enrollment block (below).
+- On failure → returns `{ ok:false, error:'Payment could not be verified...' }`.
+
+**4. Account creation + enrollment block** (shared helper in `payments.server.ts`)
+Uses `supabaseAdmin`:
+- Look up existing auth user by email. If none, `admin.createUser({ email, password: <random>, email_confirm: true, user_metadata: { full_name, whatsapp_number } })` — the existing `handle_new_user` trigger creates the `profiles` row with `registration_number` (EVG-YYYY-XXXX) and seeds `user_roles` row with `'student'`. Idempotent.
+- Resolve `course_id` from slug via `courses` table.
+- Insert/upsert `enrollments` row `{ student_id, course_id, payment_status:'paid', paid_at:now(), status:'active', payment_reference: tx_ref }` (unique on student_id+course_id assumed; if not, dedupe in code).
+- Insert `payments` row `{ student_id, course_id, amount, currency, payment_status:'paid', payment_method:'flutterwave', flutterwave_tx_id, original_amount, discount_applied, coupon_id, paid_at:now() }`.
+- Update `applications` set `status='enrolled'` where `email=? AND course_slug=?` (best-effort).
+- Trigger password-reset / magic-link email so student can set their password (so the email mentioned in step 6 is real).
+
+**5. `/payment-success` page** (`src/routes/payment-success.tsx`)
+- Reads `?student_id=<reg>&course=<title>` from query (returned by verify-payment).
+- "You're in. Welcome to Evogue Academy.", reg number, course, "Check your email for your login details.", `Go to Login` button. Dark green + mint center layout.
+
+**6. Webhook** (`src/routes/api/public/flutterwave-webhook.ts`)
+- POST handler. Verifies header `verif-hash === FLUTTERWAVE_WEBHOOK_SECRET` (Flutterwave's mechanism — a static shared secret, not HMAC).
+- On `event === 'charge.completed'` and `data.status === 'successful'`, calls the same account-creation block (idempotent via tx_ref dedupe on payments).
+- Returns 200 always to acknowledge once signature is valid.
+- URL to give Flutterwave: `https://evogue-spark.lovable.app/api/public/flutterwave-webhook`.
+
+### Schema check (already in place from last migration)
+- `payments` table ✔ has all needed columns
+- `applications` table ✔
+- `coupon_codes.applicable_courses` ✔ (Phase 4 coupon validation will check this)
+- `enrollments.status` ✔
+- `profiles.registration_number` ✔ (already auto-generated by trigger)
+
+### Files to be added/changed
+- NEW: `src/routes/order-summary.tsx`, `src/routes/payment-success.tsx`, `src/routes/api/public/flutterwave-webhook.ts`, `src/lib/payments.functions.ts`, `src/lib/payments.server.ts`
+- EDIT: `src/routes/enrol.tsx` (only the submit handler — navigate to order-summary, write applications row)
+
+No other pages, components, auth setup, or tables will change.
+
+### Open questions
+1. **Pricing source** (a/b/c above)?
+2. **OK to use TanStack server fn + server route** instead of Supabase Edge Functions? (Same outcome, native to this stack.)
+3. Confirm you want the **password setup email** sent automatically after enrollment so "Check your email for your login details" is truthful.
+
+Reply with answers (or "use defaults: a, yes, yes") and I'll switch to build, request the three secrets, and ship it.
