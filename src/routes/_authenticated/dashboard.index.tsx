@@ -43,6 +43,22 @@ type CapstoneDetail = {
   instructor_recommendation: boolean | null;
   instructor_note: string | null;
   admin_note?: string | null;
+  file_url?: string | null;
+  notes?: string | null;
+};
+
+type PaymentRow = {
+  id: string;
+  amount: number;
+  original_amount: number | null;
+  currency: string;
+  payment_status: "paid" | "pending" | "unpaid" | "failed" | string;
+  payment_method: string | null;
+  flutterwave_tx_id: string | null;
+  paid_at: string | null;
+  discount_applied: number;
+  coupon: { code: string; discount_type: string; discount_value: number } | null;
+  course_title: string;
 };
 
 export const Route = createFileRoute("/_authenticated/dashboard/")({
