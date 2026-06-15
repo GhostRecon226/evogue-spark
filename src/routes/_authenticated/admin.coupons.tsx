@@ -1056,3 +1056,44 @@ function Pill({
     </span>
   );
 }
+
+function CourseMultiSelect({
+  value,
+  onChange,
+}: {
+  value: string[];
+  onChange: (v: string[]) => void;
+}) {
+  const toggle = (slug: string) => {
+    if (value.includes(slug)) onChange(value.filter((s) => s !== slug));
+    else onChange([...value, slug]);
+  };
+  return (
+    <div>
+      <div className="flex flex-wrap gap-2 rounded-md border border-input bg-background p-2.5 min-h-[44px]">
+        {COURSE_OPTIONS.map((c) => {
+          const active = value.includes(c.slug);
+          return (
+            <button
+              type="button"
+              key={c.slug}
+              onClick={() => toggle(c.slug)}
+              className={`text-[12px] rounded-full px-3 py-1 border transition-colors ${
+                active
+                  ? "bg-[#0A2E1A] text-white border-[#0A2E1A]"
+                  : "bg-[#F5FAF6] text-[#0A2E1A] border-[rgba(10,46,26,0.12)] hover:border-[#1A8C4E]"
+              }`}
+            >
+              {c.name}
+            </button>
+          );
+        })}
+      </div>
+      <p className="text-[11px] text-foreground/55 mt-1.5">
+        {value.length === 0
+          ? "No courses selected — code will apply to all courses."
+          : `${value.length} course${value.length === 1 ? "" : "s"} selected.`}
+      </p>
+    </div>
+  );
+}
