@@ -103,7 +103,7 @@ function AdminCapstones() {
     };
   }, [isAdmin]);
 
-  const setStatus = async (id: string, status: Row["status"], reason?: string) => {
+  const setStatus = async (row: Row, status: Row["status"], reason?: string) => {
     const { data: userRes } = await supabase.auth.getUser();
     const reviewer = userRes?.user?.id ?? null;
     const patch: Record<string, unknown> = {
@@ -117,13 +117,24 @@ function AdminCapstones() {
     const { error } = await supabase
       .from("capstone_submissions")
       .update(patch as never)
-      .eq("id", id);
+      .eq("id", row.id);
     if (error) {
       toast.error(error.message);
       return { ok: false } as const;
     }
     if (status === "approved") {
       toast.success("Capstone approved. Certificate generation triggered.");
+      // Fire-and-forget cert generation
+      void (async () => {
+        try {
+          await generateCert({
+            data: { studentId: row.student_id, courseId: row.course_id },
+          });
+          toast.success("Certificate generated.");
+        } catch (e) {
+          toast.error(`Certificate generation failed: ${(e as Error).message}`);
+        }
+      })();
     } else if (status === "rejected") {
       toast.success("Submission rejected. Student has been notified.");
     } else {
