@@ -74,10 +74,20 @@ function AdminCapstones() {
     if (isAdmin) void load();
   }, [isAdmin]);
 
-  const setStatus = async (id: string, status: Row["status"]) => {
+  const setStatus = async (id: string, status: Row["status"], reason?: string) => {
+    const { data: userRes } = await supabase.auth.getUser();
+    const reviewer = userRes?.user?.id ?? null;
+    const patch: Record<string, unknown> = {
+      status,
+      reviewed_at: new Date().toISOString(),
+      reviewed_by: reviewer,
+    };
+    if (status === "rejected" && reason && reason.trim()) {
+      patch.notes = reason.trim();
+    }
     const { error } = await supabase
       .from("capstone_submissions")
-      .update({ status, reviewed_at: new Date().toISOString() })
+      .update(patch)
       .eq("id", id);
     if (error) {
       toast.error(error.message);
@@ -85,6 +95,16 @@ function AdminCapstones() {
     }
     toast.success(status === "approved" ? "Approved · certificate issued" : `Marked ${status}`);
     void load();
+  };
+
+  const rejectWithReason = async (id: string) => {
+    const reason = window.prompt("Reason for rejection (visible to the student):");
+    if (reason === null) return; // cancelled
+    if (!reason.trim()) {
+      toast.error("Please enter a rejection reason.");
+      return;
+    }
+    await setStatus(id, "rejected", reason);
   };
 
   const viewFile = async (path: string) => {
