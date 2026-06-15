@@ -1,7 +1,8 @@
 import { ArrowRight, Star, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EnrollButton } from "@/components/EnrollButton";
-import heroImg from "@/assets/hero-designer.jpg";
+import heroAsset from "@/assets/hero-designer.jpg.asset.json";
+const heroImg = heroAsset.url;
 
 function DotCluster({ className }: { className?: string }) {
   const dots = [];
