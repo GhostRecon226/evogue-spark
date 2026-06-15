@@ -72,7 +72,7 @@ function AdminCapstones() {
     const { data } = await supabase
       .from("capstone_submissions")
       .select(
-        "id, status, submitted_at, submission_text, file_url, instructor_recommendation, instructor_note, course_id, cohort_id, student:profiles!capstone_submissions_student_id_fkey(full_name, email, registration_number), course:courses!capstone_submissions_course_id_fkey(title), cohort:cohorts!capstone_submissions_cohort_id_fkey(name)",
+        "id, status, submitted_at, submission_text, file_url, instructor_recommendation, instructor_note, student_id, course_id, cohort_id, student:profiles!capstone_submissions_student_id_fkey(full_name, email, registration_number), course:courses!capstone_submissions_course_id_fkey(title), cohort:cohorts!capstone_submissions_cohort_id_fkey(name)",
       )
       .order("submitted_at", { ascending: false });
     setRows(
