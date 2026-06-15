@@ -82,7 +82,7 @@ function monthLabel(d: Date) {
 function AdminOverview() {
   const [loading, setLoading] = useState(true);
   const [currency, setCurrency] = useState<"USD" | "NGN">("USD");
-  const [usdToNgn, setUsdToNgn] = useState<number>(1600);
+  const [usdToNgn] = useState<number>(1600);
   const [stats, setStats] = useState({
     students: 0,
     activeEnrollments: 0,
