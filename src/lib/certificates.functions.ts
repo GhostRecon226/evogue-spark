@@ -76,7 +76,7 @@ export const generateCertificate = createServerFn({ method: "POST" })
         .select("id, certificate_url, cert_id")
         .single();
       if (insertErr) throw insertErr;
-      certRow = inserted as typeof certRow;
+      certRow = inserted as unknown as typeof certRow;
     }
     const cert = certRow!;
     const certId = cert.cert_id || `CERT-${cert.id.replace(/-/g, "").slice(0, 8).toUpperCase()}`;
