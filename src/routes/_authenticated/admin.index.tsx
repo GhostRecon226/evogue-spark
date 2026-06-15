@@ -81,11 +81,14 @@ function monthLabel(d: Date) {
 
 function AdminOverview() {
   const [loading, setLoading] = useState(true);
+  const [currency, setCurrency] = useState<"USD" | "NGN">("USD");
+  const [usdToNgn, setUsdToNgn] = useState<number>(1600);
   const [stats, setStats] = useState({
     students: 0,
-    enrollments: 0,
-    revenue: 0,
-    pendingCapstones: 0,
+    activeEnrollments: 0,
+    revenueUSD: 0,
+    revenueNGN: 0,
+    pendingApplications: 0,
   });
   const [recent, setRecent] = useState<RecentRow[]>([]);
   const [pendingCapstones, setPendingCapstones] = useState<CapstoneRow[]>([]);
@@ -94,7 +97,7 @@ function AdminOverview() {
     { month: string; enrollments: number; revenue: number }[]
   >([]);
   const [activity, setActivity] = useState<ActivityItem[]>([]);
-  const [trends, setTrends] = useState({ students: 0, enrollments: 0, revenue: 0, capstones: 0 });
+  const [trends, setTrends] = useState({ students: 0, enrollments: 0, revenue: 0, applications: 0 });
 
   useEffect(() => {
     let cancelled = false;
