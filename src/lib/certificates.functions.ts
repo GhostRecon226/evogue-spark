@@ -82,8 +82,11 @@ export const generateCertificate = createServerFn({ method: "POST" })
     const certId = cert.cert_id || `CERT-${cert.id.replace(/-/g, "").slice(0, 8).toUpperCase()}`;
 
     // Build PDF
-    const { PDFDocument, StandardFonts, rgb } = await import("pdf-lib");
+    const { PDFDocument, rgb } = await import("pdf-lib");
+    const fontkit = (await import("@pdf-lib/fontkit")).default;
+    const fonts = await import("./cert-fonts.server");
     const pdfDoc = await PDFDocument.create();
+    pdfDoc.registerFontkit(fontkit);
     const page = pdfDoc.addPage([842, 595]); // A4 landscape pt
     const W = 842;
     const H = 595;
@@ -92,11 +95,12 @@ export const generateCertificate = createServerFn({ method: "POST" })
     const MINT = rgb(0x00 / 255, 0xf5 / 255, 0xa0 / 255);
     const GREY = rgb(0.42, 0.42, 0.42);
 
-    const serif = await pdfDoc.embedFont(StandardFonts.TimesRoman);
-    const serifBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
-    const sans = await pdfDoc.embedFont(StandardFonts.Helvetica);
-    const sansBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-    const sansItalic = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
+    // Brand fonts: Fraunces (serif) and DM Sans (sans).
+    const serif = await pdfDoc.embedFont(fonts.decodeFont(fonts.frRegularB64));
+    const serifBold = await pdfDoc.embedFont(fonts.decodeFont(fonts.frBoldB64));
+    const sans = await pdfDoc.embedFont(fonts.decodeFont(fonts.dmRegularB64));
+    const sansBold = await pdfDoc.embedFont(fonts.decodeFont(fonts.dmBoldB64));
+    const sansItalic = await pdfDoc.embedFont(fonts.decodeFont(fonts.dmItalicB64));
 
     // White background (default).
     // Outer border 8px + inner border for double frame
