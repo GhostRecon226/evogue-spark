@@ -375,7 +375,7 @@ function AdminCapstones() {
                     size="sm"
                     variant="outline"
                     className="rounded-full"
-                    onClick={() => rejectWithReason(r.id)}
+                    onClick={() => openReject(r)}
                   >
                     Reject
                   </Button>
