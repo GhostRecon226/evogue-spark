@@ -60,6 +60,7 @@ const statusStyles: Record<Row["status"], string> = {
 
 function AdminCapstones() {
   const { isAdmin, loading: authLoading } = useAuth();
+  const generateCert = useServerFn(generateCertificate);
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [courseFilter, setCourseFilter] = useState("all");
