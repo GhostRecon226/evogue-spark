@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react'
 import { template as enrollmentWelcomeTemplate } from './enrollment-welcome'
 import { template as enrollmentAdminTemplate } from './enrollment-admin-notification'
+import { template as certificateReadyTemplate } from './certificate-ready'
 
 export interface TemplateEntry {
   component: ComponentType<any>
