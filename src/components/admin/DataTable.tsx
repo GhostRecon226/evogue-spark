@@ -74,7 +74,9 @@ export function DataTable<T>({
 
   return (
     <div className="rounded-2xl border border-border bg-background overflow-hidden">
+      <p className="md:hidden px-4 pt-2 pb-1 text-[11px] text-foreground/50 italic">Swipe horizontally to see more →</p>
       <div className="overflow-x-auto -webkit-overflow-scrolling-touch">
+
         <table className="w-full text-sm min-w-[640px]">
           <thead className="bg-mint-tint/60 text-forest">
             <tr>

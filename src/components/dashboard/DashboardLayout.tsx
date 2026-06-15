@@ -749,7 +749,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
             style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
             aria-label="Primary"
           >
-            <ul className="grid grid-cols-4">
+            <ul className="grid grid-cols-5">
               {studentItems.map((it) => {
                 const active = it.to === "/dashboard" ? path === it.to : path.startsWith(it.to);
                 return (

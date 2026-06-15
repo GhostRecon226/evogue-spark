@@ -431,7 +431,7 @@ function AdminOverview() {
       </div>
 
       {/* Row 1: stat cards (always rendered; skeleton while loading to prevent layout jump) */}
-      <div className="mt-6 grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-6 grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
         {cards.map((c) => {
           const up = c.trend >= 0;
           return (
