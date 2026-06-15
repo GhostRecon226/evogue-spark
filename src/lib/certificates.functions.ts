@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { getRequestHeader } from "@tanstack/react-start/server";
 
 export interface GenerateCertificateInput {
   studentId: string;
@@ -82,8 +83,11 @@ export const generateCertificate = createServerFn({ method: "POST" })
     const certId = cert.cert_id || `CERT-${cert.id.replace(/-/g, "").slice(0, 8).toUpperCase()}`;
 
     // Build PDF
-    const { PDFDocument, StandardFonts, rgb } = await import("pdf-lib");
+    const { PDFDocument, rgb } = await import("pdf-lib");
+    const fontkit = (await import("@pdf-lib/fontkit")).default;
+    const fonts = await import("./cert-fonts.server");
     const pdfDoc = await PDFDocument.create();
+    pdfDoc.registerFontkit(fontkit);
     const page = pdfDoc.addPage([842, 595]); // A4 landscape pt
     const W = 842;
     const H = 595;
@@ -92,11 +96,12 @@ export const generateCertificate = createServerFn({ method: "POST" })
     const MINT = rgb(0x00 / 255, 0xf5 / 255, 0xa0 / 255);
     const GREY = rgb(0.42, 0.42, 0.42);
 
-    const serif = await pdfDoc.embedFont(StandardFonts.TimesRoman);
-    const serifBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
-    const sans = await pdfDoc.embedFont(StandardFonts.Helvetica);
-    const sansBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-    const sansItalic = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
+    // Brand fonts: Fraunces (serif) and DM Sans (sans).
+    const serif = await pdfDoc.embedFont(fonts.decodeFont(fonts.frRegularB64));
+    const serifBold = await pdfDoc.embedFont(fonts.decodeFont(fonts.frBoldB64));
+    const sans = await pdfDoc.embedFont(fonts.decodeFont(fonts.dmRegularB64));
+    const sansBold = await pdfDoc.embedFont(fonts.decodeFont(fonts.dmBoldB64));
+    const sansItalic = await pdfDoc.embedFont(fonts.decodeFont(fonts.dmItalicB64));
 
     // White background (default).
     // Outer border 8px + inner border for double frame
@@ -251,6 +256,50 @@ export const generateCertificate = createServerFn({ method: "POST" })
     const { data: signed } = await supabaseAdmin.storage
       .from("certificates")
       .createSignedUrl(storagePath, 60 * 60 * 24 * 7);
+
+    // Fire-and-forget certificate-ready email. Failures are logged, never thrown.
+    try {
+      const { data: userRes } = await supabaseAdmin.auth.admin.getUserById(studentId);
+      const recipient = userRes?.user?.email;
+      if (recipient) {
+        const host =
+          getRequestHeader("x-forwarded-host") ??
+          getRequestHeader("host") ??
+          "localhost";
+        const proto = getRequestHeader("x-forwarded-proto") ?? "https";
+        const authHeader = getRequestHeader("authorization") ?? "";
+        const dashboardUrl = `${proto}://${host}/dashboard/certificate`;
+        const body = {
+          templateName: "certificate-ready",
+          recipientEmail: recipient,
+          idempotencyKey: `cert-ready-${cert.id}`,
+          templateData: {
+            fullName: studentName,
+            courseName: courseTitle,
+            certId,
+            issuedAt: new Date(issuedAt).toLocaleDateString(undefined, {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            }),
+            certificateUrl: dashboardUrl,
+          },
+        };
+        const res = await fetch(`${proto}://${host}/lovable/email/transactional/send`, {
+          method: "POST",
+          headers: { "content-type": "application/json", authorization: authHeader },
+          body: JSON.stringify(body),
+        });
+        if (!res.ok) {
+          console.error("[certificate-ready] email send failed", {
+            status: res.status,
+            text: await res.text().catch(() => ""),
+          });
+        }
+      }
+    } catch (err) {
+      console.error("[certificate-ready] email dispatch error", err);
+    }
 
     return {
       certificateId: cert.id,
