@@ -152,18 +152,21 @@ function CouponsInner() {
       supabase
         .from("coupon_codes")
         .select(
-          "id, code, discount_type, discount_value, usage_limit, times_used, expiry_date, active, description, created_at",
+          "id, code, discount_type, discount_value, usage_limit, times_used, expiry_date, active, description, applicable_courses, created_at",
         )
         .order("created_at", { ascending: false }),
       supabase
         .from("coupon_redemptions")
-        .select("id, student_id, coupon_code, discount_type, discount_value, applied_at")
+        .select(
+          "id, student_id, coupon_code, discount_type, discount_value, applied_at, student_email, course_slug, original_amount, final_amount",
+        )
         .order("applied_at", { ascending: false }),
     ]);
 
     const couponList = (c ?? []).map((row) => ({
       ...row,
       discount_value: Number(row.discount_value ?? 0),
+      applicable_courses: row.applicable_courses ?? null,
     })) as Coupon[];
 
     const studentIds = Array.from(new Set((r ?? []).map((x) => x.student_id)));
@@ -197,6 +200,10 @@ function CouponsInner() {
         applied_at: row.applied_at,
         student_name: p?.name ?? "Unknown",
         student_reg: p?.reg ?? null,
+        student_email: row.student_email ?? null,
+        course_slug: row.course_slug ?? null,
+        original_amount: row.original_amount != null ? Number(row.original_amount) : null,
+        final_amount: row.final_amount != null ? Number(row.final_amount) : null,
         enrolment_status: enrolled ? "Enrolled" : "Pending",
       };
     });
