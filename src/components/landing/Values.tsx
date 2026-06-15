@@ -1,7 +1,10 @@
 import { Hammer, Globe2, TrendingUp } from "lucide-react";
-import collab from "@/assets/card-collaborative.jpg";
-import handson from "@/assets/card-handson.jpg";
-import mentor from "@/assets/card-mentorship.jpg";
+import collabAsset from "@/assets/card-collaborative.jpg.asset.json";
+import handsonAsset from "@/assets/card-handson.jpg.asset.json";
+import mentorAsset from "@/assets/card-mentorship.jpg.asset.json";
+const collab = collabAsset.url;
+const handson = handsonAsset.url;
+const mentor = mentorAsset.url;
 
 const features = [
   {

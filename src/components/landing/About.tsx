@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import aboutImg from "@/assets/about-collaboration.jpg";
+import aboutAsset from "@/assets/about-collaboration.jpg.asset.json";
+const aboutImg = aboutAsset.url;
 
 export function About() {
   return (
