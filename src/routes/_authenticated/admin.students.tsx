@@ -437,6 +437,41 @@ function StudentProfileDialog({
     }
   };
 
+  const hasConfirmedEnrollment = !!data?.enrollments?.some(
+    (en: any) => en.payment_status === "paid",
+  );
+
+  const handleResendWelcome = async () => {
+    if (!data?.profile) return;
+    const tempPassword = window.prompt(
+      "Enter a temporary password to include in the welcome email (the student can change it after signing in):",
+    );
+    if (!tempPassword) return;
+    const paid = data.enrollments.find((en: any) => en.payment_status === "paid");
+    setResending(true);
+    try {
+      await resendFn({
+        data: {
+          fullName: data.profile.full_name ?? "",
+          studentEmail: data.profile.email ?? "",
+          whatsapp: data.profile.whatsapp_number ?? "",
+          country: "",
+          studentId: data.profile.registration_number ?? "",
+          tempPassword,
+          courseName: paid?.courses?.title ?? "your course",
+          amount: 0,
+          currency: "USD",
+          paymentReference: `resend-${Date.now()}`,
+        },
+      });
+      toast.success("Welcome email queued.");
+    } catch (err: any) {
+      toast.error(err?.message ?? "Failed to resend");
+    } finally {
+      setResending(false);
+    }
+  };
+
   return (
     <Dialog open={!!studentId} onOpenChange={(v) => !v && onClose()}>
       <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
