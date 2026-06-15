@@ -275,6 +275,7 @@ function CouponsInner() {
       expiry_date: form.expiry_date ? format(form.expiry_date, "yyyy-MM-dd") : null,
       active: form.active,
       description: form.description.trim() || null,
+      applicable_courses: form.applicable_courses.length > 0 ? form.applicable_courses : null,
     });
     setSubmitting(false);
     if (error) {
@@ -302,6 +303,13 @@ function CouponsInner() {
 
   const handleDelete = async () => {
     if (!toDelete) return;
+    if ((toDelete.times_used ?? 0) > 0) {
+      toast.error(
+        "This code has been used and cannot be deleted. You can deactivate it instead.",
+      );
+      setToDelete(null);
+      return;
+    }
     const { error } = await supabase.from("coupon_codes").delete().eq("id", toDelete.id);
     if (error) {
       toast.error("Could not delete coupon.");
@@ -322,6 +330,7 @@ function CouponsInner() {
       expiry_date: c.expiry_date ? new Date(c.expiry_date) : undefined,
       active: c.active,
       description: c.description ?? "",
+      applicable_courses: c.applicable_courses ?? [],
     });
   };
 
@@ -344,6 +353,8 @@ function CouponsInner() {
         expiry_date: editForm.expiry_date ? format(editForm.expiry_date, "yyyy-MM-dd") : null,
         active: editForm.active,
         description: editForm.description.trim() || null,
+        applicable_courses:
+          editForm.applicable_courses.length > 0 ? editForm.applicable_courses : null,
       })
       .eq("id", editing.id);
     if (error) {
