@@ -168,11 +168,11 @@ function CertificatePage() {
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3">
               <Button
                 onClick={handleDownload}
                 disabled={downloading || !cert.certificate_url}
-                className="rounded-full bg-forest text-mint hover:bg-forest/90"
+                className="w-full sm:w-auto rounded-full bg-forest text-mint hover:bg-forest/90"
               >
                 {downloading ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -182,10 +182,11 @@ function CertificatePage() {
                   </>
                 )}
               </Button>
-              <Button variant="outline" className="rounded-full" onClick={handleShare}>
+              <Button variant="outline" className="w-full sm:w-auto rounded-full" onClick={handleShare}>
                 <Share2 className="h-4 w-4 mr-2" /> Share on LinkedIn
               </Button>
             </div>
+
 
             <p className="text-xs text-foreground/55">
               Certificate ID:{" "}
