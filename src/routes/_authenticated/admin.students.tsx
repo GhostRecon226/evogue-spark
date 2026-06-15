@@ -496,6 +496,23 @@ function StudentProfileDialog({
               />
             </div>
 
+            {hasConfirmedEnrollment && (
+              <div className="flex justify-end">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="rounded-full"
+                  disabled={resending}
+                  onClick={handleResendWelcome}
+                >
+                  {resending ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" />
+                  ) : null}
+                  Resend Welcome Email
+                </Button>
+              </div>
+            )}
+
             <div>
               <h3 className="font-display font-bold text-forest mb-2">
                 Payment Details ({data.enrollments.length})
