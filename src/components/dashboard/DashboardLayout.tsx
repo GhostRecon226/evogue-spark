@@ -51,6 +51,7 @@ const studentItems: NavItem[] = [
 const adminItems: NavItem[] = [
   { label: "Overview", to: "/admin", icon: Shield },
   { label: "Students", to: "/admin/students", icon: Users },
+  { label: "Applications", to: "/admin/applications", icon: ClipboardCheck },
   { label: "Courses", to: "/admin/courses", icon: BookOpen },
   { label: "Cohorts", to: "/admin/cohorts", icon: CalendarDays },
   { label: "Lessons", to: "/admin/lessons", icon: PlayCircle },

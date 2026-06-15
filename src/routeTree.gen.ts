@@ -56,6 +56,7 @@ import { Route as AuthenticatedAdminCouponsRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminCohortsRouteImport } from './routes/_authenticated/admin.cohorts'
 import { Route as AuthenticatedAdminCertificatesRouteImport } from './routes/_authenticated/admin.certificates'
 import { Route as AuthenticatedAdminCapstonesRouteImport } from './routes/_authenticated/admin.capstones'
+import { Route as AuthenticatedAdminApplicationsRouteImport } from './routes/_authenticated/admin.applications'
 import { Route as AuthenticatedAdminAnnouncementsRouteImport } from './routes/_authenticated/admin.announcements'
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
@@ -320,6 +321,12 @@ const AuthenticatedAdminCapstonesRoute =
     path: '/admin/capstones',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAdminApplicationsRoute =
+  AuthenticatedAdminApplicationsRouteImport.update({
+    id: '/admin/applications',
+    path: '/admin/applications',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAdminAnnouncementsRoute =
   AuthenticatedAdminAnnouncementsRouteImport.update({
     id: '/admin/announcements',
@@ -377,6 +384,7 @@ export interface FileRoutesByFullPath {
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/courses/': typeof CoursesIndexRoute
   '/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
+  '/admin/applications': typeof AuthenticatedAdminApplicationsRoute
   '/admin/capstones': typeof AuthenticatedAdminCapstonesRoute
   '/admin/certificates': typeof AuthenticatedAdminCertificatesRoute
   '/admin/cohorts': typeof AuthenticatedAdminCohortsRoute
@@ -429,6 +437,7 @@ export interface FileRoutesByTo {
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/courses': typeof CoursesIndexRoute
   '/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
+  '/admin/applications': typeof AuthenticatedAdminApplicationsRoute
   '/admin/capstones': typeof AuthenticatedAdminCapstonesRoute
   '/admin/certificates': typeof AuthenticatedAdminCertificatesRoute
   '/admin/cohorts': typeof AuthenticatedAdminCohortsRoute
@@ -484,6 +493,7 @@ export interface FileRoutesById {
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/courses/': typeof CoursesIndexRoute
   '/_authenticated/admin/announcements': typeof AuthenticatedAdminAnnouncementsRoute
+  '/_authenticated/admin/applications': typeof AuthenticatedAdminApplicationsRoute
   '/_authenticated/admin/capstones': typeof AuthenticatedAdminCapstonesRoute
   '/_authenticated/admin/certificates': typeof AuthenticatedAdminCertificatesRoute
   '/_authenticated/admin/cohorts': typeof AuthenticatedAdminCohortsRoute
@@ -539,6 +549,7 @@ export interface FileRouteTypes {
     | '/email/unsubscribe'
     | '/courses/'
     | '/admin/announcements'
+    | '/admin/applications'
     | '/admin/capstones'
     | '/admin/certificates'
     | '/admin/cohorts'
@@ -591,6 +602,7 @@ export interface FileRouteTypes {
     | '/email/unsubscribe'
     | '/courses'
     | '/admin/announcements'
+    | '/admin/applications'
     | '/admin/capstones'
     | '/admin/certificates'
     | '/admin/cohorts'
@@ -645,6 +657,7 @@ export interface FileRouteTypes {
     | '/email/unsubscribe'
     | '/courses/'
     | '/_authenticated/admin/announcements'
+    | '/_authenticated/admin/applications'
     | '/_authenticated/admin/capstones'
     | '/_authenticated/admin/certificates'
     | '/_authenticated/admin/cohorts'
@@ -1035,6 +1048,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminCapstonesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/applications': {
+      id: '/_authenticated/admin/applications'
+      path: '/admin/applications'
+      fullPath: '/admin/applications'
+      preLoaderRoute: typeof AuthenticatedAdminApplicationsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/admin/announcements': {
       id: '/_authenticated/admin/announcements'
       path: '/admin/announcements'
@@ -1113,6 +1133,7 @@ const AuthenticatedDashboardRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRouteWithChildren
   AuthenticatedAdminAnnouncementsRoute: typeof AuthenticatedAdminAnnouncementsRoute
+  AuthenticatedAdminApplicationsRoute: typeof AuthenticatedAdminApplicationsRoute
   AuthenticatedAdminCapstonesRoute: typeof AuthenticatedAdminCapstonesRoute
   AuthenticatedAdminCertificatesRoute: typeof AuthenticatedAdminCertificatesRoute
   AuthenticatedAdminCohortsRoute: typeof AuthenticatedAdminCohortsRoute
@@ -1135,6 +1156,7 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRouteWithChildren,
   AuthenticatedAdminAnnouncementsRoute: AuthenticatedAdminAnnouncementsRoute,
+  AuthenticatedAdminApplicationsRoute: AuthenticatedAdminApplicationsRoute,
   AuthenticatedAdminCapstonesRoute: AuthenticatedAdminCapstonesRoute,
   AuthenticatedAdminCertificatesRoute: AuthenticatedAdminCertificatesRoute,
   AuthenticatedAdminCohortsRoute: AuthenticatedAdminCohortsRoute,
