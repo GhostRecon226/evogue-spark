@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as ScholarshipRouteImport } from './routes/scholarship'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as OrderSummaryRouteImport } from './routes/order-summary'
@@ -61,6 +62,11 @@ import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/l
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as AuthenticatedDashboardCoursesSlugRouteImport } from './routes/_authenticated/dashboard.courses.$slug'
 
+const UnsubscribeRoute = UnsubscribeRouteImport.update({
+  id: '/unsubscribe',
+  path: '/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ScholarshipRoute = ScholarshipRouteImport.update({
   id: '/scholarship',
   path: '/scholarship',
@@ -357,6 +363,7 @@ export interface FileRoutesByFullPath {
   '/order-summary': typeof OrderSummaryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/scholarship': typeof ScholarshipRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/courses/ai-for-professionals': typeof CoursesAiForProfessionalsRoute
   '/courses/cybersecurity': typeof CoursesCybersecurityRoute
@@ -409,6 +416,7 @@ export interface FileRoutesByTo {
   '/order-summary': typeof OrderSummaryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/scholarship': typeof ScholarshipRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/courses/ai-for-professionals': typeof CoursesAiForProfessionalsRoute
   '/courses/cybersecurity': typeof CoursesCybersecurityRoute
   '/courses/data-analysis': typeof CoursesDataAnalysisRoute
@@ -462,6 +470,7 @@ export interface FileRoutesById {
   '/order-summary': typeof OrderSummaryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/scholarship': typeof ScholarshipRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/courses/ai-for-professionals': typeof CoursesAiForProfessionalsRoute
   '/courses/cybersecurity': typeof CoursesCybersecurityRoute
@@ -516,6 +525,7 @@ export interface FileRouteTypes {
     | '/order-summary'
     | '/reset-password'
     | '/scholarship'
+    | '/unsubscribe'
     | '/dashboard'
     | '/courses/ai-for-professionals'
     | '/courses/cybersecurity'
@@ -568,6 +578,7 @@ export interface FileRouteTypes {
     | '/order-summary'
     | '/reset-password'
     | '/scholarship'
+    | '/unsubscribe'
     | '/courses/ai-for-professionals'
     | '/courses/cybersecurity'
     | '/courses/data-analysis'
@@ -620,6 +631,7 @@ export interface FileRouteTypes {
     | '/order-summary'
     | '/reset-password'
     | '/scholarship'
+    | '/unsubscribe'
     | '/_authenticated/dashboard'
     | '/courses/ai-for-professionals'
     | '/courses/cybersecurity'
@@ -674,6 +686,7 @@ export interface RootRouteChildren {
   OrderSummaryRoute: typeof OrderSummaryRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ScholarshipRoute: typeof ScholarshipRoute
+  UnsubscribeRoute: typeof UnsubscribeRoute
   CoursesAiForProfessionalsRoute: typeof CoursesAiForProfessionalsRoute
   CoursesCybersecurityRoute: typeof CoursesCybersecurityRoute
   CoursesDataAnalysisRoute: typeof CoursesDataAnalysisRoute
@@ -693,6 +706,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/unsubscribe': {
+      id: '/unsubscribe'
+      path: '/unsubscribe'
+      fullPath: '/unsubscribe'
+      preLoaderRoute: typeof UnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/scholarship': {
       id: '/scholarship'
       path: '/scholarship'
@@ -1151,6 +1171,7 @@ const rootRouteChildren: RootRouteChildren = {
   OrderSummaryRoute: OrderSummaryRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ScholarshipRoute: ScholarshipRoute,
+  UnsubscribeRoute: UnsubscribeRoute,
   CoursesAiForProfessionalsRoute: CoursesAiForProfessionalsRoute,
   CoursesCybersecurityRoute: CoursesCybersecurityRoute,
   CoursesDataAnalysisRoute: CoursesDataAnalysisRoute,
