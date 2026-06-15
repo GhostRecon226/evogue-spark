@@ -18,6 +18,8 @@ import {
   BarChart3,
   Check,
   X,
+  Wallet,
+  Lock,
 } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
