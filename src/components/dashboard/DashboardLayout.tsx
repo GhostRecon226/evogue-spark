@@ -204,43 +204,89 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
       ]
     : [];
 
-  const [placeholderNotifications, setPlaceholderNotifications] = useState<NotifItem[]>([
-    {
-      id: "n1",
-      type: "class",
-      title: "Class reminder",
-      body: "Your next live class is tomorrow at 11:00am",
-      time: "2h ago",
-      read: false,
-    },
-    {
-      id: "n2",
-      type: "announcement",
-      title: "New announcement",
-      body: "New announcement from your instructor",
-      time: "Yesterday",
-      read: false,
-    },
-    {
-      id: "n3",
-      type: "certificate",
-      title: "Certificate ready",
-      body: "Your certificate is ready to download",
-      time: "3 days ago",
-      read: false,
-    },
-  ]);
-  const notifications: NotifItem[] = isAdmin ? adminNotifications : placeholderNotifications;
-  const markAllRead = () => {
+  // Students: pull real notifications from the notifications table (realtime).
+  const [studentNotifications, setStudentNotifications] = useState<NotifItem[]>([]);
+  const isStudentUser = !isAdmin && !isInstructor;
+
+  const fmtRelative = (iso: string) => {
+    const then = new Date(iso).getTime();
+    const diff = Math.max(0, Date.now() - then);
+    const m = Math.floor(diff / 60000);
+    if (m < 1) return "Just now";
+    if (m < 60) return `${m}m ago`;
+    const h = Math.floor(m / 60);
+    if (h < 24) return `${h}h ago`;
+    const d = Math.floor(h / 24);
+    if (d < 7) return `${d}d ago`;
+    return new Date(iso).toLocaleDateString();
+  };
+
+  const loadStudentNotifications = async (uid: string) => {
+    const { data } = await supabase
+      .from("notifications")
+      .select("id, title, message, is_read, created_at, link")
+      .eq("student_id", uid)
+      .order("created_at", { ascending: false })
+      .limit(20);
+    setStudentNotifications(
+      (data ?? []).map((n: any) => ({
+        id: n.id as string,
+        type: "announcement" as const,
+        title: n.title as string,
+        body: n.message as string,
+        time: fmtRelative(n.created_at as string),
+        read: Boolean(n.is_read),
+        to: (n.link as string | null) ?? undefined,
+      })),
+    );
+  };
+
+  useEffect(() => {
+    if (!isStudentUser || !user?.id) return;
+    void loadStudentNotifications(user.id);
+    const ch = supabase
+      .channel(`student-notif-bell-${user.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "notifications",
+          filter: `student_id=eq.${user.id}`,
+        },
+        () => void loadStudentNotifications(user.id),
+      )
+      .subscribe();
+    return () => {
+      void supabase.removeChannel(ch);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isStudentUser, user?.id]);
+
+  const notifications: NotifItem[] = isAdmin
+    ? adminNotifications
+    : isStudentUser
+      ? studentNotifications
+      : [];
+
+  const markAllRead = async () => {
     if (isAdmin) {
       writeLastViewed("admin-notif-apps", Date.now());
       writeLastViewed("admin-notif-pays", Date.now());
       setAdminCounts({ applications: 0, payments: 0 });
-    } else {
-      setPlaceholderNotifications((arr) => arr.map((n) => ({ ...n, read: true })));
+      return;
+    }
+    if (isStudentUser && user?.id) {
+      const unreadIds = studentNotifications.filter((n) => !n.read).map((n) => n.id);
+      if (unreadIds.length === 0) return;
+      setStudentNotifications((arr) => arr.map((n) => ({ ...n, read: true })));
+      await supabase
+        .from("notifications")
+        .update({ is_read: true })
+        .in("id", unreadIds);
     }
   };
-  const markOneRead = (id: string) => {
+  const markOneRead = async (id: string) => {
     if (isAdmin) {
       if (id === "admin-apps") {
         writeLastViewed("admin-notif-apps", Date.now());
@@ -249,10 +295,13 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         writeLastViewed("admin-notif-pays", Date.now());
         setAdminCounts((c) => ({ ...c, payments: 0 }));
       }
-    } else {
-      setPlaceholderNotifications((arr) =>
+      return;
+    }
+    if (isStudentUser) {
+      setStudentNotifications((arr) =>
         arr.map((x) => (x.id === id ? { ...x, read: true } : x)),
       );
+      await supabase.from("notifications").update({ is_read: true }).eq("id", id);
     }
   };
   const unreadCount = notifications.filter((n) => !n.read).length;

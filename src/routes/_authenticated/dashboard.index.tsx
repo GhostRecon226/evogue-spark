@@ -18,6 +18,8 @@ import {
   BarChart3,
   Check,
   X,
+  Wallet,
+  Lock,
 } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
@@ -43,6 +45,22 @@ type CapstoneDetail = {
   instructor_recommendation: boolean | null;
   instructor_note: string | null;
   admin_note?: string | null;
+  file_url?: string | null;
+  notes?: string | null;
+};
+
+type PaymentRow = {
+  id: string;
+  amount: number;
+  original_amount: number | null;
+  currency: string;
+  payment_status: "paid" | "pending" | "unpaid" | "failed" | string;
+  payment_method: string | null;
+  flutterwave_tx_id: string | null;
+  paid_at: string | null;
+  discount_applied: number;
+  coupon: { code: string; discount_type: string; discount_value: number } | null;
+  course_title: string;
 };
 
 export const Route = createFileRoute("/_authenticated/dashboard/")({
@@ -119,6 +137,15 @@ function DashboardHome() {
   >([]);
   const [capstoneDetail, setCapstoneDetail] = useState<CapstoneDetail | null>(null);
   const [capstoneOpen, setCapstoneOpen] = useState(false);
+  const [payments, setPayments] = useState<PaymentRow[]>([]);
+  const [enrolledCourse, setEnrolledCourse] = useState<{
+    id: string;
+    title: string;
+    duration: string | null;
+    level: string | null;
+    slug: string;
+    enrolled_at: string;
+  } | null>(null);
 
   useEffect(() => {
     if (authLoading || !user || isAdmin || isInstructor) return;
@@ -130,11 +157,12 @@ function DashboardHome() {
         { count: certCount },
         { count: completedLessons },
         { data: capstoneRows },
+        { data: paymentRows },
       ] = await Promise.all([
         supabase
           .from("enrollments")
           .select(
-            "course_id, cohort_id, enrolled_at, courses(slug, title, description, cover_image_url, category)",
+            "course_id, cohort_id, enrolled_at, courses(slug, title, description, cover_image_url, category, duration, level)",
           )
           .eq("student_id", user.id)
           .order("enrolled_at", { ascending: false }),
@@ -149,10 +177,19 @@ function DashboardHome() {
           .eq("completed", true),
         supabase
           .from("capstone_submissions")
-          .select("status, submitted_at, reviewed_at, instructor_recommendation, instructor_note")
+          .select(
+            "status, submitted_at, reviewed_at, instructor_recommendation, instructor_note, file_url, notes",
+          )
           .eq("student_id", user.id)
           .order("submitted_at", { ascending: false })
           .limit(1),
+        supabase
+          .from("payments")
+          .select(
+            "id, amount, original_amount, currency, payment_status, payment_method, flutterwave_tx_id, paid_at, discount_applied, courses:course_id(title), coupon_codes:coupon_id(code, discount_type, discount_value)",
+          )
+          .eq("student_id", user.id)
+          .order("created_at", { ascending: false }),
       ]);
 
       const enrolled = enrollments ?? [];
@@ -244,6 +281,28 @@ function DashboardHome() {
         ? "not_started"
         : ((latestCap.status as "pending" | "approved" | "rejected" | "recommended") ?? "pending");
 
+      const mappedPayments: PaymentRow[] = (paymentRows ?? []).map((p: any) => ({
+        id: p.id,
+        amount: Number(p.amount) || 0,
+        original_amount: p.original_amount != null ? Number(p.original_amount) : null,
+        currency: p.currency || "USD",
+        payment_status: p.payment_status,
+        payment_method: p.payment_method,
+        flutterwave_tx_id: p.flutterwave_tx_id,
+        paid_at: p.paid_at,
+        discount_applied: Number(p.discount_applied) || 0,
+        course_title: p.courses?.title ?? "Course",
+        coupon: p.coupon_codes
+          ? {
+              code: p.coupon_codes.code,
+              discount_type: p.coupon_codes.discount_type,
+              discount_value: Number(p.coupon_codes.discount_value) || 0,
+            }
+          : null,
+      }));
+      const firstEnrolled = enrolled[0];
+      const firstCourse = firstEnrolled?.courses as any;
+
       if (!cancelled) {
         setStats({
           enrolled: enrolled.length,
@@ -256,6 +315,19 @@ function DashboardHome() {
         setAnnouncements(annRows);
         setUpcoming(nextLesson);
         setProgressList(perCourse);
+        setPayments(mappedPayments);
+        setEnrolledCourse(
+          firstEnrolled && firstCourse
+            ? {
+                id: firstEnrolled.course_id,
+                title: firstCourse.title,
+                duration: firstCourse.duration ?? null,
+                level: firstCourse.level ?? null,
+                slug: firstCourse.slug,
+                enrolled_at: firstEnrolled.enrolled_at,
+              }
+            : null,
+        );
         setLoading(false);
       }
     })();
@@ -274,10 +346,42 @@ function DashboardHome() {
       : capstoneStatus === "recommended"
         ? "Recommended"
         : capstoneStatus === "pending"
-          ? "Submitted"
+          ? "Pending Review"
           : capstoneStatus === "rejected"
-            ? "Revise"
-            : "Not Started";
+            ? "Rejected"
+            : "Not Submitted";
+
+  // Most recent payment that matches the enrolled course (else fall back to most recent payment).
+  const latestPayment: PaymentRow | null =
+    payments.find((p) => enrolledCourse && p.course_title === enrolledCourse.title) ??
+    payments[0] ??
+    null;
+  const paymentStatusKey =
+    latestPayment?.payment_status === "paid"
+      ? "paid"
+      : latestPayment?.payment_status === "pending"
+        ? "pending"
+        : "unpaid";
+  const paymentLabel =
+    paymentStatusKey === "paid" ? "Paid" : paymentStatusKey === "pending" ? "Pending" : "Unpaid";
+  const paymentValueClass =
+    paymentStatusKey === "paid"
+      ? "text-[#1A8C4E] text-base"
+      : paymentStatusKey === "pending"
+        ? "text-[#B45309] text-base"
+        : "text-[#B91C1C] text-base";
+  const capstoneValueClass =
+    capstoneStatus === "approved"
+      ? "text-[#1A8C4E] text-base"
+      : capstoneStatus === "rejected"
+        ? "text-[#B91C1C] text-base"
+        : capstoneStatus === "pending" || capstoneStatus === "recommended"
+          ? "text-[#B45309] text-base"
+          : "text-foreground/55 text-base";
+  const courseProgressPct = next?.progress ?? 0;
+  const courseProgressValue = enrolledCourse
+    ? `${courseProgressPct}%`
+    : "—";
 
   return (
     <DashboardLayout>
@@ -301,40 +405,66 @@ function DashboardHome() {
       <div className="mt-8 grid gap-4 sm:gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <Stat
           icon={BookOpen}
-          label="Enrolled Courses"
-          value={loading ? "…" : String(stats.enrolled)}
+          label="My Course"
+          value={loading ? "…" : (enrolledCourse?.title ?? "No course")}
           iconBg="bg-[#00F5A0]"
           iconColor="text-[#0A2E1A]"
           accent="border-t-4 border-[#00F5A0]"
+          valueClassName="text-base"
         />
         <Stat
-          icon={CheckCircle2}
-          label="Lessons Completed"
-          value={loading ? "…" : String(stats.completedLessons)}
-          iconBg="bg-[#1A8C4E]"
+          icon={Wallet}
+          label="Payment Status"
+          value={loading ? "…" : paymentLabel}
+          iconBg={
+            paymentStatusKey === "paid"
+              ? "bg-[#1A8C4E]"
+              : paymentStatusKey === "pending"
+                ? "bg-[#F59E0B]"
+                : "bg-[#B91C1C]"
+          }
           iconColor="text-white"
-          accent="border-t-4 border-[#1A8C4E]"
+          accent={
+            paymentStatusKey === "paid"
+              ? "border-t-4 border-[#1A8C4E]"
+              : paymentStatusKey === "pending"
+                ? "border-t-4 border-[#F59E0B]"
+                : "border-t-4 border-[#B91C1C]"
+          }
+          valueClassName={paymentValueClass}
+        />
+        <Stat
+          icon={BarChart3}
+          label="Course Progress"
+          value={loading ? "…" : courseProgressValue}
+          iconBg="bg-[#0A2E1A]"
+          iconColor="text-[#00F5A0]"
+          accent="border-t-4 border-[#0A2E1A]"
+          tooltip={courseProgressPct === 0 ? "Classes not started yet" : undefined}
         />
         <Stat
           icon={Flag}
           label="Capstone Status"
           value={loading ? "…" : capstoneLabel}
-          iconBg="bg-[#F59E0B]"
+          iconBg={
+            capstoneStatus === "approved"
+              ? "bg-[#1A8C4E]"
+              : capstoneStatus === "rejected"
+                ? "bg-[#B91C1C]"
+                : "bg-[#F59E0B]"
+          }
           iconColor="text-white"
-          accent="border-t-4 border-[#F59E0B]"
-          valueClassName="text-base"
+          accent={
+            capstoneStatus === "approved"
+              ? "border-t-4 border-[#1A8C4E]"
+              : capstoneStatus === "rejected"
+                ? "border-t-4 border-[#B91C1C]"
+                : "border-t-4 border-[#F59E0B]"
+          }
+          valueClassName={capstoneValueClass}
           tooltip="Your capstone project is the final assignment for your course. Once submitted and approved by the Evogue Academy team, your certificate will be issued."
           actionLabel="View details"
           onAction={() => setCapstoneOpen(true)}
-        />
-
-        <Stat
-          icon={Award}
-          label="Certificates Earned"
-          value={loading ? "…" : String(stats.certificates)}
-          iconBg="bg-[#0A2E1A]"
-          iconColor="text-[#00F5A0]"
-          accent="border-t-4 border-[#0A2E1A]"
         />
       </div>
 
@@ -462,49 +592,200 @@ function DashboardHome() {
         </div>
       </div>
 
-      {/* Row 3 — My Progress (full width) */}
-      <div className="mt-10">
-        <h2 className="font-display text-xl font-bold text-forest">My Progress</h2>
-        <div className="mt-4 rounded-3xl bg-background border border-border p-6">
-          {loading ? (
-            <div className="grid place-items-center py-8 text-foreground/50">
-              <Loader2 className="h-5 w-5 animate-spin" />
-            </div>
-          ) : progressList.length === 0 ? (
-            <p className="text-sm text-foreground/60 text-center py-6">
-              Enroll in a course to start tracking your progress.
-            </p>
-          ) : (
-            <ul className="space-y-5">
-              {progressList.map((p) => {
-                const pct = p.total > 0 ? Math.round((p.done / p.total) * 100) : 0;
-                return (
-                  <li key={p.slug}>
-                    <div className="flex items-center justify-between gap-3 flex-wrap">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <Link
-                          to="/dashboard/courses/$slug"
-                          params={{ slug: p.slug }}
-                          className="font-display font-bold text-forest hover:underline truncate"
-                        >
-                          {p.title}
-                        </Link>
-                        {p.capstoneReleased && (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-800 border border-amber-300 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider">
-                            <Flag className="h-3 w-3" /> Capstone Available
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-xs text-foreground/55">
-                        {p.done} of {p.total} lessons complete
-                      </p>
-                    </div>
-                    <Progress value={pct} className="mt-2" />
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+      {/* Row 3 — Payment Summary + Capstone Submission (full width) */}
+      <div className="mt-10 grid gap-6 lg:grid-cols-2">
+        {/* Payment Summary */}
+        <div>
+          <h2 className="font-display text-xl font-bold text-forest">Payment Summary</h2>
+          <div className="mt-4 rounded-3xl bg-background border border-border p-6">
+            {loading ? (
+              <div className="grid place-items-center py-8 text-foreground/50">
+                <Loader2 className="h-5 w-5 animate-spin" />
+              </div>
+            ) : !latestPayment ? (
+              <div className="py-6 text-center">
+                <p className="font-display font-bold text-forest">No payment record found.</p>
+                <p className="mt-1 text-sm text-foreground/60">
+                  Contact us at{" "}
+                  <a
+                    href="mailto:hello@evogueacademy.com"
+                    className="text-secondary font-semibold underline"
+                  >
+                    hello@evogueacademy.com
+                  </a>
+                </p>
+              </div>
+            ) : (
+              <dl className="space-y-3 text-sm">
+                <Row label="Course" value={latestPayment.course_title} />
+                <Row
+                  label="Original amount"
+                  value={fmtMoney(
+                    latestPayment.original_amount ?? latestPayment.amount,
+                    latestPayment.currency,
+                  )}
+                />
+                {latestPayment.coupon ? (
+                  <Row
+                    label="Coupon"
+                    value={
+                      <span>
+                        <span className="font-mono text-xs">{latestPayment.coupon.code}</span>{" "}
+                        <span className="text-foreground/60">
+                          (-{fmtMoney(latestPayment.discount_applied, latestPayment.currency)})
+                        </span>
+                      </span>
+                    }
+                  />
+                ) : (
+                  <Row label="Coupon" value={<span className="text-foreground/50">None</span>} />
+                )}
+                <Row
+                  label="Final amount"
+                  value={
+                    <span className="font-bold text-forest">
+                      {fmtMoney(latestPayment.amount, latestPayment.currency)}
+                    </span>
+                  }
+                />
+                <Row
+                  label="Payment method"
+                  value={latestPayment.payment_method ?? "—"}
+                />
+                <Row
+                  label="Reference"
+                  value={
+                    latestPayment.flutterwave_tx_id ? (
+                      <span className="font-mono text-xs">
+                        {latestPayment.flutterwave_tx_id}
+                      </span>
+                    ) : (
+                      "—"
+                    )
+                  }
+                />
+                <Row
+                  label="Date paid"
+                  value={
+                    latestPayment.paid_at
+                      ? new Date(latestPayment.paid_at).toLocaleDateString()
+                      : (
+                          <span className="text-amber-700 font-semibold">Awaiting payment</span>
+                        )
+                  }
+                />
+                <div className="pt-3 mt-3 border-t border-border">
+                  <span
+                    className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-bold capitalize ${
+                      latestPayment.payment_status === "paid"
+                        ? "bg-emerald-100 text-emerald-700"
+                        : latestPayment.payment_status === "pending"
+                          ? "bg-amber-100 text-amber-700"
+                          : "bg-red-100 text-red-700"
+                    }`}
+                  >
+                    {latestPayment.payment_status}
+                  </span>
+                  {latestPayment.payment_status !== "paid" && (
+                    <p className="mt-3 text-xs text-foreground/65">
+                      Installment payment available. Contact us at{" "}
+                      <a
+                        href="mailto:hello@evogueacademy.com"
+                        className="text-secondary font-semibold underline"
+                      >
+                        hello@evogueacademy.com
+                      </a>
+                      .
+                    </p>
+                  )}
+                </div>
+              </dl>
+            )}
+          </div>
+        </div>
+
+        {/* Capstone Submission */}
+        <div>
+          <h2 className="font-display text-xl font-bold text-forest">Capstone Submission</h2>
+          <div className="mt-4 rounded-3xl bg-background border border-border p-6 min-h-[200px]">
+            {loading ? (
+              <div className="grid place-items-center py-8 text-foreground/50">
+                <Loader2 className="h-5 w-5 animate-spin" />
+              </div>
+            ) : !capstoneDetail ? (
+              <div className="py-8 text-center">
+                <div className="mx-auto h-12 w-12 grid place-items-center rounded-full bg-foreground/5 text-foreground/40">
+                  <Lock className="h-5 w-5" />
+                </div>
+                <p className="mt-3 font-display font-bold text-forest">No submission yet</p>
+                <p className="mt-1 text-sm text-foreground/60">
+                  Your capstone project will appear here once your cohort begins.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3 text-sm">
+                <Row
+                  label="Submitted"
+                  value={new Date(capstoneDetail.submitted_at).toLocaleDateString()}
+                />
+                {capstoneDetail.file_url && (
+                  <Row
+                    label="File"
+                    value={
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          if (!capstoneDetail.file_url) return;
+                          const { data } = await supabase.storage
+                            .from("capstones")
+                            .createSignedUrl(capstoneDetail.file_url, 60);
+                          if (data?.signedUrl) window.open(data.signedUrl, "_blank", "noreferrer");
+                        }}
+                        className="text-secondary font-semibold underline"
+                      >
+                        View submission
+                      </button>
+                    }
+                  />
+                )}
+                <div className="pt-3 mt-3 border-t border-border">
+                  <span
+                    className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-bold capitalize ${
+                      capstoneStatus === "approved"
+                        ? "bg-emerald-100 text-emerald-700"
+                        : capstoneStatus === "rejected"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-amber-100 text-amber-700"
+                    }`}
+                  >
+                    {capstoneLabel}
+                  </span>
+                </div>
+                {capstoneStatus === "approved" && (
+                  <div className="mt-3 rounded-xl bg-emerald-50 border border-emerald-200 p-3 flex items-start gap-2">
+                    <CheckCircle className="h-4 w-4 mt-0.5 text-emerald-600 shrink-0" />
+                    <p className="text-sm text-emerald-900">
+                      Your capstone has been approved. Your certificate is on its way.
+                    </p>
+                  </div>
+                )}
+                {capstoneStatus === "rejected" && (
+                  <div className="mt-3 rounded-xl bg-red-50 border border-red-200 p-3">
+                    <p className="text-xs font-bold uppercase tracking-wider text-red-700">
+                      Feedback
+                    </p>
+                    <p className="mt-1 text-sm text-red-900 whitespace-pre-wrap">
+                      {capstoneDetail.notes || capstoneDetail.instructor_note ||
+                        "Your submission needs revision."}
+                    </p>
+                    <p className="mt-2 text-xs text-foreground/65">
+                      Please review the feedback and resubmit.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -933,4 +1214,25 @@ function CapstoneTimelineDialog({
       </DialogContent>
     </Dialog>
   );
+}
+
+function Row({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div className="flex items-start justify-between gap-3">
+      <dt className="text-xs uppercase tracking-wider font-semibold text-foreground/55">{label}</dt>
+      <dd className="text-right text-foreground/85">{value}</dd>
+    </div>
+  );
+}
+
+function fmtMoney(amount: number, currency: string) {
+  try {
+    return new Intl.NumberFormat(currency === "NGN" ? "en-NG" : "en-US", {
+      style: "currency",
+      currency,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  } catch {
+    return `${currency} ${amount.toLocaleString()}`;
+  }
 }
