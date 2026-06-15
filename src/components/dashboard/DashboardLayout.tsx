@@ -549,15 +549,21 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                             ? Video
                             : n.type === "announcement"
                               ? Megaphone
-                              : Award;
+                              : n.type === "application"
+                                ? ClipboardCheck
+                                : n.type === "payment"
+                                  ? Wallet
+                                  : Award;
                         return (
                           <li
                             key={n.id}
-                            onClick={() =>
-                              setNotifications((arr) =>
-                                arr.map((x) => (x.id === n.id ? { ...x, read: true } : x)),
-                              )
-                            }
+                            onClick={() => {
+                              markOneRead(n.id);
+                              if (n.to) {
+                                setNotifOpen(false);
+                                window.location.assign(n.to);
+                              }
+                            }}
                             className="hover:bg-[rgba(10,46,26,0.03)]"
                             style={{
                               padding: "14px 20px",
