@@ -1,71 +1,46 @@
-## Flutterwave Integration Plan
 
-### Prerequisites — needed from you before build
-1. **Three secrets** to add via the secure secrets form (I'll trigger the form once you approve):
-   - `FLUTTERWAVE_PUBLIC_KEY`
-   - `FLUTTERWAVE_SECRET_KEY`
-   - `FLUTTERWAVE_WEBHOOK_SECRET`
-2. **Course pricing in DB.** Most courses currently have `price` as text. I'll need to populate `price_usd` and `price_ngn` (numeric) on each course row, or fall back to the hard-coded values in `src/lib/coursePricing.ts`. Tell me which: (a) use existing `coursePricing.ts`, (b) seed numeric prices into `courses` now, or (c) ask you for a price sheet.
+## Plan: Enrollment Email Notifications via Lovable Emails
 
-### Stack note
-TanStack Start project — I'll use `createServerFn` for verify-payment (called from browser) and a TanStack server route at `/api/public/flutterwave-webhook` for the webhook (NOT a Supabase Edge Function — TanStack handles server work here). The user prompt says "Supabase Edge Function" but our stack uses TanStack server functions; behavior is identical and the URL is stable.
+Use Lovable's built-in email system instead of Resend — no API keys to manage, automatic retries, suppression list, and delivery logs.
 
-### What gets built
+### 1. Domain setup
+- Configure a delegated sending subdomain (recommended: `notify.evogueacademy.com` or `mail.evogueacademy.com`) via the guided email setup dialog.
+- This does not touch your Google Workspace MX records — root domain mail keeps working.
+- Visible "from" address: `hello@evogueacademy.com` (display-from-root); reply-to also `hello@evogueacademy.com`.
+- DNS records are added at your registrar (NS delegation). Propagation can take up to 72 hours; templates and triggers can be built in parallel.
 
-**1. `/order-summary` page** (`src/routes/order-summary.tsx`)
-- Reads student details + course slug from query params (passed from `/enrol` on submit).
-- Currency toggle: defaults to NGN when `country === 'Nigeria'`, USD otherwise.
-- Coupon input with Apply button → calls existing `redeem_coupon` RPC (preview via `get_coupon_preview`) to compute discounted total.
-- "Proceed to Payment" loads Flutterwave inline script (`https://checkout.flutterwave.com/v3.js`) and opens checkout.
-- Installment note below button.
-- Brand: forest #0A2E1A bg, mint #00F5A0 accent, Fraunces headings, DM Sans body.
+### 2. Email infrastructure
+- Provision the email queue, send log, suppression list, and processing cron (one-time setup).
 
-**2. `/enrol` form update (minimal)**
-- On submit, instead of inserting straight into `enrolment_requests` only, also navigate to `/order-summary?course=<slug>&name=...&email=...&whatsapp=...&country=...`.
-- I will also still write the lead row to `applications` (newly created table) so admins see the pending application.
+### 3. Templates
+Two React Email templates in `src/lib/email-templates/`, styled to match the Evogue brand (read from `src/index.css`):
+- **`enrollment-welcome.tsx`** — student welcome email. Subject: "You're in. Welcome to Evogue Academy." Props: `fullName`, `courseName`, `studentId`, `courseDuration`, `loginEmail`, `tempPassword`.
+- **`enrollment-admin-notification.tsx`** — admin notification to `evogueconsulting@gmail.com`. Subject: `New Enrollment — {courseName}`. Props: name, email, whatsapp, country, studentId, courseName, amount, currency, originalAmount, discountPercent, couponCode, paymentReference, enrolledAt.
+- Both registered in `src/lib/email-templates/registry.ts`.
+- Footer line "Built in Africa. Open to the world." included; the system appends the unsubscribe footer automatically (required for compliance — cannot be removed).
 
-**3. Verify-payment server function** (`src/lib/payments.functions.ts`)
-- POST, takes `{ transaction_id, tx_ref, expected_amount, expected_currency, course_slug, student: {name,email,whatsapp,country}, coupon_code? }`.
-- Calls `https://api.flutterwave.com/v3/transactions/<id>/verify` with `FLUTTERWAVE_SECRET_KEY`.
-- Asserts `status==='successful'`, amount + currency match, tx_ref matches.
-- On success → runs the account-creation/enrollment block (below).
-- On failure → returns `{ ok:false, error:'Payment could not be verified...' }`.
+### 4. Server function
+`sendEnrollmentEmails` in `src/lib/enrollment-emails.functions.ts`:
+- Accepts student / course / payment params.
+- Fires both emails in parallel via `Promise.all`, posting to `/lovable/email/transactional/send` with idempotency keys (`enroll-welcome-{paymentRef}`, `enroll-admin-{paymentRef}`) so retries don't duplicate.
+- Wrapped in try/catch — logs failures with recipient + timestamp, never throws. Enrollment flow is unaffected if a send fails.
+- Not wired into a payment-success handler yet (Flutterwave still paused). When that page is built, it will call this function after account creation.
 
-**4. Account creation + enrollment block** (shared helper in `payments.server.ts`)
-Uses `supabaseAdmin`:
-- Look up existing auth user by email. If none, `admin.createUser({ email, password: <random>, email_confirm: true, user_metadata: { full_name, whatsapp_number } })` — the existing `handle_new_user` trigger creates the `profiles` row with `registration_number` (EVG-YYYY-XXXX) and seeds `user_roles` row with `'student'`. Idempotent.
-- Resolve `course_id` from slug via `courses` table.
-- Insert/upsert `enrollments` row `{ student_id, course_id, payment_status:'paid', paid_at:now(), status:'active', payment_reference: tx_ref }` (unique on student_id+course_id assumed; if not, dedupe in code).
-- Insert `payments` row `{ student_id, course_id, amount, currency, payment_status:'paid', payment_method:'flutterwave', flutterwave_tx_id, original_amount, discount_applied, coupon_id, paid_at:now() }`.
-- Update `applications` set `status='enrolled'` where `email=? AND course_slug=?` (best-effort).
-- Trigger password-reset / magic-link email so student can set their password (so the email mentioned in step 6 is real).
+### 5. Test trigger (admin only)
+- Add a "Send Test Enrollment Emails" button on `/admin/dashboard` (or a small new admin route) that calls `sendEnrollmentEmails` with sample data.
+- Gated by the existing `has_role('admin')` check.
+- Lets you verify rendering, branding, and deliverability in the admin's own inbox before payments go live.
 
-**5. `/payment-success` page** (`src/routes/payment-success.tsx`)
-- Reads `?student_id=<reg>&course=<title>` from query (returned by verify-payment).
-- "You're in. Welcome to Evogue Academy.", reg number, course, "Check your email for your login details.", `Go to Login` button. Dark green + mint center layout.
+### 6. Out of scope (not touched)
+- Existing routes, auth setup, coupon logic, Flutterwave integration, and database tables.
+- No admin "manual resend" UI (deferred to Phase 6 as you noted).
 
-**6. Webhook** (`src/routes/api/public/flutterwave-webhook.ts`)
-- POST handler. Verifies header `verif-hash === FLUTTERWAVE_WEBHOOK_SECRET` (Flutterwave's mechanism — a static shared secret, not HMAC).
-- On `event === 'charge.completed'` and `data.status === 'successful'`, calls the same account-creation block (idempotent via tx_ref dedupe on payments).
-- Returns 200 always to acknowledge once signature is valid.
-- URL to give Flutterwave: `https://evogue-spark.lovable.app/api/public/flutterwave-webhook`.
+### Technical notes
+- TanStack `createServerFn` is used for the sender, called via `useServerFn` from the admin test button.
+- `SENDER_DOMAIN` will be the verified delegated subdomain; `FROM_DOMAIN` stays `evogueacademy.com` so recipients see `hello@evogueacademy.com`.
+- Send log queryable in Cloud → Emails for delivery monitoring.
 
-### Schema check (already in place from last migration)
-- `payments` table ✔ has all needed columns
-- `applications` table ✔
-- `coupon_codes.applicable_courses` ✔ (Phase 4 coupon validation will check this)
-- `enrollments.status` ✔
-- `profiles.registration_number` ✔ (already auto-generated by trigger)
-
-### Files to be added/changed
-- NEW: `src/routes/order-summary.tsx`, `src/routes/payment-success.tsx`, `src/routes/api/public/flutterwave-webhook.ts`, `src/lib/payments.functions.ts`, `src/lib/payments.server.ts`
-- EDIT: `src/routes/enrol.tsx` (only the submit handler — navigate to order-summary, write applications row)
-
-No other pages, components, auth setup, or tables will change.
-
-### Open questions
-1. **Pricing source** (a/b/c above)?
-2. **OK to use TanStack server fn + server route** instead of Supabase Edge Functions? (Same outcome, native to this stack.)
-3. Confirm you want the **password setup email** sent automatically after enrollment so "Check your email for your login details" is truthful.
-
-Reply with answers (or "use defaults: a, yes, yes") and I'll switch to build, request the three secrets, and ship it.
+### What you'll need to do
+1. Approve this plan.
+2. Complete the email domain setup dialog when it appears (add NS records at your registrar).
+3. Everything else is automatic — templates, infrastructure, server function, and test trigger get built without further input.
