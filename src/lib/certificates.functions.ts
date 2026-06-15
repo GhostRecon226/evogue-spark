@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { getRequestHeader } from "@tanstack/react-start/server";
 
 export interface GenerateCertificateInput {
   studentId: string;
