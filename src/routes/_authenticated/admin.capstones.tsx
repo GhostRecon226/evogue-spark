@@ -71,7 +71,19 @@ function AdminCapstones() {
   };
 
   useEffect(() => {
-    if (isAdmin) void load();
+    if (!isAdmin) return;
+    void load();
+    const ch = supabase
+      .channel("admin-capstones")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "capstone_submissions" },
+        () => void load(),
+      )
+      .subscribe();
+    return () => {
+      void supabase.removeChannel(ch);
+    };
   }, [isAdmin]);
 
   const setStatus = async (id: string, status: Row["status"], reason?: string) => {
