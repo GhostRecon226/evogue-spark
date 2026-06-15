@@ -935,6 +935,17 @@ function CouponsInner() {
             />
             <div className="sm:col-span-2">
               <FormFieldRow
+                label="Applicable Courses"
+                input={
+                  <CourseMultiSelect
+                    value={editForm.applicable_courses}
+                    onChange={(v) => setEditForm({ ...editForm, applicable_courses: v })}
+                  />
+                }
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <FormFieldRow
                 label="Description (internal note)"
                 input={
                   <Input
