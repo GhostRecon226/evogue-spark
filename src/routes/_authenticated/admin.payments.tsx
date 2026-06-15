@@ -1,10 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Wallet, Loader2, Download } from "lucide-react";
+import { Wallet, Loader2, Download, ChevronDown } from "lucide-react";
+import { toast } from "sonner";
 import { AdminGuard } from "@/components/admin/AdminGuard";
 import { DataTable, type Column } from "@/components/admin/DataTable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Select,
   SelectContent,
@@ -102,6 +109,24 @@ function PaymentsPage() {
       void supabase.removeChannel(ch);
     };
   }, []);
+
+  const markPaid = async (id: string) => {
+    const prev = rows;
+    const nowIso = new Date().toISOString();
+    setRows((rs) =>
+      rs.map((x) => (x.id === id ? { ...x, payment_status: "paid", paid_at: nowIso } : x)),
+    );
+    const { error } = await supabase
+      .from("payments")
+      .update({ payment_status: "paid", paid_at: nowIso })
+      .eq("id", id);
+    if (error) {
+      setRows(prev);
+      toast.error(error.message);
+    } else {
+      toast.success("Payment marked as paid");
+    }
+  };
 
   const courses = useMemo(() => {
     const m = new Map<string, string>();
@@ -300,6 +325,21 @@ function PaymentsPage() {
             className="rounded-full"
           />
         </div>
+        {(courseFilter !== "all" || statusFilter !== "all" || from || to) && (
+          <Button
+            type="button"
+            variant="outline"
+            className="rounded-full"
+            onClick={() => {
+              setCourseFilter("all");
+              setStatusFilter("all");
+              setFrom("");
+              setTo("");
+            }}
+          >
+            Clear filters
+          </Button>
+        )}
       </div>
 
       <div className="mt-6">
@@ -314,6 +354,24 @@ function PaymentsPage() {
             rowKey={(r) => r.id}
             pageSize={10}
             emptyMessage="No payments recorded yet."
+            actions={(r) =>
+              r.payment_status !== "paid" ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button size="sm" variant="outline" className="rounded-full">
+                      Actions <ChevronDown className="ml-1 h-3.5 w-3.5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => markPaid(r.id)}>
+                      Mark as Paid
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <span className="text-xs text-foreground/40">—</span>
+              )
+            }
           />
         )}
       </div>

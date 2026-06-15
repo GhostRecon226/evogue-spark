@@ -39,6 +39,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Toaster } from "@/components/ui/sonner";
 import { useAuth } from "@/hooks/use-auth";
+import { supabase } from "@/integrations/supabase/client";
 
 type NavItem = { label: string; to: string; icon: typeof LayoutDashboard };
 
@@ -87,18 +88,123 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
     }
   }, [collapsed]);
 
-  // Notifications panel (placeholder data — wire up when notifications backend exists).
+  // Notifications: admins see live counts of new applications + payments; others see placeholders.
+  type NotifItem = {
+    id: string;
+    type: "class" | "announcement" | "certificate" | "application" | "payment";
+    title: string;
+    body: string;
+    time: string;
+    read: boolean;
+    to?: string;
+  };
   const [notifOpen, setNotifOpen] = useState(false);
-  const [notifications, setNotifications] = useState<
-    Array<{
-      id: string;
-      type: "class" | "announcement" | "certificate";
-      title: string;
-      body: string;
-      time: string;
-      read: boolean;
-    }>
-  >([
+  const [adminCounts, setAdminCounts] = useState<{ applications: number; payments: number }>({
+    applications: 0,
+    payments: 0,
+  });
+
+  const readLastViewed = (key: string): number => {
+    if (typeof window === "undefined") return 0;
+    const v = window.localStorage.getItem(key);
+    return v ? Number(v) || 0 : 0;
+  };
+  const writeLastViewed = (key: string, value: number) => {
+    if (typeof window !== "undefined") window.localStorage.setItem(key, String(value));
+  };
+
+  const refreshAdminCounts = async () => {
+    const sinceApps = new Date(readLastViewed("admin-notif-apps") || 0).toISOString();
+    const sincePays = new Date(readLastViewed("admin-notif-pays") || 0).toISOString();
+    const [apps, pays] = await Promise.all([
+      supabase
+        .from("applications")
+        .select("id", { count: "exact", head: true })
+        .gt("created_at", sinceApps),
+      supabase
+        .from("payments")
+        .select("id", { count: "exact", head: true })
+        .gt("created_at", sincePays),
+    ]);
+    setAdminCounts({
+      applications: apps.count ?? 0,
+      payments: pays.count ?? 0,
+    });
+  };
+
+  useEffect(() => {
+    if (!isAdmin) return;
+    void refreshAdminCounts();
+    const ch = supabase
+      .channel("admin-notif-bell")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "applications" },
+        () => void refreshAdminCounts(),
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "payments" },
+        () => void refreshAdminCounts(),
+      )
+      .subscribe();
+    return () => {
+      void supabase.removeChannel(ch);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAdmin]);
+
+  // Clear the relevant counter when admin opens the matching table.
+  useEffect(() => {
+    if (!isAdmin) return;
+    if (path === "/admin/applications" || path.startsWith("/admin/applications/")) {
+      writeLastViewed("admin-notif-apps", Date.now());
+      setAdminCounts((c) => ({ ...c, applications: 0 }));
+    }
+    if (path === "/admin/payments" || path.startsWith("/admin/payments/")) {
+      writeLastViewed("admin-notif-pays", Date.now());
+      setAdminCounts((c) => ({ ...c, payments: 0 }));
+    }
+  }, [path, isAdmin]);
+
+  const adminNotifications: NotifItem[] = isAdmin
+    ? [
+        ...(adminCounts.applications > 0
+          ? [
+              {
+                id: "admin-apps",
+                type: "application" as const,
+                title:
+                  adminCounts.applications === 1
+                    ? "New application"
+                    : `${adminCounts.applications} new applications`,
+                body: "Review and follow up with prospective students.",
+                time: "Just now",
+                read: false,
+                to: "/admin/applications",
+              },
+            ]
+          : []),
+        ...(adminCounts.payments > 0
+          ? [
+              {
+                id: "admin-pays",
+                type: "payment" as const,
+                title:
+                  adminCounts.payments === 1
+                    ? "New payment recorded"
+                    : `${adminCounts.payments} new payments`,
+                body: "Open the Payments table to view details.",
+                time: "Just now",
+                read: false,
+                to: "/admin/payments",
+              },
+            ]
+          : []),
+      ]
+    : [];
+
+  const [placeholderNotifications, setPlaceholderNotifications] = useState<NotifItem[]>([
     {
       id: "n1",
       type: "class",
@@ -124,6 +230,31 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
       read: false,
     },
   ]);
+  const notifications: NotifItem[] = isAdmin ? adminNotifications : placeholderNotifications;
+  const markAllRead = () => {
+    if (isAdmin) {
+      writeLastViewed("admin-notif-apps", Date.now());
+      writeLastViewed("admin-notif-pays", Date.now());
+      setAdminCounts({ applications: 0, payments: 0 });
+    } else {
+      setPlaceholderNotifications((arr) => arr.map((n) => ({ ...n, read: true })));
+    }
+  };
+  const markOneRead = (id: string) => {
+    if (isAdmin) {
+      if (id === "admin-apps") {
+        writeLastViewed("admin-notif-apps", Date.now());
+        setAdminCounts((c) => ({ ...c, applications: 0 }));
+      } else if (id === "admin-pays") {
+        writeLastViewed("admin-notif-pays", Date.now());
+        setAdminCounts((c) => ({ ...c, payments: 0 }));
+      }
+    } else {
+      setPlaceholderNotifications((arr) =>
+        arr.map((x) => (x.id === id ? { ...x, read: true } : x)),
+      );
+    }
+  };
   const unreadCount = notifications.filter((n) => !n.read).length;
   const notifRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -364,9 +495,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                     </span>
                     <button
                       type="button"
-                      onClick={() =>
-                        setNotifications((arr) => arr.map((n) => ({ ...n, read: true })))
-                      }
+                      onClick={markAllRead}
                       style={{
                         fontSize: "12px",
                         color: "#1A8C4E",
@@ -420,15 +549,21 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                             ? Video
                             : n.type === "announcement"
                               ? Megaphone
-                              : Award;
+                              : n.type === "application"
+                                ? ClipboardCheck
+                                : n.type === "payment"
+                                  ? Wallet
+                                  : Award;
                         return (
                           <li
                             key={n.id}
-                            onClick={() =>
-                              setNotifications((arr) =>
-                                arr.map((x) => (x.id === n.id ? { ...x, read: true } : x)),
-                              )
-                            }
+                            onClick={() => {
+                              markOneRead(n.id);
+                              if (n.to) {
+                                setNotifOpen(false);
+                                window.location.assign(n.to);
+                              }
+                            }}
                             className="hover:bg-[rgba(10,46,26,0.03)]"
                             style={{
                               padding: "14px 20px",
