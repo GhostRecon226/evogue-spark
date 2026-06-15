@@ -169,18 +169,33 @@ function ApplicationsPage() {
           placeholder="Search by name, email, country, course…"
           className="max-w-md rounded-full"
         />
-        <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as typeof statusFilter)}>
-          <SelectTrigger className="w-44 rounded-full">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All statuses</SelectItem>
-            <SelectItem value="new">New</SelectItem>
-            <SelectItem value="contacted">Contacted</SelectItem>
-            <SelectItem value="enrolled">Enrolled</SelectItem>
-            <SelectItem value="rejected">Rejected</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2">
+          <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as typeof statusFilter)}>
+            <SelectTrigger className="w-44 rounded-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All statuses</SelectItem>
+              <SelectItem value="new">New</SelectItem>
+              <SelectItem value="contacted">Contacted</SelectItem>
+              <SelectItem value="enrolled">Enrolled</SelectItem>
+              <SelectItem value="rejected">Rejected</SelectItem>
+            </SelectContent>
+          </Select>
+          {(statusFilter !== "all" || q) && (
+            <Button
+              type="button"
+              variant="outline"
+              className="rounded-full"
+              onClick={() => {
+                setStatusFilter("all");
+                setQ("");
+              }}
+            >
+              Clear
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className="mt-6">
