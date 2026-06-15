@@ -401,6 +401,31 @@ function CouponsInner() {
       ),
     },
     {
+      key: "courses",
+      header: "Courses",
+      accessor: (r) => (r.applicable_courses ?? []).join(","),
+      cell: (r) => {
+        const list = r.applicable_courses ?? [];
+        if (list.length === 0)
+          return <span className="text-[12px] text-foreground/55">All courses</span>;
+        return (
+          <div className="flex flex-wrap gap-1 max-w-[260px]">
+            {list.slice(0, 2).map((s) => (
+              <span
+                key={s}
+                className="inline-flex items-center rounded-full border border-[rgba(10,46,26,0.15)] bg-[#F5FAF6] px-2 py-0.5 text-[11px] text-[#0A2E1A]"
+              >
+                {courseNameFor(s)}
+              </span>
+            ))}
+            {list.length > 2 && (
+              <span className="text-[11px] text-foreground/55">+{list.length - 2}</span>
+            )}
+          </div>
+        );
+      },
+    },
+    {
       key: "expiry",
       header: "Expiry",
       sortable: true,
@@ -431,15 +456,30 @@ function CouponsInner() {
       cell: (r) => (
         <div className="min-w-0">
           <p className="font-medium text-[#0A2E1A] truncate">{r.student_name}</p>
-          {r.student_reg && (
+          {r.student_email && (
+            <p className="text-[11px] text-foreground/55 truncate">{r.student_email}</p>
+          )}
+          {!r.student_email && r.student_reg && (
             <p className="text-[11px] text-foreground/55 font-mono">{r.student_reg}</p>
           )}
         </div>
       ),
     },
     {
+      key: "course",
+      header: "Course",
+      sortable: true,
+      accessor: (r) => r.course_slug ?? "",
+      cell: (r) =>
+        r.course_slug ? (
+          <span className="text-[13px]">{courseNameFor(r.course_slug)}</span>
+        ) : (
+          <span className="text-[12px] text-foreground/40">—</span>
+        ),
+    },
+    {
       key: "code",
-      header: "Code Used",
+      header: "Code",
       sortable: true,
       accessor: (r) => r.coupon_code,
       cell: (r) => <span className="font-mono font-semibold">{r.coupon_code}</span>,
@@ -452,26 +492,36 @@ function CouponsInner() {
       cell: (r) => <span>{formatDiscount(r.discount_type, r.discount_value)}</span>,
     },
     {
+      key: "original",
+      header: "Original",
+      accessor: (r) => r.original_amount ?? 0,
+      cell: (r) =>
+        r.original_amount != null ? (
+          <span className="text-foreground/60">${r.original_amount.toFixed(2)}</span>
+        ) : (
+          <span className="text-foreground/40">—</span>
+        ),
+    },
+    {
+      key: "final",
+      header: "Final",
+      accessor: (r) => r.final_amount ?? 0,
+      cell: (r) =>
+        r.final_amount != null ? (
+          <span className="font-semibold text-[#0A2E1A]">${r.final_amount.toFixed(2)}</span>
+        ) : (
+          <span className="text-foreground/40">—</span>
+        ),
+    },
+    {
       key: "applied_at",
       header: "Applied On",
       sortable: true,
       accessor: (r) => r.applied_at,
       cell: (r) => <span>{format(new Date(r.applied_at), "PP")}</span>,
     },
-    {
-      key: "enrol",
-      header: "Enrolment Status",
-      accessor: (r) => r.enrolment_status,
-      cell: (r) =>
-        r.enrolment_status === "Enrolled" ? (
-          <Pill tone="green">Enrolled</Pill>
-        ) : r.enrolment_status === "Pending" ? (
-          <Pill tone="amber">Pending</Pill>
-        ) : (
-          <Pill tone="grey">Not enrolled</Pill>
-        ),
-    },
   ];
+
 
   return (
     <div>
