@@ -91,6 +91,22 @@ function StudentsPage() {
 
   useEffect(() => {
     void load();
+    const ch = supabase
+      .channel("admin-students")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "profiles" },
+        () => void load(),
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "enrollments" },
+        () => void load(),
+      )
+      .subscribe();
+    return () => {
+      void supabase.removeChannel(ch);
+    };
   }, []);
 
   const filtered = useMemo(() => {
