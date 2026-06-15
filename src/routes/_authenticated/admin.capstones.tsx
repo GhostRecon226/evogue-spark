@@ -36,6 +36,7 @@ type Row = {
   file_url: string | null;
   instructor_recommendation: boolean;
   instructor_note: string | null;
+  student_id: string;
   course_id: string;
   cohort_id: string | null;
   registration_number: string | null;
