@@ -135,6 +135,15 @@ function DashboardHome() {
   >([]);
   const [capstoneDetail, setCapstoneDetail] = useState<CapstoneDetail | null>(null);
   const [capstoneOpen, setCapstoneOpen] = useState(false);
+  const [payments, setPayments] = useState<PaymentRow[]>([]);
+  const [enrolledCourse, setEnrolledCourse] = useState<{
+    id: string;
+    title: string;
+    duration: string | null;
+    level: string | null;
+    slug: string;
+    enrolled_at: string;
+  } | null>(null);
 
   useEffect(() => {
     if (authLoading || !user || isAdmin || isInstructor) return;
@@ -146,11 +155,12 @@ function DashboardHome() {
         { count: certCount },
         { count: completedLessons },
         { data: capstoneRows },
+        { data: paymentRows },
       ] = await Promise.all([
         supabase
           .from("enrollments")
           .select(
-            "course_id, cohort_id, enrolled_at, courses(slug, title, description, cover_image_url, category)",
+            "course_id, cohort_id, enrolled_at, courses(slug, title, description, cover_image_url, category, duration, level)",
           )
           .eq("student_id", user.id)
           .order("enrolled_at", { ascending: false }),
@@ -165,10 +175,19 @@ function DashboardHome() {
           .eq("completed", true),
         supabase
           .from("capstone_submissions")
-          .select("status, submitted_at, reviewed_at, instructor_recommendation, instructor_note")
+          .select(
+            "status, submitted_at, reviewed_at, instructor_recommendation, instructor_note, file_url, notes",
+          )
           .eq("student_id", user.id)
           .order("submitted_at", { ascending: false })
           .limit(1),
+        supabase
+          .from("payments")
+          .select(
+            "id, amount, original_amount, currency, payment_status, payment_method, flutterwave_tx_id, paid_at, discount_applied, courses:course_id(title), coupon_codes:coupon_id(code, discount_type, discount_value)",
+          )
+          .eq("student_id", user.id)
+          .order("created_at", { ascending: false }),
       ]);
 
       const enrolled = enrollments ?? [];
