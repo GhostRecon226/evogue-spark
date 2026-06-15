@@ -110,5 +110,10 @@
   "lint-staged": {
     "*.{ts,tsx,js,jsx,json,css,md,yml,yaml}": "prettier --write",
     "*.{ts,tsx}": "eslint --fix"
+  },
+  "pnpm": {
+    "overrides": {
+      "entities": "4.5.0"
+    }
   }
 }
