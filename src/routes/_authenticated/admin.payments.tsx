@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Wallet, Loader2, Download } from "lucide-react";
 import { AdminGuard } from "@/components/admin/AdminGuard";
-import { DataTable, parsePrice, formatNaira, type Column } from "@/components/admin/DataTable";
+import { DataTable, type Column } from "@/components/admin/DataTable";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -20,48 +20,87 @@ export const Route = createFileRoute("/_authenticated/admin/payments")({
 
 type Row = {
   id: string;
-  registration_number: string | null;
+  student_id: string;
   student: string;
+  registration_number: string | null;
   course_id: string;
   course: string;
-  cohort: string | null;
   amount: number;
-  payment_reference: string | null;
-  enrolled_at: string;
+  currency: string;
+  payment_status: string;
+  coupon_code: string | null;
+  flutterwave_tx_id: string | null;
+  paid_at: string | null;
+  created_at: string;
 };
+
+function statusPillStyle(status: string) {
+  if (status === "paid") return "bg-emerald-100 text-emerald-700";
+  if (status === "pending") return "bg-amber-100 text-amber-700";
+  if (status === "failed") return "bg-red-100 text-red-700";
+  return "bg-foreground/10 text-foreground/70";
+}
+
+function formatMoney(amount: number, currency: string) {
+  try {
+    return new Intl.NumberFormat(currency === "NGN" ? "en-NG" : "en-US", {
+      style: "currency",
+      currency,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  } catch {
+    return `${currency} ${amount.toLocaleString()}`;
+  }
+}
 
 function PaymentsPage() {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [courseFilter, setCourseFilter] = useState("all");
-  const [cohortFilter, setCohortFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
 
+  const load = async () => {
+    const { data } = await supabase
+      .from("payments")
+      .select(
+        "id, amount, currency, payment_status, flutterwave_tx_id, paid_at, created_at, student_id, course_id, profiles:student_id(full_name, email, registration_number), courses:course_id(title), coupon_codes:coupon_id(code)",
+      )
+      .order("created_at", { ascending: false });
+    setRows(
+      (data ?? []).map((r: any) => ({
+        id: r.id,
+        student_id: r.student_id,
+        student: r.profiles?.full_name || r.profiles?.email || "—",
+        registration_number: r.profiles?.registration_number ?? null,
+        course_id: r.course_id,
+        course: r.courses?.title || "—",
+        amount: Number(r.amount) || 0,
+        currency: r.currency || "USD",
+        payment_status: r.payment_status,
+        coupon_code: r.coupon_codes?.code ?? null,
+        flutterwave_tx_id: r.flutterwave_tx_id,
+        paid_at: r.paid_at,
+        created_at: r.created_at,
+      })),
+    );
+    setLoading(false);
+  };
+
   useEffect(() => {
-    (async () => {
-      const { data } = await supabase
-        .from("enrollments")
-        .select(
-          "id, enrolled_at, payment_reference, course_id, profiles:student_id(full_name, email, registration_number), courses:course_id(title, price), cohorts:cohort_id(name)",
-        )
-        .eq("payment_status", "paid")
-        .order("enrolled_at", { ascending: false });
-      setRows(
-        (data ?? []).map((r: any) => ({
-          id: r.id,
-          registration_number: r.profiles?.registration_number ?? null,
-          student: r.profiles?.full_name || r.profiles?.email || "—",
-          course_id: r.course_id,
-          course: r.courses?.title || "—",
-          cohort: r.cohorts?.name ?? null,
-          amount: parsePrice(r.courses?.price ?? null),
-          payment_reference: r.payment_reference,
-          enrolled_at: r.enrolled_at,
-        })),
-      );
-      setLoading(false);
-    })();
+    void load();
+    const ch = supabase
+      .channel("admin-payments")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "payments" },
+        () => void load(),
+      )
+      .subscribe();
+    return () => {
+      void supabase.removeChannel(ch);
+    };
   }, []);
 
   const courses = useMemo(() => {
@@ -69,37 +108,55 @@ function PaymentsPage() {
     for (const r of rows) m.set(r.course_id, r.course);
     return Array.from(m.entries());
   }, [rows]);
-  const cohorts = useMemo(
-    () => Array.from(new Set(rows.map((r) => r.cohort).filter(Boolean) as string[])),
-    [rows],
-  );
 
   const filtered = useMemo(
     () =>
       rows.filter((r) => {
         if (courseFilter !== "all" && r.course_id !== courseFilter) return false;
-        if (cohortFilter !== "all" && r.cohort !== cohortFilter) return false;
-        if (from && new Date(r.enrolled_at) < new Date(from)) return false;
-        if (to && new Date(r.enrolled_at) > new Date(to + "T23:59:59")) return false;
+        if (statusFilter !== "all" && r.payment_status !== statusFilter) return false;
+        const ref = r.paid_at ?? r.created_at;
+        if (from && new Date(ref) < new Date(from)) return false;
+        if (to && new Date(ref) > new Date(to + "T23:59:59")) return false;
         return true;
       }),
-    [rows, courseFilter, cohortFilter, from, to],
+    [rows, courseFilter, statusFilter, from, to],
   );
 
-  const total = filtered.reduce((s, r) => s + r.amount, 0);
+  const totals = useMemo(() => {
+    let usd = 0;
+    let ngn = 0;
+    for (const r of filtered) {
+      if (r.payment_status !== "paid") continue;
+      if (r.currency === "USD") usd += r.amount;
+      else if (r.currency === "NGN") ngn += r.amount;
+    }
+    return { usd, ngn };
+  }, [filtered]);
 
   const exportCsv = () => {
-    const head = ["Student ID", "Student", "Course", "Cohort", "Amount (NGN)", "Reference", "Date"];
+    const head = [
+      "Student",
+      "Student ID",
+      "Course",
+      "Amount",
+      "Currency",
+      "Status",
+      "Coupon",
+      "Reference",
+      "Paid At",
+    ];
     const lines = [head.join(",")];
     for (const r of filtered) {
       const cells = [
-        r.registration_number ?? "",
         r.student,
+        r.registration_number ?? "",
         r.course,
-        r.cohort ?? "",
         String(r.amount),
-        r.payment_reference ?? "",
-        new Date(r.enrolled_at).toISOString(),
+        r.currency,
+        r.payment_status,
+        r.coupon_code ?? "None",
+        r.flutterwave_tx_id ?? "",
+        r.paid_at ? new Date(r.paid_at).toISOString() : "",
       ].map((v) => `"${String(v).replace(/"/g, '""')}"`);
       lines.push(cells.join(","));
     }
@@ -113,27 +170,57 @@ function PaymentsPage() {
   };
 
   const columns: Column<Row>[] = [
+    { key: "student", header: "Student Name", accessor: (r) => r.student },
     {
       key: "registration_number",
-      header: "Reg. No",
+      header: "Student ID",
       accessor: (r) => r.registration_number ?? "—",
       cell: (r) => <span className="font-mono text-xs">{r.registration_number ?? "—"}</span>,
     },
-    { key: "student", header: "Student", accessor: (r) => r.student },
     { key: "course", header: "Course", accessor: (r) => r.course },
-    { key: "cohort", header: "Cohort", accessor: (r) => r.cohort ?? "—" },
     {
       key: "amount",
       header: "Amount",
       accessor: (r) => r.amount,
-      cell: (r) => <span className="font-bold">{formatNaira(r.amount)}</span>,
+      cell: (r) => <span className="font-bold">{formatMoney(r.amount, r.currency)}</span>,
     },
-    { key: "payment_reference", header: "Reference", accessor: (r) => r.payment_reference ?? "—" },
+    { key: "currency", header: "Currency", accessor: (r) => r.currency },
     {
-      key: "enrolled_at",
-      header: "Date",
-      accessor: (r) => r.enrolled_at,
-      cell: (r) => new Date(r.enrolled_at).toLocaleDateString(),
+      key: "payment_status",
+      header: "Status",
+      accessor: (r) => r.payment_status,
+      cell: (r) => (
+        <span
+          className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-bold capitalize ${statusPillStyle(r.payment_status)}`}
+        >
+          {r.payment_status}
+        </span>
+      ),
+    },
+    {
+      key: "coupon_code",
+      header: "Coupon Used",
+      accessor: (r) => r.coupon_code ?? "None",
+      cell: (r) =>
+        r.coupon_code ? (
+          <span className="font-mono text-xs">{r.coupon_code}</span>
+        ) : (
+          <span className="text-foreground/50">None</span>
+        ),
+    },
+    {
+      key: "flutterwave_tx_id",
+      header: "Reference",
+      accessor: (r) => r.flutterwave_tx_id ?? "—",
+      cell: (r) => (
+        <span className="font-mono text-xs">{r.flutterwave_tx_id ?? "—"}</span>
+      ),
+    },
+    {
+      key: "paid_at",
+      header: "Date Paid",
+      accessor: (r) => r.paid_at ?? "",
+      cell: (r) => (r.paid_at ? new Date(r.paid_at).toLocaleDateString() : "—"),
     },
   ];
 
@@ -148,18 +235,25 @@ function PaymentsPage() {
           <Download className="h-4 w-4 mr-1" /> Export CSV
         </Button>
       </div>
-      <p className="mt-1 text-foreground/65">All paid enrollments.</p>
+      <p className="mt-1 text-foreground/65">All recorded payments.</p>
 
-      <div className="mt-6 rounded-2xl border border-border bg-[#ECFDF5] p-5">
-        <p className="text-xs font-bold uppercase tracking-wide text-[#1A8C4E]">
-          Total Revenue (filtered)
-        </p>
-        <p className="mt-2 font-display text-3xl font-extrabold text-[#0A2E1A]">
-          {formatNaira(total)}
-        </p>
-        <p className="mt-1 text-sm text-[#0A2E1A]/65">
-          {filtered.length} payment{filtered.length === 1 ? "" : "s"}
-        </p>
+      <div className="mt-6 grid gap-3 sm:grid-cols-2">
+        <div className="rounded-2xl border border-border bg-[#ECFDF5] p-5">
+          <p className="text-xs font-bold uppercase tracking-wide text-[#1A8C4E]">
+            Paid (USD)
+          </p>
+          <p className="mt-2 font-display text-2xl font-extrabold text-[#0A2E1A]">
+            {formatMoney(totals.usd, "USD")}
+          </p>
+        </div>
+        <div className="rounded-2xl border border-border bg-[#ECFDF5] p-5">
+          <p className="text-xs font-bold uppercase tracking-wide text-[#1A8C4E]">
+            Paid (NGN)
+          </p>
+          <p className="mt-2 font-display text-2xl font-extrabold text-[#0A2E1A]">
+            {formatMoney(totals.ngn, "NGN")}
+          </p>
+        </div>
       </div>
 
       <div className="mt-6 flex flex-wrap gap-3 items-end">
@@ -176,17 +270,16 @@ function PaymentsPage() {
             ))}
           </SelectContent>
         </Select>
-        <Select value={cohortFilter} onValueChange={setCohortFilter}>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-44 rounded-full">
-            <SelectValue placeholder="Cohort" />
+            <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All cohorts</SelectItem>
-            {cohorts.map((c) => (
-              <SelectItem key={c} value={c}>
-                {c}
-              </SelectItem>
-            ))}
+            <SelectItem value="all">All statuses</SelectItem>
+            <SelectItem value="paid">Paid</SelectItem>
+            <SelectItem value="pending">Pending</SelectItem>
+            <SelectItem value="unpaid">Unpaid</SelectItem>
+            <SelectItem value="failed">Failed</SelectItem>
           </SelectContent>
         </Select>
         <div>
@@ -220,7 +313,7 @@ function PaymentsPage() {
             columns={columns}
             rowKey={(r) => r.id}
             pageSize={10}
-            emptyMessage="No payments match."
+            emptyMessage="No payments recorded yet."
           />
         )}
       </div>

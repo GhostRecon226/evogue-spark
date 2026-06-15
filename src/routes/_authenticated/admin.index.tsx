@@ -25,7 +25,7 @@ import {
   Legend,
 } from "recharts";
 import { AdminGuard } from "@/components/admin/AdminGuard";
-import { formatUSD, getCoursePriceUSD } from "@/lib/coursePricing";
+import { formatUSD } from "@/lib/coursePricing";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useServerFn } from "@tanstack/react-start";
@@ -81,11 +81,14 @@ function monthLabel(d: Date) {
 
 function AdminOverview() {
   const [loading, setLoading] = useState(true);
+  const [currency, setCurrency] = useState<"USD" | "NGN">("USD");
+  const [usdToNgn] = useState<number>(1600);
   const [stats, setStats] = useState({
     students: 0,
-    enrollments: 0,
-    revenue: 0,
-    pendingCapstones: 0,
+    activeEnrollments: 0,
+    revenueUSD: 0,
+    revenueNGN: 0,
+    pendingApplications: 0,
   });
   const [recent, setRecent] = useState<RecentRow[]>([]);
   const [pendingCapstones, setPendingCapstones] = useState<CapstoneRow[]>([]);
@@ -94,49 +97,65 @@ function AdminOverview() {
     { month: string; enrollments: number; revenue: number }[]
   >([]);
   const [activity, setActivity] = useState<ActivityItem[]>([]);
-  const [trends, setTrends] = useState({ students: 0, enrollments: 0, revenue: 0, capstones: 0 });
+  const [trends, setTrends] = useState({ students: 0, enrollments: 0, revenue: 0, applications: 0 });
 
   useEffect(() => {
     let cancelled = false;
-    (async () => {
-      const [studentsRes, enrolRes, coursesRes, recentRes, capRes, certRes, profRes] =
-        await Promise.all([
-          supabase.from("profiles").select("id, created_at"),
-          supabase
-            .from("enrollments")
-            .select("id, payment_status, course_id, enrolled_at, cohort_id"),
-          supabase.from("courses").select("id, price, title, slug"),
-          supabase
-            .from("enrollments")
-            .select(
-              "id, enrolled_at, payment_status, profiles:student_id(full_name, email, registration_number), courses:course_id(title), cohorts:cohort_id(name)",
-            )
-            .order("enrolled_at", { ascending: false })
-            .limit(8),
-          supabase
-            .from("capstone_submissions")
-            .select(
-              "id, status, submitted_at, student:profiles!capstone_submissions_student_id_fkey(full_name, email, registration_number), course:courses!capstone_submissions_course_id_fkey(title)",
-            )
-            .order("submitted_at", { ascending: false })
-            .limit(20),
-          supabase
-            .from("certificates")
-            .select("id, issued_at")
-            .order("issued_at", { ascending: false })
-            .limit(5),
-          supabase
-            .from("profiles")
-            .select("id, full_name, email, created_at")
-            .order("created_at", { ascending: false })
-            .limit(5),
-        ]);
+    const load = async () => {
+      const [
+        studentsRes,
+        enrolRes,
+        coursesRes,
+        recentRes,
+        capRes,
+        certRes,
+        profRes,
+        paymentsRes,
+        applicationsRes,
+      ] = await Promise.all([
+        supabase.from("profiles").select("id, created_at").eq("role", "student"),
+        supabase
+          .from("enrollments")
+          .select("id, payment_status, course_id, enrolled_at, cohort_id, status"),
+        supabase.from("courses").select("id, price, title, slug"),
+        supabase
+          .from("enrollments")
+          .select(
+            "id, enrolled_at, payment_status, profiles:student_id(full_name, email, registration_number), courses:course_id(title), cohorts:cohort_id(name)",
+          )
+          .order("enrolled_at", { ascending: false })
+          .limit(8),
+        supabase
+          .from("capstone_submissions")
+          .select(
+            "id, status, submitted_at, student:profiles!capstone_submissions_student_id_fkey(full_name, email, registration_number), course:courses!capstone_submissions_course_id_fkey(title)",
+          )
+          .order("submitted_at", { ascending: false })
+          .limit(20),
+        supabase
+          .from("certificates")
+          .select("id, issued_at")
+          .order("issued_at", { ascending: false })
+          .limit(5),
+        supabase
+          .from("profiles")
+          .select("id, full_name, email, created_at")
+          .order("created_at", { ascending: false })
+          .limit(5),
+        supabase
+          .from("payments")
+          .select("id, amount, currency, payment_status, paid_at, created_at")
+          .eq("payment_status", "paid"),
+        supabase.from("applications").select("id, status, created_at"),
+      ]);
       if (cancelled) return;
 
       const courseRows = coursesRes.data ?? [];
       const courseMap = new Map(courseRows.map((c) => [c.id, c]));
       const enrolRows = enrolRes.data ?? [];
       const profileRows = studentsRes.data ?? [];
+      const paymentRows = paymentsRes.data ?? [];
+      const applicationRows = applicationsRes.data ?? [];
       const capRows = (capRes.data ?? []) as unknown as Array<{
         id: string;
         status: string;
@@ -149,28 +168,32 @@ function AdminOverview() {
         course: { title: string | null } | null;
       }>;
 
-      const revenue = enrolRows
-        .filter((e) => e.payment_status === "paid")
-        .reduce((sum, e) => {
-          const c = courseMap.get(e.course_id);
-          return sum + getCoursePriceUSD({ slug: (c as any)?.slug ?? null, title: c?.title ?? null });
-        }, 0);
+      // Revenue from payments table; split by currency
+      let revenueUSD = 0;
+      let revenueNGN = 0;
+      for (const p of paymentRows) {
+        const amt = Number(p.amount) || 0;
+        if (p.currency === "USD") revenueUSD += amt;
+        else if (p.currency === "NGN") revenueNGN += amt;
+      }
 
-      const pendingCount = capRows.filter((c) => c.status === "pending").length;
+      const activeEnrollments = enrolRows.filter((e) => e.status === "active").length;
+      const pendingApplications = applicationRows.filter((a) => a.status === "new").length;
 
       setStats({
         students: profileRows.length,
-        enrollments: enrolRows.length,
-        revenue,
-        pendingCapstones: pendingCount,
+        activeEnrollments,
+        revenueUSD,
+        revenueNGN,
+        pendingApplications,
       });
 
       // Trend calc: last 30d vs prior 30d
       const now = Date.now();
       const day = 86400000;
       const calc = (
-        rows: { created_at?: string | null; enrolled_at?: string | null }[],
-        key: "created_at" | "enrolled_at",
+        rows: { created_at?: string | null; enrolled_at?: string | null; paid_at?: string | null }[],
+        key: "created_at" | "enrolled_at" | "paid_at",
       ) => {
         const recent = rows.filter(
           (r) => r[key] && now - new Date(r[key]!).getTime() < 30 * day,
@@ -184,20 +207,12 @@ function AdminOverview() {
       };
       setTrends({
         students: calc(profileRows, "created_at"),
-        enrollments: calc(enrolRows, "enrolled_at"),
-        revenue: calc(
-          enrolRows.filter((e) => e.payment_status === "paid"),
-          "enrolled_at",
-        ),
-        capstones:
-          capRows.length > 0
-            ? Math.round(
-                ((pendingCount - capRows.length / 2) / Math.max(capRows.length / 2, 1)) * 100,
-              )
-            : 0,
+        enrollments: calc(enrolRows.filter((e) => e.status === "active"), "enrolled_at"),
+        revenue: calc(paymentRows, "paid_at"),
+        applications: calc(applicationRows.filter((a) => a.status === "new"), "created_at"),
       });
 
-      // Chart: build last 6 months series
+      // Chart: build last 6 months series (enrollments + USD revenue from payments)
       const months: { date: Date; key: string; label: string }[] = [];
       for (let i = 5; i >= 0; i--) {
         const d = new Date();
@@ -209,12 +224,15 @@ function AdminOverview() {
         const monthEnrols = enrolRows.filter(
           (e) => e.enrolled_at && monthKey(new Date(e.enrolled_at)) === m.key,
         );
-        const rev = monthEnrols
-          .filter((e) => e.payment_status === "paid")
-          .reduce((sum, e) => {
-            const c = courseMap.get(e.course_id);
-            return sum + getCoursePriceUSD({ slug: (c as any)?.slug ?? null, title: c?.title ?? null });
-          }, 0);
+        const monthPayments = paymentRows.filter(
+          (p) => p.paid_at && monthKey(new Date(p.paid_at)) === m.key,
+        );
+        const rev = monthPayments.reduce((sum, p) => {
+          const amt = Number(p.amount) || 0;
+          if (p.currency === "USD") return sum + amt;
+          if (p.currency === "NGN") return sum + amt / (usdToNgn || 1600);
+          return sum;
+        }, 0);
         return { month: m.label, enrollments: monthEnrols.length, revenue: Math.round(rev) };
       });
       setChartData(series);
@@ -286,15 +304,48 @@ function AdminOverview() {
       setActivity(acts.slice(0, 8));
 
       setLoading(false);
-    })();
+    };
+
+    void load();
+
+    // Realtime: refresh when applications/payments/enrollments change
+    const ch = supabase
+      .channel("admin-overview")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "applications" },
+        () => void load(),
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "payments" },
+        () => void load(),
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "enrollments" },
+        () => void load(),
+      )
+      .subscribe();
+
     return () => {
       cancelled = true;
+      void supabase.removeChannel(ch);
     };
-  }, []);
+  }, [usdToNgn]);
 
   const visibleChart = useMemo(() => {
     return chartRange === "month" ? chartData.slice(-1) : chartData;
   }, [chartData, chartRange]);
+
+  const revenueDisplay =
+    currency === "USD"
+      ? formatUSD(stats.revenueUSD + stats.revenueNGN / (usdToNgn || 1600))
+      : new Intl.NumberFormat("en-NG", {
+          style: "currency",
+          currency: "NGN",
+          maximumFractionDigits: 0,
+        }).format(stats.revenueNGN + stats.revenueUSD * (usdToNgn || 1600));
 
   const cards = [
     {
@@ -308,8 +359,8 @@ function AdminOverview() {
       trendBg: "bg-[#00F5A0]/15 text-[#00F5A0]",
     },
     {
-      label: "Total Enrollments",
-      value: stats.enrollments.toLocaleString(),
+      label: "Active Enrollments",
+      value: stats.activeEnrollments.toLocaleString(),
       trend: trends.enrollments,
       icon: ClipboardCheck,
       bg: "bg-[#ECFDF5]",
@@ -318,8 +369,8 @@ function AdminOverview() {
       trendBg: "bg-[#1A8C4E]/10 text-[#1A8C4E]",
     },
     {
-      label: "Total Revenue",
-      value: formatUSD(stats.revenue),
+      label: `Total Revenue (${currency})`,
+      value: revenueDisplay,
       trend: trends.revenue,
       icon: Wallet,
       bg: "bg-[#DCFCE7]",
@@ -328,9 +379,9 @@ function AdminOverview() {
       trendBg: "bg-[#1A8C4E]/10 text-[#1A8C4E]",
     },
     {
-      label: "Pending Capstones",
-      value: stats.pendingCapstones.toLocaleString(),
-      trend: trends.capstones,
+      label: "Pending Applications",
+      value: stats.pendingApplications.toLocaleString(),
+      trend: trends.applications,
       icon: Clock,
       bg: "bg-[#FFFBEB]",
       text: "text-[#0A2E1A]",
@@ -353,6 +404,21 @@ function AdminOverview() {
         </div>
         <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
           <TestEnrollmentEmailsButton />
+          <div className="inline-flex rounded-full border border-border bg-white p-1 text-xs font-semibold self-start">
+            {(["USD", "NGN"] as const).map((c) => (
+              <button
+                key={c}
+                onClick={() => setCurrency(c)}
+                className={`rounded-full px-3 py-1.5 transition ${
+                  currency === c
+                    ? "bg-[#0A2E1A] text-[#00F5A0]"
+                    : "text-foreground/60 hover:text-foreground"
+                }`}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
           <div className="relative w-full md:w-72">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground/40" />
             <input

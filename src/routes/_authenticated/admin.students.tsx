@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { createStudent, setStudentActive, setEnrollmentPaymentStatus } from "@/lib/admin.functions";
+import { sendEnrollmentEmails } from "@/lib/enrollment-emails.functions";
 import { formatUSD, getCoursePriceUSD } from "@/lib/coursePricing";
 
 export const Route = createFileRoute("/_authenticated/admin/students")({
@@ -91,6 +92,22 @@ function StudentsPage() {
 
   useEffect(() => {
     void load();
+    const ch = supabase
+      .channel("admin-students")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "profiles" },
+        () => void load(),
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "enrollments" },
+        () => void load(),
+      )
+      .subscribe();
+    return () => {
+      void supabase.removeChannel(ch);
+    };
   }, []);
 
   const filtered = useMemo(() => {
@@ -371,7 +388,9 @@ function StudentProfileDialog({
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [resending, setResending] = useState(false);
   const setStatusFn = useServerFn(setEnrollmentPaymentStatus);
+  const resendFn = useServerFn(sendEnrollmentEmails);
 
   const fetchData = async (id: string) => {
     setLoading(true);
@@ -418,6 +437,41 @@ function StudentProfileDialog({
     }
   };
 
+  const hasConfirmedEnrollment = !!data?.enrollments?.some(
+    (en: any) => en.payment_status === "paid",
+  );
+
+  const handleResendWelcome = async () => {
+    if (!data?.profile) return;
+    const tempPassword = window.prompt(
+      "Enter a temporary password to include in the welcome email (the student can change it after signing in):",
+    );
+    if (!tempPassword) return;
+    const paid = data.enrollments.find((en: any) => en.payment_status === "paid");
+    setResending(true);
+    try {
+      await resendFn({
+        data: {
+          fullName: data.profile.full_name ?? "",
+          studentEmail: data.profile.email ?? "",
+          whatsapp: data.profile.whatsapp_number ?? "",
+          country: "",
+          studentId: data.profile.registration_number ?? "",
+          tempPassword,
+          courseName: paid?.courses?.title ?? "your course",
+          amount: 0,
+          currency: "USD",
+          paymentReference: `resend-${Date.now()}`,
+        },
+      });
+      toast.success("Welcome email queued.");
+    } catch (err: any) {
+      toast.error(err?.message ?? "Failed to resend");
+    } finally {
+      setResending(false);
+    }
+  };
+
   return (
     <Dialog open={!!studentId} onOpenChange={(v) => !v && onClose()}>
       <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
@@ -441,6 +495,23 @@ function StudentProfileDialog({
                 value={new Date(data.profile?.created_at).toLocaleDateString()}
               />
             </div>
+
+            {hasConfirmedEnrollment && (
+              <div className="flex justify-end">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="rounded-full"
+                  disabled={resending}
+                  onClick={handleResendWelcome}
+                >
+                  {resending ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" />
+                  ) : null}
+                  Resend Welcome Email
+                </Button>
+              </div>
+            )}
 
             <div>
               <h3 className="font-display font-bold text-forest mb-2">
