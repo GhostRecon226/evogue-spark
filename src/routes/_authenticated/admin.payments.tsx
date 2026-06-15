@@ -110,6 +110,24 @@ function PaymentsPage() {
     };
   }, []);
 
+  const markPaid = async (id: string) => {
+    const prev = rows;
+    const nowIso = new Date().toISOString();
+    setRows((rs) =>
+      rs.map((x) => (x.id === id ? { ...x, payment_status: "paid", paid_at: nowIso } : x)),
+    );
+    const { error } = await supabase
+      .from("payments")
+      .update({ payment_status: "paid", paid_at: nowIso })
+      .eq("id", id);
+    if (error) {
+      setRows(prev);
+      toast.error(error.message);
+    } else {
+      toast.success("Payment marked as paid");
+    }
+  };
+
   const courses = useMemo(() => {
     const m = new Map<string, string>();
     for (const r of rows) m.set(r.course_id, r.course);
