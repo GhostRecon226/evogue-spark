@@ -388,7 +388,9 @@ function StudentProfileDialog({
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [resending, setResending] = useState(false);
   const setStatusFn = useServerFn(setEnrollmentPaymentStatus);
+  const resendFn = useServerFn(sendEnrollmentEmails);
 
   const fetchData = async (id: string) => {
     setLoading(true);
