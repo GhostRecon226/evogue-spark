@@ -239,123 +239,121 @@ function AdminCapstones() {
           <Loader2 className="h-5 w-5 animate-spin" />
         </div>
       ) : (
-        <div className="mt-6 rounded-2xl border border-border bg-background overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm min-w-[720px]">
-              <thead className="bg-mint-tint/60 text-forest">
-                <tr>
-                  <th className="text-left font-bold px-4 py-3">Student ID</th>
-                  <th className="text-left font-bold px-4 py-3">Student</th>
-                  <th className="text-left font-bold px-4 py-3">Course</th>
-                  <th className="text-left font-bold px-4 py-3">Cohort</th>
-                  <th className="text-left font-bold px-4 py-3">Submitted</th>
-                  <th className="text-left font-bold px-4 py-3">Status</th>
-                  <th className="text-right font-bold px-4 py-3">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} className="px-4 py-12">
-                      <div className="flex flex-col items-center gap-3 text-center">
-                        <div className="h-14 w-14 rounded-full bg-mint-tint grid place-items-center">
-                          <Inbox className="h-6 w-6 text-secondary" />
-                        </div>
-                        <p className="font-display text-base font-bold text-forest">
-                          No capstone submissions yet
-                        </p>
-                        <p className="text-sm text-foreground/60 max-w-md">
-                          Students can submit after the capstone is released.
-                        </p>
+        <div className="mt-6">
+          <DataTable
+            rows={filtered}
+            columns={
+              [
+                {
+                  key: "registration_number",
+                  header: "Student ID",
+                  accessor: (r) => r.registration_number ?? "",
+                  cell: (r) => (
+                    <span className="font-mono text-xs">{r.registration_number ?? "—"}</span>
+                  ),
+                },
+                {
+                  key: "student",
+                  header: "Student",
+                  accessor: (r) => r.student?.full_name ?? "",
+                  cell: (r) => (
+                    <div>
+                      <div className="font-semibold text-forest">
+                        {r.student?.full_name || "Student"}
                       </div>
-                    </td>
-                  </tr>
-                ) : (
-                  filtered.map((r) => (
-                    <tr
-                      key={r.id}
-                      className="border-t border-border/60 align-top hover:bg-mint-tint/30"
-                    >
-                      <td className="px-4 py-3 font-mono text-xs">
-                        {r.registration_number ?? "—"}
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="font-semibold text-forest">
-                          {r.student?.full_name || "Student"}
+                      <div className="text-xs text-foreground/55">{r.student?.email}</div>
+                    </div>
+                  ),
+                },
+                {
+                  key: "course",
+                  header: "Course",
+                  accessor: (r) => r.course?.title ?? "",
+                  cell: (r) => r.course?.title ?? "—",
+                },
+                {
+                  key: "cohort",
+                  header: "Cohort",
+                  accessor: (r) => r.cohort?.name ?? "",
+                  cell: (r) => r.cohort?.name ?? "—",
+                },
+                {
+                  key: "submitted_at",
+                  header: "Submitted",
+                  accessor: (r) => r.submitted_at,
+                  cell: (r) => new Date(r.submitted_at).toLocaleDateString(),
+                },
+                {
+                  key: "status",
+                  header: "Status",
+                  accessor: (r) => r.status,
+                  cell: (r) => (
+                    <>
+                      <span
+                        className={`inline-block rounded-full px-2.5 py-1 text-xs font-bold capitalize ${statusStyles[r.status]}`}
+                      >
+                        {r.status}
+                      </span>
+                      {r.instructor_recommendation && (
+                        <div className="mt-1 text-[11px] text-secondary font-bold">
+                          ★ Recommended
                         </div>
-                        <div className="text-xs text-foreground/55">{r.student?.email}</div>
-                      </td>
-                      <td className="px-4 py-3 text-foreground/80">{r.course?.title ?? "—"}</td>
-                      <td className="px-4 py-3 text-foreground/80">{r.cohort?.name ?? "—"}</td>
-                      <td className="px-4 py-3 text-foreground/70">
-                        {new Date(r.submitted_at).toLocaleDateString()}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span
-                          className={`inline-block rounded-full px-2.5 py-1 text-xs font-bold capitalize ${statusStyles[r.status]}`}
-                        >
-                          {r.status}
-                        </span>
-                        {r.instructor_recommendation && (
-                          <div className="mt-1 text-[11px] text-secondary font-bold">
-                            ★ Recommended
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex flex-wrap gap-2 justify-end">
-                          <details className="rounded">
-                            <summary className="cursor-pointer text-secondary text-xs font-bold">
-                              View
-                            </summary>
-                            <div className="absolute right-4 mt-2 max-w-md rounded-xl bg-background border border-border shadow-soft p-4 text-xs z-20">
-                              <p className="whitespace-pre-wrap text-foreground/80">
-                                {r.submission_text}
-                              </p>
-                              {r.instructor_note && (
-                                <p className="mt-2 italic text-foreground/65">
-                                  Instructor: {r.instructor_note}
-                                </p>
-                              )}
-                              {r.file_url && (
-                                <Button
-                                  onClick={() => viewFile(r.file_url!)}
-                                  variant="outline"
-                                  size="sm"
-                                  className="mt-2 rounded-full"
-                                >
-                                  <ExternalLink className="h-3 w-3 mr-1" /> Open file
-                                </Button>
-                              )}
-                            </div>
-                          </details>
-                          {r.status !== "approved" && (
-                            <Button
-                              size="sm"
-                              className="rounded-full bg-forest text-mint hover:bg-forest/90"
-                              onClick={() => setStatus(r.id, "approved")}
-                            >
-                              Approve
-                            </Button>
-                          )}
-                          {r.status !== "rejected" && (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="rounded-full"
-                              onClick={() => rejectWithReason(r.id)}
-                            >
-                              Reject
-                            </Button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))
+                      )}
+                    </>
+                  ),
+                },
+              ] satisfies Column<Row>[]
+            }
+            rowKey={(r) => r.id}
+            pageSize={10}
+            emptyMessage="No capstone submissions yet."
+            actions={(r) => (
+              <div className="flex flex-wrap gap-2 justify-end">
+                <details className="rounded">
+                  <summary className="cursor-pointer text-secondary text-xs font-bold list-none">
+                    View
+                  </summary>
+                  <div className="absolute right-4 mt-2 max-w-md rounded-xl bg-background border border-border shadow-soft p-4 text-xs z-20">
+                    <p className="whitespace-pre-wrap text-foreground/80">{r.submission_text}</p>
+                    {r.instructor_note && (
+                      <p className="mt-2 italic text-foreground/65">
+                        Instructor: {r.instructor_note}
+                      </p>
+                    )}
+                    {r.file_url && (
+                      <Button
+                        onClick={() => viewFile(r.file_url!)}
+                        variant="outline"
+                        size="sm"
+                        className="mt-2 rounded-full"
+                      >
+                        <ExternalLink className="h-3 w-3 mr-1" /> Open file
+                      </Button>
+                    )}
+                  </div>
+                </details>
+                {r.status !== "approved" && (
+                  <Button
+                    size="sm"
+                    className="rounded-full bg-forest text-mint hover:bg-forest/90"
+                    onClick={() => setStatus(r.id, "approved")}
+                  >
+                    Approve
+                  </Button>
                 )}
-              </tbody>
-            </table>
-          </div>
+                {r.status !== "rejected" && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="rounded-full"
+                    onClick={() => rejectWithReason(r.id)}
+                  >
+                    Reject
+                  </Button>
+                )}
+              </div>
+            )}
+          />
         </div>
       )}
     </DashboardLayout>
