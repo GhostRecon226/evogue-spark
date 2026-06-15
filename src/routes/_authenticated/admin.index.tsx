@@ -25,7 +25,7 @@ import {
   Legend,
 } from "recharts";
 import { AdminGuard } from "@/components/admin/AdminGuard";
-import { formatUSD, getCoursePriceUSD } from "@/lib/coursePricing";
+import { formatUSD } from "@/lib/coursePricing";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useServerFn } from "@tanstack/react-start";
