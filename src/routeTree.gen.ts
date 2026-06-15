@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ScholarshipRouteImport } from './routes/scholarship'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as OrderSummaryRouteImport } from './routes/order-summary'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as FaqRouteImport } from './routes/faq'
@@ -64,6 +65,11 @@ const ScholarshipRoute = ScholarshipRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrderSummaryRoute = OrderSummaryRouteImport.update({
+  id: '/order-summary',
+  path: '/order-summary',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -322,6 +328,7 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/order-summary': typeof OrderSummaryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/scholarship': typeof ScholarshipRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
@@ -369,6 +376,7 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/order-summary': typeof OrderSummaryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/scholarship': typeof ScholarshipRoute
   '/courses/ai-for-professionals': typeof CoursesAiForProfessionalsRoute
@@ -417,6 +425,7 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
+  '/order-summary': typeof OrderSummaryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/scholarship': typeof ScholarshipRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
@@ -466,6 +475,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/forgot-password'
     | '/login'
+    | '/order-summary'
     | '/reset-password'
     | '/scholarship'
     | '/dashboard'
@@ -513,6 +523,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/forgot-password'
     | '/login'
+    | '/order-summary'
     | '/reset-password'
     | '/scholarship'
     | '/courses/ai-for-professionals'
@@ -560,6 +571,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/forgot-password'
     | '/login'
+    | '/order-summary'
     | '/reset-password'
     | '/scholarship'
     | '/_authenticated/dashboard'
@@ -609,6 +621,7 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
+  OrderSummaryRoute: typeof OrderSummaryRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ScholarshipRoute: typeof ScholarshipRoute
   CoursesAiForProfessionalsRoute: typeof CoursesAiForProfessionalsRoute
@@ -638,6 +651,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/order-summary': {
+      id: '/order-summary'
+      path: '/order-summary'
+      fullPath: '/order-summary'
+      preLoaderRoute: typeof OrderSummaryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -1046,6 +1066,7 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
+  OrderSummaryRoute: OrderSummaryRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ScholarshipRoute: ScholarshipRoute,
   CoursesAiForProfessionalsRoute: CoursesAiForProfessionalsRoute,

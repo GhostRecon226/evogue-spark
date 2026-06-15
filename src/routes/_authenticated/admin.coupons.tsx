@@ -64,6 +64,7 @@ type Coupon = {
   expiry_date: string | null;
   active: boolean;
   description: string | null;
+  applicable_courses: string[] | null;
   created_at: string;
 };
 
@@ -76,6 +77,10 @@ type Redemption = {
   applied_at: string;
   student_name: string;
   student_reg: string | null;
+  student_email: string | null;
+  course_slug: string | null;
+  original_amount: number | null;
+  final_amount: number | null;
   enrolment_status: "Pending" | "Enrolled" | "Not enrolled";
 };
 
@@ -87,7 +92,22 @@ type FormState = {
   expiry_date: Date | undefined;
   active: boolean;
   description: string;
+  applicable_courses: string[];
 };
+
+const COURSE_OPTIONS: { slug: string; name: string }[] = [
+  { slug: "project-management-business-analysis", name: "Project Management & Business Analysis" },
+  { slug: "scrum-master", name: "Scrum Master" },
+  { slug: "digital-marketing", name: "Digital Marketing" },
+  { slug: "product-management", name: "Product Management" },
+  { slug: "ai-for-professionals", name: "AI for Professionals" },
+  { slug: "data-analysis", name: "Data Analysis" },
+  { slug: "cybersecurity", name: "Cybersecurity" },
+  { slug: "virtual-assistant-programme", name: "Virtual Assistant Programme" },
+];
+
+const courseNameFor = (slug: string) =>
+  COURSE_OPTIONS.find((c) => c.slug === slug)?.name ?? slug;
 
 const emptyForm: FormState = {
   code: "",
@@ -97,6 +117,7 @@ const emptyForm: FormState = {
   expiry_date: undefined,
   active: true,
   description: "",
+  applicable_courses: [],
 };
 
 const isExpired = (c: Coupon) =>
