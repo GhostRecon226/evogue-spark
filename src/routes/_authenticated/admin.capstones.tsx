@@ -156,7 +156,7 @@ function AdminCapstones() {
       return;
     }
     setRejectSubmitting(true);
-    const res = await setStatus(rejectTarget.id, "rejected", rejectReason);
+    const res = await setStatus(rejectTarget, "rejected", rejectReason);
     setRejectSubmitting(false);
     if (res.ok) {
       setRejectTarget(null);
