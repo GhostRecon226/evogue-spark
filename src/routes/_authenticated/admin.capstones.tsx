@@ -87,7 +87,7 @@ function AdminCapstones() {
     }
     const { error } = await supabase
       .from("capstone_submissions")
-      .update(patch)
+      .update(patch as never)
       .eq("id", id);
     if (error) {
       toast.error(error.message);
