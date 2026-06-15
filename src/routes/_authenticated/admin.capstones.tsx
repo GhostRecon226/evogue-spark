@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Loader2, ExternalLink, ClipboardCheck, Inbox, X } from "lucide-react";
+import { Loader2, ExternalLink, ClipboardCheck, X } from "lucide-react";
 import { toast } from "sonner";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { Button } from "@/components/ui/button";
+import { DataTable, type Column } from "@/components/admin/DataTable";
 import {
   Select,
   SelectContent,
