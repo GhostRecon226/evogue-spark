@@ -495,9 +495,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                     </span>
                     <button
                       type="button"
-                      onClick={() =>
-                        setNotifications((arr) => arr.map((n) => ({ ...n, read: true })))
-                      }
+                      onClick={markAllRead}
                       style={{
                         fontSize: "12px",
                         color: "#1A8C4E",
