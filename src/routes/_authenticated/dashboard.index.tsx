@@ -279,6 +279,28 @@ function DashboardHome() {
         ? "not_started"
         : ((latestCap.status as "pending" | "approved" | "rejected" | "recommended") ?? "pending");
 
+      const mappedPayments: PaymentRow[] = (paymentRows ?? []).map((p: any) => ({
+        id: p.id,
+        amount: Number(p.amount) || 0,
+        original_amount: p.original_amount != null ? Number(p.original_amount) : null,
+        currency: p.currency || "USD",
+        payment_status: p.payment_status,
+        payment_method: p.payment_method,
+        flutterwave_tx_id: p.flutterwave_tx_id,
+        paid_at: p.paid_at,
+        discount_applied: Number(p.discount_applied) || 0,
+        course_title: p.courses?.title ?? "Course",
+        coupon: p.coupon_codes
+          ? {
+              code: p.coupon_codes.code,
+              discount_type: p.coupon_codes.discount_type,
+              discount_value: Number(p.coupon_codes.discount_value) || 0,
+            }
+          : null,
+      }));
+      const firstEnrolled = enrolled[0];
+      const firstCourse = firstEnrolled?.courses as any;
+
       if (!cancelled) {
         setStats({
           enrolled: enrolled.length,
@@ -291,6 +313,19 @@ function DashboardHome() {
         setAnnouncements(annRows);
         setUpcoming(nextLesson);
         setProgressList(perCourse);
+        setPayments(mappedPayments);
+        setEnrolledCourse(
+          firstEnrolled && firstCourse
+            ? {
+                id: firstEnrolled.course_id,
+                title: firstCourse.title,
+                duration: firstCourse.duration ?? null,
+                level: firstCourse.level ?? null,
+                slug: firstCourse.slug,
+                enrolled_at: firstEnrolled.enrolled_at,
+              }
+            : null,
+        );
         setLoading(false);
       }
     })();
