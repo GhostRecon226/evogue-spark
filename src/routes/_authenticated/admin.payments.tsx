@@ -325,6 +325,21 @@ function PaymentsPage() {
             className="rounded-full"
           />
         </div>
+        {(courseFilter !== "all" || statusFilter !== "all" || from || to) && (
+          <Button
+            type="button"
+            variant="outline"
+            className="rounded-full"
+            onClick={() => {
+              setCourseFilter("all");
+              setStatusFilter("all");
+              setFrom("");
+              setTo("");
+            }}
+          >
+            Clear filters
+          </Button>
+        )}
       </div>
 
       <div className="mt-6">
@@ -339,6 +354,24 @@ function PaymentsPage() {
             rowKey={(r) => r.id}
             pageSize={10}
             emptyMessage="No payments recorded yet."
+            actions={(r) =>
+              r.payment_status !== "paid" ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button size="sm" variant="outline" className="rounded-full">
+                      Actions <ChevronDown className="ml-1 h-3.5 w-3.5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => markPaid(r.id)}>
+                      Mark as Paid
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <span className="text-xs text-foreground/40">—</span>
+              )
+            }
           />
         )}
       </div>
