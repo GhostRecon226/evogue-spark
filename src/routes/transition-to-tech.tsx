@@ -10,7 +10,9 @@ const WEBINAR_SLUG = "transition-to-tech";
 const WEBINAR_TITLE = "Switch to Tech: The Practical Roadmap to Landing Your First IT Role";
 const WEBINAR_DATE_LABEL = "Saturday, 31 October 2026";
 const WEBINAR_TIME_LABEL = "2:00 PM (WAT) · 90 minutes";
-const WHATSAPP_LINK = "https://wa.me/447404331835";
+const WHATSAPP_LINK =
+  "https://chat.whatsapp.com/HNfbrxhPShXBgKCfboVpO5?s=cl&p=i&mlu=4&ilr=4";
+const INSTAGRAM_LINK = "https://instagram.com/evogueacademy";
 
 // 31 Oct 2026, 14:00 WAT (UTC+1) => 13:00 UTC
 const GOOGLE_CALENDAR_LINK =
