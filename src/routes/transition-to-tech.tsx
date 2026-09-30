@@ -462,8 +462,28 @@ function SuccessState() {
           <CalendarDays size={16} strokeWidth={2.25} />
           Add to calendar
         </a>
-        <a
+         <a
           href={WHATSAPP_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center"
+          style={{
+            gap: 8,
+            background: "#1A8C4E",
+            color: "#fff",
+            padding: "14px 24px",
+            minHeight: 48,
+            borderRadius: 8,
+            fontSize: 14,
+            fontWeight: 600,
+            textDecoration: "none",
+          }}
+        >
+          <MessageCircle size={16} strokeWidth={2.25} />
+          Join the WhatsApp community
+        </a>
+        <a
+          href={INSTAGRAM_LINK}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center justify-center"
@@ -480,10 +500,22 @@ function SuccessState() {
             textDecoration: "none",
           }}
         >
-          <MessageCircle size={16} color="#1A8C4E" strokeWidth={2.25} />
-          Message us on WhatsApp
+          <Instagram size={16} color="#1A8C4E" strokeWidth={2.25} />
+          Follow @evogueacademy
         </a>
       </div>
+      <p
+        style={{
+          fontSize: 12,
+          color: "rgba(10,46,26,0.45)",
+          maxWidth: 380,
+          margin: "18px auto 0",
+          lineHeight: 1.6,
+        }}
+      >
+        Joining the community and following us on Instagram is how you&apos;ll get reminders and
+        bonus resources before the session.
+      </p>
     </div>
   );
 }
