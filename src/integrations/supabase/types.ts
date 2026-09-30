@@ -1167,6 +1167,39 @@ export type Database = {
         }
         Relationships: []
       }
+      webinar_registrations: {
+        Row: {
+          background: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          updated_at: string
+          webinar_slug: string
+          whatsapp: string
+        }
+        Insert: {
+          background?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          updated_at?: string
+          webinar_slug?: string
+          whatsapp: string
+        }
+        Update: {
+          background?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          updated_at?: string
+          webinar_slug?: string
+          whatsapp?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       academy_settings_public: {
