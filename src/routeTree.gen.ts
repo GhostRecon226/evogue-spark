@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
+import { Route as TransitionToTechRouteImport } from './routes/transition-to-tech'
 import { Route as ScholarshipRouteImport } from './routes/scholarship'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as OrderSummaryRouteImport } from './routes/order-summary'
@@ -68,6 +69,11 @@ import { Route as AuthenticatedDashboardCoursesSlugRouteImport } from './routes/
 const UnsubscribeRoute = UnsubscribeRouteImport.update({
   id: '/unsubscribe',
   path: '/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TransitionToTechRoute = TransitionToTechRouteImport.update({
+  id: '/transition-to-tech',
+  path: '/transition-to-tech',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ScholarshipRoute = ScholarshipRouteImport.update({
@@ -384,6 +390,7 @@ export interface FileRoutesByFullPath {
   '/order-summary': typeof OrderSummaryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/scholarship': typeof ScholarshipRoute
+  '/transition-to-tech': typeof TransitionToTechRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/courses/ai-for-professionals': typeof CoursesAiForProfessionalsRoute
@@ -440,6 +447,7 @@ export interface FileRoutesByTo {
   '/order-summary': typeof OrderSummaryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/scholarship': typeof ScholarshipRoute
+  '/transition-to-tech': typeof TransitionToTechRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/courses/ai-for-professionals': typeof CoursesAiForProfessionalsRoute
   '/courses/cybersecurity': typeof CoursesCybersecurityRoute
@@ -497,6 +505,7 @@ export interface FileRoutesById {
   '/order-summary': typeof OrderSummaryRoute
   '/reset-password': typeof ResetPasswordRoute
   '/scholarship': typeof ScholarshipRoute
+  '/transition-to-tech': typeof TransitionToTechRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/courses/ai-for-professionals': typeof CoursesAiForProfessionalsRoute
@@ -555,6 +564,7 @@ export interface FileRouteTypes {
     | '/order-summary'
     | '/reset-password'
     | '/scholarship'
+    | '/transition-to-tech'
     | '/unsubscribe'
     | '/dashboard'
     | '/courses/ai-for-professionals'
@@ -611,6 +621,7 @@ export interface FileRouteTypes {
     | '/order-summary'
     | '/reset-password'
     | '/scholarship'
+    | '/transition-to-tech'
     | '/unsubscribe'
     | '/courses/ai-for-professionals'
     | '/courses/cybersecurity'
@@ -667,6 +678,7 @@ export interface FileRouteTypes {
     | '/order-summary'
     | '/reset-password'
     | '/scholarship'
+    | '/transition-to-tech'
     | '/unsubscribe'
     | '/_authenticated/dashboard'
     | '/courses/ai-for-professionals'
@@ -725,6 +737,7 @@ export interface RootRouteChildren {
   OrderSummaryRoute: typeof OrderSummaryRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ScholarshipRoute: typeof ScholarshipRoute
+  TransitionToTechRoute: typeof TransitionToTechRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
   CoursesAiForProfessionalsRoute: typeof CoursesAiForProfessionalsRoute
   CoursesCybersecurityRoute: typeof CoursesCybersecurityRoute
@@ -750,6 +763,13 @@ declare module '@tanstack/react-router' {
       path: '/unsubscribe'
       fullPath: '/unsubscribe'
       preLoaderRoute: typeof UnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/transition-to-tech': {
+      id: '/transition-to-tech'
+      path: '/transition-to-tech'
+      fullPath: '/transition-to-tech'
+      preLoaderRoute: typeof TransitionToTechRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/scholarship': {
@@ -1238,6 +1258,7 @@ const rootRouteChildren: RootRouteChildren = {
   OrderSummaryRoute: OrderSummaryRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ScholarshipRoute: ScholarshipRoute,
+  TransitionToTechRoute: TransitionToTechRoute,
   UnsubscribeRoute: UnsubscribeRoute,
   CoursesAiForProfessionalsRoute: CoursesAiForProfessionalsRoute,
   CoursesCybersecurityRoute: CoursesCybersecurityRoute,
