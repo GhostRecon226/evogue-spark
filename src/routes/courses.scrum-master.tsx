@@ -665,7 +665,8 @@ function ScrumMasterPage() {
         </div>
         <div style={{ display: "flex", gap: 12 }}>
           <Link
-            to="/enrol?course=scrum-master"
+            to="/enrol"
+            search={{ course: "scrum-master" }}
             style={{
               background: "#00F5A0",
               color: "#0A2E1A",

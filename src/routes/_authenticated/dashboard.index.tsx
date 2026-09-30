@@ -34,6 +34,7 @@ import {
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { CourseLink } from "@/components/courses/CourseLink";
 import pmBaImg from "@/assets/courses/project-management-business-analysis.jpg";
 import dmImg from "@/assets/courses/digital-marketing.jpg";
 import aiImg from "@/assets/courses/ai-for-professionals.jpg";

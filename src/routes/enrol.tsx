@@ -5,6 +5,7 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { PublicShell } from "@/components/PublicShell";
 import { supabase } from "@/integrations/supabase/client";
+import { CourseLink } from "@/components/courses/CourseLink";
 
 const COURSE_OPTIONS: { slug: string; name: string }[] = [
   { slug: "project-management-business-analysis", name: "Project Management & Business Analysis" },
@@ -109,20 +110,36 @@ function EnrolPage() {
           className="flex flex-col justify-center px-6 py-10 md:px-9 md:py-12 lg:px-16 lg:py-[72px]"
           style={DOT_TEXTURE}
         >
-          <Link
-            to={courseSlug ? "/courses/$slug" : "/courses"}
-            {...(courseSlug ? { params: { slug: courseSlug } } : {})}
-            className="inline-flex items-center gap-1.5 mb-10"
-            style={{
-              fontSize: 13,
-              color: "#1A8C4E",
-              fontWeight: 500,
-              textDecoration: "none",
-            }}
-          >
-            <ArrowLeft size={14} strokeWidth={2.25} />
-            Back to course
-          </Link>
+          {courseSlug ? (
+            <CourseLink
+              slug={courseSlug}
+              className="inline-flex items-center gap-1.5 mb-10"
+              style={{
+                fontSize: 13,
+                color: "#1A8C4E",
+                fontWeight: 500,
+                textDecoration: "none",
+              }}
+            >
+              <ArrowLeft size={14} strokeWidth={2.25} />
+              Back to course
+            </CourseLink>
+          ) : (
+            <Link
+              to="/courses"
+              className="inline-flex items-center gap-1.5 mb-10"
+              style={{
+                fontSize: 13,
+                color: "#1A8C4E",
+                fontWeight: 500,
+                textDecoration: "none",
+              }}
+            >
+              <ArrowLeft size={14} strokeWidth={2.25} />
+              Back to courses
+            </Link>
+          )}
+
 
           <div
             style={{

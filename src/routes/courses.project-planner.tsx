@@ -694,7 +694,8 @@ function ProjectPlannerPage() {
         </div>
         <div style={{ display: "flex", gap: 12 }}>
           <Link
-            to="/enrol?course=project-planner"
+            to="/enrol"
+            search={{ course: "project-planner" }}
             style={{
               background: "#00F5A0",
               color: "#0A2E1A",

@@ -15,6 +15,7 @@ export const COURSE_SLUGS = [
   "cybersecurity",
   "virtual-assistant-programme",
   "project-management-business-analysis",
+  "project-planner",
 ] as const;
 
 export type CourseSlug = (typeof COURSE_SLUGS)[number];
@@ -87,6 +88,12 @@ export function CourseLink({ slug, className, style, children }: Props) {
           className={className}
           style={style}
         >
+          {children}
+        </Link>
+      );
+    case "project-planner":
+      return (
+        <Link to="/courses/project-planner" className={className} style={style}>
           {children}
         </Link>
       );
