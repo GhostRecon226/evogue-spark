@@ -243,7 +243,8 @@ function ProjectPlannerPage() {
             {/* CTA row */}
             <div className="sm-cta-row" style={{ display: "flex", alignItems: "center", gap: 16 }}>
               <Link
-                to="/enrol?course=project-planner"
+                to="/enrol"
+                search={{ course: "project-planner" }}
                 className="sm-enrol-btn"
                 style={{
                   background: "#0A2E1A",

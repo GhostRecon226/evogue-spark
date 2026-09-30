@@ -831,13 +831,12 @@ function DashboardHome() {
                         <BarChart3 className="h-3 w-3" /> {course.level}
                       </span>
                     </div>
-                    <Link
-                      to="/courses/$slug"
-                      params={{ slug: course.slug }}
+                    <CourseLink
+                      slug={course.slug}
                       className="mt-auto block w-full text-center bg-[#EDF7F0] border border-[rgba(10,46,26,0.12)] text-[#0A2E1A] px-[14px] py-2 rounded-md text-[12px] font-medium transition-colors duration-200 hover:bg-[#d4eede]"
                     >
                       View Course
-                    </Link>
+                    </CourseLink>
                   </div>
                 </div>
               ));

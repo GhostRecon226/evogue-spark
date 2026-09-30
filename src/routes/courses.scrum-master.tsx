@@ -276,7 +276,8 @@ function ScrumMasterPage() {
             </div>
             <div className="sm-cta-row" style={{ display: "flex", alignItems: "center", gap: 16 }}>
               <Link
-                to="/enrol?course=scrum-master"
+                to="/enrol"
+                search={{ course: "scrum-master" }}
                 className="sm-enrol-btn"
                 style={{
                   background: "#0A2E1A",
