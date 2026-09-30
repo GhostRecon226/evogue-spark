@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { CalendarDays, Clock, Check, Loader2, MessageCircle, Sparkles } from "lucide-react";
+import {
+  CalendarDays,
+  Clock,
+  Check,
+  Loader2,
+  MessageCircle,
+  Sparkles,
+  Instagram,
+} from "lucide-react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { PublicShell } from "@/components/PublicShell";
