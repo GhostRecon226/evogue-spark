@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { CalendarDays, Clock, Check, Loader2, MessageCircle, Sparkles } from "lucide-react";
+import {
+  CalendarDays,
+  Clock,
+  Check,
+  Loader2,
+  MessageCircle,
+  Sparkles,
+  Instagram,
+} from "lucide-react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { PublicShell } from "@/components/PublicShell";
@@ -10,7 +18,9 @@ const WEBINAR_SLUG = "transition-to-tech";
 const WEBINAR_TITLE = "Switch to Tech: The Practical Roadmap to Landing Your First IT Role";
 const WEBINAR_DATE_LABEL = "Saturday, 31 October 2026";
 const WEBINAR_TIME_LABEL = "2:00 PM (WAT) · 90 minutes";
-const WHATSAPP_LINK = "https://wa.me/447404331835";
+const WHATSAPP_LINK =
+  "https://chat.whatsapp.com/HNfbrxhPShXBgKCfboVpO5?s=cl&p=i&mlu=4&ilr=4";
+const INSTAGRAM_LINK = "https://instagram.com/evogueacademy";
 
 // 31 Oct 2026, 14:00 WAT (UTC+1) => 13:00 UTC
 const GOOGLE_CALENDAR_LINK =
@@ -242,7 +252,7 @@ function WebinarPage() {
               </div>
 
               <div style={{ marginBottom: 16 }}>
-                <FormField label="Email address">
+                <FormField label="Email address (your webinar invite is sent here)">
                   <StyledInput
                     type="email"
                     name="email"
@@ -325,7 +335,8 @@ function WebinarPage() {
                   marginTop: 10,
                 }}
               >
-                We never share your details. The joining link is sent by email and WhatsApp.
+                We never share your details. Your webinar invite and joining link are sent to
+                the email address you enter above.
               </p>
             </form>
           )}
@@ -452,8 +463,28 @@ function SuccessState() {
           <CalendarDays size={16} strokeWidth={2.25} />
           Add to calendar
         </a>
-        <a
+         <a
           href={WHATSAPP_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center"
+          style={{
+            gap: 8,
+            background: "#1A8C4E",
+            color: "#fff",
+            padding: "14px 24px",
+            minHeight: 48,
+            borderRadius: 8,
+            fontSize: 14,
+            fontWeight: 600,
+            textDecoration: "none",
+          }}
+        >
+          <MessageCircle size={16} strokeWidth={2.25} />
+          Join the WhatsApp community
+        </a>
+        <a
+          href={INSTAGRAM_LINK}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center justify-center"
@@ -470,10 +501,22 @@ function SuccessState() {
             textDecoration: "none",
           }}
         >
-          <MessageCircle size={16} color="#1A8C4E" strokeWidth={2.25} />
-          Message us on WhatsApp
+          <Instagram size={16} color="#1A8C4E" strokeWidth={2.25} />
+          Follow @evogueacademy
         </a>
       </div>
+      <p
+        style={{
+          fontSize: 12,
+          color: "rgba(10,46,26,0.45)",
+          maxWidth: 380,
+          margin: "18px auto 0",
+          lineHeight: 1.6,
+        }}
+      >
+        Joining the community and following us on Instagram is how you&apos;ll get reminders and
+        bonus resources before the session.
+      </p>
     </div>
   );
 }
