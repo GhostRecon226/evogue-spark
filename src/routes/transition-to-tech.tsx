@@ -252,7 +252,7 @@ function WebinarPage() {
               </div>
 
               <div style={{ marginBottom: 16 }}>
-                <FormField label="Email address">
+                <FormField label="Email address (your webinar invite is sent here)">
                   <StyledInput
                     type="email"
                     name="email"
