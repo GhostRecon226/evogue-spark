@@ -335,7 +335,8 @@ function WebinarPage() {
                   marginTop: 10,
                 }}
               >
-                We never share your details. The joining link is sent by email and WhatsApp.
+                We never share your details. Your webinar invite and joining link are sent to
+                the email address you enter above.
               </p>
             </form>
           )}
